@@ -10,6 +10,7 @@ class KFWeaponStatConfig extends Mutator
 var() config int  Single9mmMag, Single9mmDmgMax,
                   DualiesMag, DualiesDmgMax, DualiesCost,
                   MK23Mag, MK23DmgMax, MK23Cost,
+                  DualMK23Mag, DualMK23DmgMax, DualMK23Cost,
                   Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
@@ -25,6 +26,7 @@ replication
 		              Single9mmMag, Single9mmDmgMax,
                   DualiesMag, DualiesDmgMax, DualiesCost,
                   MK23Mag, MK23DmgMax, MK23Cost,
+                  DualMK23Mag, DualMK23DmgMax, DualMK23Cost,
                   Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
@@ -66,6 +68,10 @@ simulated function ApplySharpShooter(){
     class'KFMod.MK23Fire'.default.DamageMax=MK23DmgMax;
     class'KFMod.MK23Pickup'.default.cost=MK23Cost;
     MutLog("-----|| MK23 Mag: " $MK23Mag$ " || MK23 MaxDmg: " $MK23DmgMax$ " || MK23 Cost: " $MK23Cost$ " ||-----");
+    class'KFMod.DualMK23Pistol'.default.MagCapacity=DualMK23Mag;
+    class'KFMod.DualMK23Fire'.default.DamageMax=DualMK23DmgMax;
+    class'KFMod.DualMK23Pickup'.default.cost=DualMK23Cost;
+    MutLog("-----|| DualMK23 Mag: " $DualMK23Mag$ " || DualMK23 MaxDmg: " $DualMK23DmgMax$ " || DualMK23 Cost: " $DualMK23Cost$ " ||-----");
     class'KFMod.Magnum44Pistol'.default.MagCapacity=Single44MagnumMag;
     class'KFMod.Magnum44Fire'.default.DamageMax=Single44MagnumDmgMax;
     class'KFMod.Magnum44Pickup'.default.cost=Single44MagnumCost;
@@ -108,6 +114,9 @@ simulated function GetServerVars(){
     default.MK23Mag = MK23Mag;
     default.MK23DmgMax = MK23DmgMax;
     default.MK23Cost = MK23Cost;
+    default.DualMK23Mag = DualMK23Mag;
+    default.DualMK23DmgMax = DualMK23DmgMax;
+    default.DualMK23Cost = DualMK23Cost;
     default.Single44MagnumMag = Single44MagnumMag;
     default.Single44MagnumDmgMax = Single44MagnumDmgMax;
     default.Single44MagnumCost = Single44MagnumCost;
@@ -143,6 +152,9 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Mag", "0. MK23 Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23DmgMax", "0. MK23 Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Cost", "0. MK23 Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23Mag", "0. DualMK23 Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23DmgMax", "0. DualMK23 Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23Cost", "0. DualMK23 Cost", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumMag", "0. 44 Magnum Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumDmgMax", "0. 44 Magnum Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumCost", "0. 44 Magnum Cost", 0, 0, "text");
@@ -188,6 +200,12 @@ static function string GetDescriptionText(string SettingName)
 			return "Max Damage | Default is 82";
     case "MK23Cost":
 			return "Cost | Default is 500";
+    case "DualMK23Mag":
+			return "Mag Size | Default is 24";
+    case "DualMK23DmgMax":
+			return "Max Damage | Default is 82";
+    case "DualMK23Cost":
+			return "Cost | Default is 1000";
     case "Single44MagnumMag":
 			return "Mag Size | Default is 6";
     case "Single44MagnumDmgMax":
@@ -269,6 +287,9 @@ defaultproperties
     MK23Mag=12
     MK23DmgMax=82
     MK23Cost=500
+    DualMK23Mag=24
+    DualMK23DmgMax=82
+    DualMK23Cost=1000
     Single44MagnumMag=6
     Single44MagnumDmgMax=105
     Single44MagnumCost=450
