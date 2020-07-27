@@ -13,7 +13,8 @@ var() config int Single9mmMag, Single9mmDmgMax,
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
                   CrossbowMag, CrossbowDmgMax, CrossbowCost,
-                  SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost;
+                  SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost,
+                  M14EBRMag, M14EBRDmgMax, M14EBRCost;
 var() config bool bEnableSharp;
 
 replication
@@ -25,7 +26,8 @@ replication
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
                   CrossbowMag, CrossbowDmgMax, CrossbowCost,
-                  SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost;
+                  SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost,
+                  M14EBRMag, M14EBRDmgMax, M14EBRCost;
 }
 
 simulated function PostNetReceive()
@@ -76,6 +78,10 @@ simulated function ApplySharpShooter(){
     class'KFMod.SPSniperFire'.default.DamageMax=SPSniperRifleDmgMax;
     class'KFMod.SPSniperPickup'.default.cost=SPSniperRifleCost;
     MutLog("-----|| SPSniperRifle Mag: " $SPSniperRifleMag$ " || SPSniperRifle MaxDmg: " $SPSniperRifleDmgMax$ " || SPSniperRifle Cost: " $SPSniperRifleCost$ " ||-----");
+    class'KFMod.M14EBRBattleRifle'.default.MagCapacity=M14EBRMag;
+    class'KFMod.M14EBRFire'.default.DamageMax=M14EBRDmgMax;
+    class'KFMod.M14EBRPickup'.default.cost=M14EBRCost;
+    MutLog("-----|| M14EBR Mag: " $M14EBRMag$ " || M14EBR MaxDmg: " $M14EBRDmgMax$ " || M14EBR Cost: " $M14EBRCost$ " ||-----");
     MutLog("SS Weapons Stat Changed");
 }
 
@@ -102,6 +108,9 @@ simulated function GetServerVars(){
     default.SPSniperRifleMag = SPSniperRifleMag;
     default.SPSniperRifleDmgMax = SPSniperRifleDmgMax;
     default.SPSniperRifleCost = SPSniperRifleCost;
+    default.M14EBRMag = M14EBRMag;
+    default.M14EBRDmgMax = M14EBRDmgMax;
+    default.M14EBRCost = M14EBRCost;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -128,6 +137,9 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleMag", "0. SPSniperRifle Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleDmgMax", "0. SPSniperRifle Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleCost", "0. SPSniperRifle Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRMag", "0. M14EBR Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRDmgMax", "0. M14EBR Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRCost", "0. M14EBR Cost", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -176,6 +188,12 @@ static function string GetDescriptionText(string SettingName)
 			return "Max Damage | Default is 180";
     case "SPSniperRifleCost":
 			return "Cost | Default is 1500";
+    case "M14EBRMag":
+			return "Mag Size | Default is 20";
+    case "M14EBRDmgMax":
+			return "Max Damage | Default is 80";
+    case "M14EBRCost":
+			return "Cost | Default is 2500";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -227,4 +245,7 @@ defaultproperties
     SPSniperRifleMag=10
     SPSniperRifleDmgMax=180
     SPSniperRifleCost=1500
+    M14EBRMag=20
+    M14EBRDmgMax=80
+    M14EBRCost=2500
 }
