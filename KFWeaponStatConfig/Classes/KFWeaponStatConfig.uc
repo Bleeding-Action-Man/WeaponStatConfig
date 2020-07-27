@@ -7,7 +7,8 @@
 class KFWeaponStatConfig extends Mutator 
                                 Config(KFWeaponStatConfig);
 
-var() config int Single9mmMag, Single9mmDmgMax,
+var() config int  Single9mmMag, Single9mmDmgMax,
+                  DualiesMag, DualiesDmgMax, DualiesCost,
                   MK23Mag, MK23DmgMax, MK23Cost,
                   Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
@@ -22,6 +23,7 @@ replication
 {
 	unreliable if (Role == ROLE_Authority)
 		              Single9mmMag, Single9mmDmgMax,
+                  DualiesMag, DualiesDmgMax, DualiesCost,
                   MK23Mag, MK23DmgMax, MK23Cost,
                   Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
@@ -52,10 +54,14 @@ simulated function Timer()
 }
 
 simulated function ApplySharpShooter(){
-    MutLog("Changing SharpShooter Weapons Stats");
+    MutLog("-----|| Changing SharpShooter Weapons Stats ||-----");
     class'KFMod.Single'.default.MagCapacity=Single9mmMag;
     class'KFMod.SingleFire'.default.DamageMax=Single9mmDmgMax;
     MutLog("-----|| Single9mm Mag: " $Single9mmMag$ " || Single9mm MaxDmg: " $Single9mmDmgMax$ " ||-----");
+    class'KFMod.Dualies'.default.MagCapacity=DualiesMag;
+    class'KFMod.DualiesFire'.default.DamageMax=DualiesDmgMax;
+    class'KFMod.DualiesPickup'.default.DamageMax=DualiesCost;
+    MutLog("-----|| Dualies Mag: " $DualiesMag$ " || Dualies MaxDmg: " $DualiesDmgMax$ " ||-----");
     class'KFMod.MK23Pistol'.default.MagCapacity=MK23Mag;
     class'KFMod.MK23Fire'.default.DamageMax=MK23DmgMax;
     class'KFMod.MK23Pickup'.default.cost=MK23Cost;
@@ -88,7 +94,7 @@ simulated function ApplySharpShooter(){
     class'KFMod.M99Fire'.default.DamageMax=M99DmgMax;
     class'KFMod.M99Pickup'.default.cost=M99Cost;
     MutLog("-----|| M99 Mag: " $M99Mag$ " || M99 MaxDmg: " $M99DmgMax$ " || M99 Cost: " $M99Cost$ " ||-----");
-    MutLog("SS Weapons Stat Changed");
+    MutLog("-----|| SS Weapons Stat Changed ||-----");
 }
 
 simulated function GetServerVars(){
@@ -96,6 +102,9 @@ simulated function GetServerVars(){
     default.bEnableSharp = bEnableSharp;
     default.Single9mmMag = Single9mmMag;
     default.Single9mmDmgMax = Single9mmDmgMax;
+    default.DualiesMag = DualiesMag;
+    default.DualiesDmgMax = DualiesDmgMax;
+    default.DualiesCost = DualiesCost;
     default.MK23Mag = MK23Mag;
     default.MK23DmgMax = MK23DmgMax;
     default.MK23Cost = MK23Cost;
@@ -128,6 +137,9 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableSharp", "Enable Changes for SharpShooter Weapons", 0, 0, "check");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmMag", "0. Single9mm Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmDmgMax", "0. Single9mm Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesMag", "0. Dualies Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesDmgMax", "0. Dualies Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesCost", "0. Dualies Cost", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Mag", "0. MK23 Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23DmgMax", "0. MK23 Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Cost", "0. MK23 Cost", 0, 0, "text");
@@ -164,6 +176,12 @@ static function string GetDescriptionText(string SettingName)
 			return "Mag Size | Default is 15";
     case "Single9mmDmgMax":
 			return "Max Damage | Default is 35";
+    case "DualiesMag":
+			return "Mag Size | Default is 30";
+    case "DualiesDmgMax":
+			return "Max Damage | Default is 35";
+    case "DualiesCost":
+			return "Cost | Default is 150";
     case "MK23Mag":
 			return "Mag Size | Default is 12";
     case "MK23DmgMax":
@@ -245,6 +263,9 @@ defaultproperties
     bEnableSharp=True
     Single9mmMag=15
     Single9mmDmgMax=35
+    DualiesMag=30
+    DualiesDmgMax=35
+    DualiesCost=150
     MK23Mag=12
     MK23DmgMax=82
     MK23Cost=500
