@@ -9,7 +9,11 @@ class KFWeaponStatConfig extends Mutator
 
 var() config int Single9mmMag, Single9mmDmgMax,
                   MK23Mag, MK23DmgMax, MK23Cost,
-                  Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost;
+                  Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
+                  SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
+                  WinchesterMag, WinchesterDmgMax, WinchesterCost,
+                  CrossbowMag, CrossbowDmgMax, CrossbowCost,
+                  SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost;
 var() config bool bEnableSharp;
 
 replication
@@ -17,7 +21,11 @@ replication
 	unreliable if (Role == ROLE_Authority)
 		              Single9mmMag, Single9mmDmgMax,
                   MK23Mag, MK23DmgMax, MK23Cost,
-                  Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost;
+                  Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
+                  SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
+                  WinchesterMag, WinchesterDmgMax, WinchesterCost,
+                  CrossbowMag, CrossbowDmgMax, CrossbowCost,
+                  SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost;
 }
 
 simulated function PostNetReceive()
@@ -52,6 +60,22 @@ simulated function ApplySharpShooter(){
     class'KFMod.Magnum44Fire'.default.DamageMax=Single44MagnumDmgMax;
     class'KFMod.Magnum44Pickup'.default.cost=Single44MagnumCost;
     MutLog("-----|| 44 Magnum Mag: " $Single44MagnumMag$ " || 44 Magnum MaxDmg: " $Single44MagnumDmgMax$ " || 44 Magnum Cost: " $Single44MagnumCost$ " ||-----");
+    class'KFMod.Deagle'.default.MagCapacity=SingleDeagleMag;
+    class'KFMod.DeagleFire'.default.DamageMax=SingleDeagleDmgMax;
+    class'KFMod.DeaglePickup'.default.cost=SingleDeagleCost;
+    MutLog("-----|| HandCannon Mag: " $SingleDeagleMag$ " || HandCannon MaxDmg: " $SingleDeagleDmgMax$ " || HandCannon Cost: " $SingleDeagleCost$ " ||-----");
+    class'KFMod.Winchester'.default.MagCapacity=WinchesterMag;
+    class'KFMod.WinchesterFire'.default.DamageMax=WinchesterDmgMax;
+    class'KFMod.WinchesterPickup'.default.cost=WinchesterCost;
+    MutLog("-----|| Winchester Mag: " $WinchesterMag$ " || Winchester MaxDmg: " $WinchesterDmgMax$ " || Winchester Cost: " $WinchesterCost$ " ||-----");
+    class'KFMod.Crossbow'.default.MagCapacity=CrossbowMag;
+    class'KFMod.CrossbowFire'.default.DamageMax=CrossbowDmgMax;
+    class'KFMod.CrossbowPickup'.default.cost=CrossbowCost;
+    MutLog("-----|| Crossbow Mag: " $CrossbowMag$ " || Crossbow MaxDmg: " $CrossbowDmgMax$ " || Crossbow Cost: " $CrossbowCost$ " ||-----");
+    class'KFMod.SPSniperRifle'.default.MagCapacity=SPSniperRifleMag;
+    class'KFMod.SPSniperFire'.default.DamageMax=SPSniperRifleDmgMax;
+    class'KFMod.SPSniperPickup'.default.cost=SPSniperRifleCost;
+    MutLog("-----|| SPSniperRifle Mag: " $SPSniperRifleMag$ " || SPSniperRifle MaxDmg: " $SPSniperRifleDmgMax$ " || SPSniperRifle Cost: " $SPSniperRifleCost$ " ||-----");
     MutLog("SS Weapons Stat Changed");
 }
 
@@ -66,6 +90,18 @@ simulated function GetServerVars(){
     default.Single44MagnumMag = Single44MagnumMag;
     default.Single44MagnumDmgMax = Single44MagnumDmgMax;
     default.Single44MagnumCost = Single44MagnumCost;
+    default.SingleDeagleMag = SingleDeagleMag;
+    default.SingleDeagleDmgMax = SingleDeagleDmgMax;
+    default.SingleDeagleCost = SingleDeagleCost;
+    default.WinchesterMag = WinchesterMag;
+    default.WinchesterDmgMax = WinchesterDmgMax;
+    default.WinchesterCost = WinchesterCost;
+    default.CrossbowMag = CrossbowMag;
+    default.CrossbowDmgMax = CrossbowDmgMax;
+    default.CrossbowCost = CrossbowCost;
+    default.SPSniperRifleMag = SPSniperRifleMag;
+    default.SPSniperRifleDmgMax = SPSniperRifleDmgMax;
+    default.SPSniperRifleCost = SPSniperRifleCost;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -77,9 +113,21 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Mag", "0. MK23 Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23DmgMax", "0. MK23 Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Cost", "0. MK23 Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumMag", "0. 44 Magnum` Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumMag", "0. 44 Magnum Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumDmgMax", "0. 44 Magnum Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumCost", "0. 44 Magnum Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleMag", "0. HandCannon Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleDmgMax", "0. HandCannon Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleCost", "0. HandCannon Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterMag", "0. Winchester Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterDmgMax", "0. Winchester Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterCost", "0. Winchester Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowMag", "0. Crossbow Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowDmgMax", "0. Crossbow Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowCost", "0. Crossbow Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleMag", "0. SPSniperRifle Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleDmgMax", "0. SPSniperRifle Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleCost", "0. SPSniperRifle Cost", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -104,6 +152,30 @@ static function string GetDescriptionText(string SettingName)
 			return "Max Damage | Default is 105";
     case "Single44MagnumCost":
 			return "Cost | Default is 450";
+    case "SingleDeagleMag":
+			return "Mag Size | Default is 8";
+    case "SingleDeagleDmgMax":
+			return "Max Damage | Default is 115";
+    case "SingleDeagleCost":
+			return "Cost | Default is 500";
+    case "WinchesterMag":
+			return "Mag Size | Default is 10";
+    case "WinchesterDmgMax":
+			return "Max Damage | Default is 140";
+    case "WinchesterCost":
+			return "Cost | Default is 200";
+    case "CrossbowMag":
+			return "Mag Size | Default is 1";
+    case "CrossbowDmgMax":
+			return "Max Damage | Default is 300";
+    case "CrossbowCost":
+			return "Cost | Default is 800";
+    case "SPSniperRifleMag":
+			return "Mag Size | Default is 10";
+    case "SPSniperRifleDmgMax":
+			return "Max Damage | Default is 180";
+    case "SPSniperRifleCost":
+			return "Cost | Default is 1500";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -143,4 +215,16 @@ defaultproperties
     Single44MagnumMag=6
     Single44MagnumDmgMax=105
     Single44MagnumCost=450
+    SingleDeagleMag=500
+    SingleDeagleDmgMax=115
+    SingleDeagleCost=8
+    WinchesterMag=10
+    WinchesterDmgMax=140
+    WinchesterCost=200
+    CrossbowMag=1
+    CrossbowDmgMax=300
+    CrossbowCost=800
+    SPSniperRifleMag=10
+    SPSniperRifleDmgMax=180
+    SPSniperRifleCost=1500
 }
