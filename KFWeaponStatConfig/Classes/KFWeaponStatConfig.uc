@@ -14,7 +14,8 @@ var() config int Single9mmMag, Single9mmDmgMax,
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
                   CrossbowMag, CrossbowDmgMax, CrossbowCost,
                   SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost,
-                  M14EBRMag, M14EBRDmgMax, M14EBRCost;
+                  M14EBRMag, M14EBRDmgMax, M14EBRCost,
+                  M99Mag, M99DmgMax, M99Cost;
 var() config bool bEnableSharp;
 
 replication
@@ -27,7 +28,8 @@ replication
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
                   CrossbowMag, CrossbowDmgMax, CrossbowCost,
                   SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost,
-                  M14EBRMag, M14EBRDmgMax, M14EBRCost;
+                  M14EBRMag, M14EBRDmgMax, M14EBRCost,
+                  M99Mag, M99DmgMax, M99Cost;
 }
 
 simulated function PostNetReceive()
@@ -82,6 +84,10 @@ simulated function ApplySharpShooter(){
     class'KFMod.M14EBRFire'.default.DamageMax=M14EBRDmgMax;
     class'KFMod.M14EBRPickup'.default.cost=M14EBRCost;
     MutLog("-----|| M14EBR Mag: " $M14EBRMag$ " || M14EBR MaxDmg: " $M14EBRDmgMax$ " || M14EBR Cost: " $M14EBRCost$ " ||-----");
+    class'KFMod.M99SniperRifle'.default.MagCapacity=M99Mag;
+    class'KFMod.M99Fire'.default.DamageMax=M99DmgMax;
+    class'KFMod.M99Pickup'.default.cost=M99Cost;
+    MutLog("-----|| M99 Mag: " $M99Mag$ " || M99 MaxDmg: " $M99DmgMax$ " || M99 Cost: " $M99Cost$ " ||-----");
     MutLog("SS Weapons Stat Changed");
 }
 
@@ -111,6 +117,9 @@ simulated function GetServerVars(){
     default.M14EBRMag = M14EBRMag;
     default.M14EBRDmgMax = M14EBRDmgMax;
     default.M14EBRCost = M14EBRCost;
+    default.M99Mag = M99Mag;
+    default.M99DmgMax = M99DmgMax;
+    default.M99Cost = M99Cost;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -140,6 +149,9 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRMag", "0. M14EBR Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRDmgMax", "0. M14EBR Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRCost", "0. M14EBR Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "M99Mag", "0. M99 Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "M99DmgMax", "0. M99 Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "M99Cost", "0. M99 Cost", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -194,6 +206,12 @@ static function string GetDescriptionText(string SettingName)
 			return "Max Damage | Default is 80";
     case "M14EBRCost":
 			return "Cost | Default is 2500";
+    case "M99Mag":
+			return "Mag Size | Default is 1";
+    case "M99DmgMax":
+			return "Max Damage | Default is 675";
+    case "M99Cost":
+			return "Cost | Default is 3500";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -248,4 +266,7 @@ defaultproperties
     M14EBRMag=20
     M14EBRDmgMax=80
     M14EBRCost=2500
+    M99Mag=1
+    M99DmgMax=675
+    M99Cost=3500
 }
