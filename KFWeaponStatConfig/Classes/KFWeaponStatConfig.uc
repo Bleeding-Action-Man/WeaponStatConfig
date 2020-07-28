@@ -309,8 +309,8 @@ defaultproperties
 
     // Mut Vars
     GroupName="KF-WeaponStatConfig"
-    FriendlyName="Weapon Stat Config - v1.0"
-    Description="Change Weapon MaxDmg, Magazine Size & Cost (More options coming soon), currently supports Standard KF weapons only & SharpShooter only (More Perks Coming Soon); - By Vel-San"
+    FriendlyName="Weapon Stat Config - v1.0b"
+    Description="Change Weapon MaxDmg, Magazine Size & Cost (More options coming soon), currently supports Standard KF weapons only & SharpShooter (More Perks Coming Soon); - By Vel-San"
 
     // Weapon Stats
     // SS
