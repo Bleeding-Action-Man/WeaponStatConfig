@@ -14,6 +14,7 @@ var() config int  Single9mmMag, Single9mmDmgMax,
                   Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
                   Dual44MagnumMag, Dual44MagnumDmgMax, Dual44MagnumCost,
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
+                  DualDeagleMag, DualDeagleDmgMax, DualDeagleCost,
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
                   CrossbowMag, CrossbowDmgMax, CrossbowCost,
                   SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost,
@@ -31,6 +32,7 @@ replication
                   Single44MagnumMag, Single44MagnumDmgMax, Single44MagnumCost,
                   Dual44MagnumMag, Dual44MagnumDmgMax, Dual44MagnumCost,
                   SingleDeagleMag, SingleDeagleDmgMax, SingleDeagleCost,
+                  DualDeagleMag, DualDeagleDmgMax, DualDeagleCost,
                   WinchesterMag, WinchesterDmgMax, WinchesterCost,
                   CrossbowMag, CrossbowDmgMax, CrossbowCost,
                   SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost,
@@ -86,6 +88,10 @@ simulated function ApplySharpShooter(){
     class'KFMod.DeagleFire'.default.DamageMax=SingleDeagleDmgMax;
     class'KFMod.DeaglePickup'.default.cost=SingleDeagleCost;
     MutLog("-----|| HandCannon Mag: " $SingleDeagleMag$ " || HandCannon MaxDmg: " $SingleDeagleDmgMax$ " || HandCannon Cost: " $SingleDeagleCost$ " ||-----");
+    class'KFMod.DualDeagle'.default.MagCapacity=DualDeagleMag;
+    class'KFMod.DualDeagleFire'.default.DamageMax=DualDeagleDmgMax;
+    class'KFMod.DualDeaglePickup'.default.cost=DualDeagleCost;
+    MutLog("-----|| Dual HandCannon Mag: " $DualDeagleMag$ " || Dual HandCannon MaxDmg: " $DualDeagleDmgMax$ " || Dual HandCannon Cost: " $DualDeagleCost$ " ||-----");
     class'KFMod.Winchester'.default.MagCapacity=WinchesterMag;
     class'KFMod.WinchesterFire'.default.DamageMax=WinchesterDmgMax;
     class'KFMod.WinchesterPickup'.default.cost=WinchesterCost;
@@ -132,6 +138,9 @@ simulated function GetServerVars(){
     default.SingleDeagleMag = SingleDeagleMag;
     default.SingleDeagleDmgMax = SingleDeagleDmgMax;
     default.SingleDeagleCost = SingleDeagleCost;
+    default.DualDeagleMag = DualDeagleMag;
+    default.DualDeagleDmgMax = DualDeagleDmgMax;
+    default.DualDeagleCost = DualDeagleCost;
     default.WinchesterMag = WinchesterMag;
     default.WinchesterDmgMax = WinchesterDmgMax;
     default.WinchesterCost = WinchesterCost;
@@ -173,6 +182,9 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleMag", "0. HandCannon Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleDmgMax", "0. HandCannon Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleCost", "0. HandCannon Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleMag", "0. Dual HandCannon Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleDmgMax", "0. Dual HandCannon Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleCost", "0. Dual HandCannon Cost", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterMag", "0. Winchester Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterDmgMax", "0. Winchester Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterCost", "0. Winchester Cost", 0, 0, "text");
@@ -236,6 +248,12 @@ static function string GetDescriptionText(string SettingName)
 			return "Max Damage | Default is 115";
     case "SingleDeagleCost":
 			return "Cost | Default is 500";
+    case "DualDeagleMag":
+			return "Mag Size | Default is 16";
+    case "DualDeagleDmgMax":
+			return "Max Damage | Default is 115";
+    case "DualDeagleCost":
+			return "Cost | Default is 1000";
     case "WinchesterMag":
 			return "Mag Size | Default is 10";
     case "WinchesterDmgMax":
@@ -314,9 +332,12 @@ defaultproperties
     Dual44MagnumMag=12
     Dual44MagnumDmgMax=105
     Dual44MagnumCost=900
-    SingleDeagleMag=500
+    SingleDeagleMag=8
     SingleDeagleDmgMax=115
-    SingleDeagleCost=8
+    SingleDeagleCost=500
+    DualDeagleMag=16
+    DualDeagleDmgMax=115
+    DualDeagleCost=1000
     WinchesterMag=10
     WinchesterDmgMax=140
     WinchesterCost=200
