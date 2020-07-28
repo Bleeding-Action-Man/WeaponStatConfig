@@ -434,11 +434,11 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleDmgMax", "0. SPSniperRifle Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleCost", "0. SPSniperRifle Cost", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleWeight", "0. SPSniperRifle Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperHeadShotMulti", "0. SPSniper HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperFireRate", "0. SPSniper Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperFireAnimRate", "0. SPSniper Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperReloadRate", "0. SPSniper Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperReloadAnimeRate", "0. SPSniper Reload Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleHeadShotMulti", "0. SPSniper HeadShot Multiplier", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleFireRate", "0. SPSniper Fire Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleFireAnimRate", "0. SPSniper Fire Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleReloadRate", "0. SPSniper Reload Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleReloadAnimeRate", "0. SPSniper Reload Anime Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRMag", "0. M14EBR Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRDmgMax", "0. M14EBR Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRCost", "0. M14EBR Cost", 0, 0, "text");

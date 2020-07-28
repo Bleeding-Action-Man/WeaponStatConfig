@@ -1,0 +1,56 @@
+After a lot of work, I'm glad to preset the beta version 1.0 of Weapon Stats Configurator!
+
+This mutator allows you to configure:
+
+- Max Dmg
+- Cost
+- Weight
+- HeadShot multiplier
+- Magazine Size
+- Reload Speed
+- Reload Animation Speed
+- Fire Rate 
+- Fire Rate Animation speed
+
+Of any Killing Floor Standard weapon! 
+
+Currently, only SS (SharpShooter) weapons are supported. This mutator will grow to support all other perk and off-perk weapons whenever i have time to update it!
+
+
+[b][u]Features that will be added[/u][/b]
+
+- All other perk weapons
+- Possible any requested option of a weapon, such as Trader UI damage bar, ammo cost etc..
+
+[b][u]Number Of Files[/u][/b]
+
+- 2
+
+[b][u]File Names[/u][/b]
+
+- \System\KFWeaponStatConfig.u
+- \System\KFWeaponStatConfig.ucl
+
+[b][u]Usage[/u][/b]
+
+1- Subscribe or download manually (recommended)
+2- Launch the game and wait to see 'Completed'
+3- Restart the game and you can see the mutators in your list
+
+[b][u]Class Names[/u][/b]
+
+- Spawn Mut: KFWeaponStatConfig.KFWeaponStatConfig
+
+[b][u]Known Bugs[/u][/b]
+
+You Tell Me.
+
+[b][u]Manual Download Links (Recommended)[/u][/b]
+
+You can find it under 'Not Whitelisted' folder named 'KF-WeaponStatConfig-v1.0b'
+
+MEGA Link: https://mega DOT nz/folder/YDoEmKiC#s6FGAtgh40-TvB4bHsLaMQ
+
+[b][u]Credits[/u][/b]
+
+- [url=https://steamcommunity.com/app/1250/discussions/0/4153959504619222451/]Players who motivated me here[/url]
