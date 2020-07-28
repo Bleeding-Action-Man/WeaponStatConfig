@@ -66,7 +66,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| Single9mm Mag: " $Single9mmMag$ " || Single9mm MaxDmg: " $Single9mmDmgMax$ " ||-----");
     class'KFMod.Dualies'.default.MagCapacity=DualiesMag;
     class'KFMod.DualiesFire'.default.DamageMax=DualiesDmgMax;
-    class'KFMod.DualiesPickup'.default.DamageMax=DualiesCost;
+    class'KFMod.DualiesPickup'.default.cost=DualiesCost;
     MutLog("-----|| Dualies Mag: " $DualiesMag$ " || Dualies MaxDmg: " $DualiesDmgMax$ " ||-----");
     class'KFMod.MK23Pistol'.default.MagCapacity=MK23Mag;
     class'KFMod.MK23Fire'.default.DamageMax=MK23DmgMax;
@@ -97,7 +97,7 @@ simulated function ApplySharpShooter(){
     class'KFMod.WinchesterPickup'.default.cost=WinchesterCost;
     MutLog("-----|| Winchester Mag: " $WinchesterMag$ " || Winchester MaxDmg: " $WinchesterDmgMax$ " || Winchester Cost: " $WinchesterCost$ " ||-----");
     class'KFMod.Crossbow'.default.MagCapacity=CrossbowMag;
-    class'KFMod.CrossbowFire'.default.DamageMax=CrossbowDmgMax;
+    class'KFMod.CrossbowArrow'.default.Damage=CrossbowDmgMax;
     class'KFMod.CrossbowPickup'.default.cost=CrossbowCost;
     MutLog("-----|| Crossbow Mag: " $CrossbowMag$ " || Crossbow MaxDmg: " $CrossbowDmgMax$ " || Crossbow Cost: " $CrossbowCost$ " ||-----");
     class'KFMod.SPSniperRifle'.default.MagCapacity=SPSniperRifleMag;
@@ -109,7 +109,7 @@ simulated function ApplySharpShooter(){
     class'KFMod.M14EBRPickup'.default.cost=M14EBRCost;
     MutLog("-----|| M14EBR Mag: " $M14EBRMag$ " || M14EBR MaxDmg: " $M14EBRDmgMax$ " || M14EBR Cost: " $M14EBRCost$ " ||-----");
     class'KFMod.M99SniperRifle'.default.MagCapacity=M99Mag;
-    class'KFMod.M99Fire'.default.DamageMax=M99DmgMax;
+    class'KFMod.M99Bullet'.default.Damage=M99DmgMax;
     class'KFMod.M99Pickup'.default.cost=M99Cost;
     MutLog("-----|| M99 Mag: " $M99Mag$ " || M99 MaxDmg: " $M99DmgMax$ " || M99 Cost: " $M99Cost$ " ||-----");
     MutLog("-----|| SS Weapons Stat Changed ||-----");
