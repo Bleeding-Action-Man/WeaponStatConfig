@@ -22,7 +22,8 @@ var() config int  Single9mmMag, Single9mmDmgMax,
                   M99Mag, M99DmgMax, M99Cost, M99Weight,
                   MP7MMag, MP7MDmgMax, MP7MCost, MP7MWeight,
                   MP5MMag, MP5MDmgMax, MP5MCost, MP5MWeight,
-                  M7A3MMag, M7A3MDmgMax, M7A3MCost, M7A3MWeight;
+                  M7A3MMag, M7A3MDmgMax, M7A3MCost, M7A3MWeight,
+                  KrissMMag, KrissMDmgMax, KrissMCost, KrissMWeight;
 
 var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
@@ -39,7 +40,8 @@ var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate
                    M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti,
                    MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate,
                    MP5MFireRate, MP5MFireAnimRate, MP5MReloadRate, MP5MReloadAnimeRate,
-                   M7A3MFireRate, M7A3MFireAnimRate, M7A3MReloadRate, M7A3MReloadAnimeRate;
+                   M7A3MFireRate, M7A3MFireAnimRate, M7A3MReloadRate, M7A3MReloadAnimeRate,
+                   KrissMFireRate, KrissMFireAnimRate, KrissMReloadRate, KrissMReloadAnimeRate;
 
 var() config bool bEnableSharp;
 var() config bool bEnableMedic;
@@ -65,6 +67,7 @@ replication
                   MP7MMag, MP7MDmgMax, MP7MCost, MP7MWeight,
                   MP5MMag, MP5MDmgMax, MP5MCost, MP5MWeight,
                   M7A3MMag, M7A3MDmgMax, M7A3MCost, M7A3MWeight,
+                  KrissMMag, KrissMDmgMax, KrissMCost, KrissMWeight,
                   Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
                    MK23FireRate, MK23FireAnimRate, MK23ReloadRate, MK23ReloadAnimeRate, MK23HeadShotMulti,
@@ -80,7 +83,8 @@ replication
                    M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti,
                    MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate,
                    MP5MFireRate, MP5MFireAnimRate, MP5MReloadRate, MP5MReloadAnimeRate,
-                   M7A3MFireRate, M7A3MFireAnimRate, M7A3MReloadRate, M7A3MReloadAnimeRate;
+                   M7A3MFireRate, M7A3MFireAnimRate, M7A3MReloadRate, M7A3MReloadAnimeRate,
+                   KrissMFireRate, KrissMFireAnimRate, KrissMReloadRate, KrissMReloadAnimeRate;
 }
 
 simulated function PostNetReceive()
@@ -266,6 +270,15 @@ simulated function ApplyFieldMedic(){
   class'KFMod.M7A3MMedicGun'.default.ReloadRate=M7A3MReloadRate;
   class'KFMod.M7A3MMedicGun'.default.ReloadAnimRate=M7A3MReloadAnimeRate;
   MutLog("-----|| M7A3M: Applied ||-----");
+  class'KFMod.KrissMMedicGun'.default.MagCapacity=KrissMMag;
+  class'KFMod.KrissMMedicGun'.default.Weight=KrissMWeight;
+  class'KFMod.KrissMFire'.default.DamageMax=KrissMDmgMax;
+  class'KFMod.KrissMPickup'.default.cost=KrissMCost;
+  class'KFMod.KrissMFire'.default.FireRate=KrissMFireRate;
+  class'KFMod.KrissMFire'.default.FireAnimRate=KrissMFireAnimRate;
+  class'KFMod.KrissMMedicGun'.default.ReloadRate=KrissMReloadRate;
+  class'KFMod.KrissMMedicGun'.default.ReloadAnimRate=KrissMReloadAnimeRate;
+  MutLog("-----|| KrissM: Applied ||-----");
   MutLog("-----|| Medic Weapons Stat Changed ||-----");
 }
 
@@ -414,6 +427,14 @@ simulated function GetServerVars(){
     default.M7A3MFireAnimRate = M7A3MFireAnimRate;
     default.M7A3MReloadRate = M7A3MReloadRate;
     default.M7A3MReloadAnimeRate = M7A3MReloadAnimeRate;
+    default.KrissMMag = KrissMMag;
+    default.KrissMDmgMax = KrissMDmgMax;
+    default.KrissMCost = KrissMCost;
+    default.KrissMWeight = KrissMWeight;
+    default.KrissMFireRate = KrissMFireRate;
+    default.KrissMFireAnimRate = KrissMFireAnimRate;
+    default.KrissMReloadRate = KrissMReloadRate;
+    default.KrissMReloadAnimeRate = KrissMReloadAnimeRate;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -563,6 +584,14 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MFireAnimRate", "1. M7A3M Fire Anime Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MReloadRate", "1. M7A3M Reload Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MReloadAnimeRate", "1. M7A3M Reload Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMMag", "1. KrissM Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMDmgMax", "1. KrissM Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMCost", "1. KrissM Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMWeight", "1. KrissM Weight", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMFireRate", "1. KrissM Fire Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMFireAnimRate", "1. KrissM Fire Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMReloadRate", "1. KrissM Reload Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMReloadAnimeRate", "1. KrissM Reload Anime Rate", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -849,6 +878,22 @@ static function string GetDescriptionText(string SettingName)
 			return "Reload Rate | Default is 3.066000";
     case "M7A3MReloadAnimeRate":
 			return "Reload Anime Rate | Default is 1.0";
+    case "KrissMMag":
+			return "Mag Size | Default is 25";
+    case "KrissMDmgMax":
+			return "Max Damage | Default is 40";
+    case "KrissMCost":
+			return "Cost | Default is 2750";
+    case "KrissMWeight":
+			return "Weight | Default is 3";
+    case "KrissMFireRate":
+			return "Fire Rate | Default is 0.063";
+    case "KrissMFireAnimRate":
+			return "Anime Fire Rate | Default is 1.0";
+    case "KrissMReloadRate":
+			return "Reload Rate | Default is 3.33";
+    case "KrissMReloadAnimeRate":
+			return "Reload Anime Rate | Default is 1.0";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -1013,12 +1058,20 @@ defaultproperties
     MP5MReloadAnimeRate=1.0
     MP5MFireRate=0.075
     MP5MFireAnimRate=1.0
-    M7A3MMag=32
-    M7A3MDmgMax=30
-    M7A3MCost=1375
-    M7A3MWeight=3
+    M7A3MMag=15
+    M7A3MDmgMax=70
+    M7A3MCost=2050
+    M7A3MWeight=6
     M7A3MReloadRate=3.066000
     M7A3MReloadAnimeRate=1.0
     M7A3MFireRate=0.166000
     M7A3MFireAnimRate=1.0
+    KrissMMag=25
+    KrissMDmgMax=40
+    KrissMCost=2750
+    KrissMWeight=3
+    KrissMReloadRate=3.33
+    KrissMReloadAnimeRate=1.0
+    KrissMFireRate=0.063
+    KrissMFireAnimRate=1.0
 }
