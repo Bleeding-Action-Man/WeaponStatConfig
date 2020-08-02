@@ -440,6 +440,8 @@ simulated function GetServerVars(){
 static function FillPlayInfo(PlayInfo PlayInfo)
 {
 	Super.FillPlayInfo(PlayInfo);
+
+    // Options
     PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableSharp", "Enable Changes for SharpShooter Weapons", 0, 0, "check");
     PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableMedic", "Enable Changes for Field Medic Weapons", 0, 0, "check");
 
