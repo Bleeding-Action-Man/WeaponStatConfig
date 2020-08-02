@@ -4,7 +4,7 @@
 // https://steamcommunity.com/id/Vel-San/
 //====================================================
 
-class KFWeaponStatConfig extends Mutator 
+class KFWeaponStatConfig extends Mutator
                                 Config(KFWeaponStatConfig);
 
 var() config int  Single9mmMag, Single9mmDmgMax,
@@ -19,7 +19,8 @@ var() config int  Single9mmMag, Single9mmDmgMax,
                   CrossbowMag, CrossbowDmgMax, CrossbowCost, CrossbowWeight,
                   SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost, SPSniperRifleWeight,
                   M14EBRMag, M14EBRDmgMax, M14EBRCost, M14EBRWeight,
-                  M99Mag, M99DmgMax, M99Cost, M99Weight;
+                  M99Mag, M99DmgMax, M99Cost, M99Weight,
+                  MP7MMag, MP7MDmgMax, MP7MCost, MP7MWeight;
 
 var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
@@ -33,14 +34,17 @@ var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate
                    SPSniperRifleFireRate, SPSniperRifleFireAnimRate, SPSniperRifleReloadRate, SPSniperRifleReloadAnimeRate, SPSniperRifleHeadShotMulti,
                    CrossbowFireRate, CrossbowFireAnimRate, CrossbowReloadRate, CrossbowReloadAnimeRate, CrossbowHeadShotMulti,
                    M14EBRFireRate, M14EBRFireAnimRate, M14EBRReloadRate, M14EBRReloadAnimeRate, M14EBRHeadShotMulti,
-                   M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti;
+                   M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti,
+                   MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate;
 
 var() config bool bEnableSharp;
+var() config bool bEnableMedic;
 
 replication
 {
 	unreliable if (Role == ROLE_Authority)
                   bEnableSharp,
+                  bEnableMedic,
 		              Single9mmMag, Single9mmDmgMax,
                   DualiesMag, DualiesDmgMax, DualiesCost, DualiesWeight,
                   MK23Mag, MK23DmgMax, MK23Cost, MK23Weight,
@@ -54,6 +58,7 @@ replication
                   SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost, SPSniperRifleWeight,
                   M14EBRMag, M14EBRDmgMax, M14EBRCost, M14EBRWeight,
                   M99Mag, M99DmgMax, M99Cost, M99Weight,
+                  MP7MMag, MP7MDmgMax, MP7MCost, MP7MWeight,
                   Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
                    MK23FireRate, MK23FireAnimRate, MK23ReloadRate, MK23ReloadAnimeRate, MK23HeadShotMulti,
@@ -66,7 +71,8 @@ replication
                    SPSniperRifleFireRate, SPSniperRifleFireAnimRate, SPSniperRifleReloadRate, SPSniperRifleReloadAnimeRate, SPSniperRifleHeadShotMulti,
                    CrossbowFireRate, CrossbowFireAnimRate, CrossbowReloadRate, CrossbowReloadAnimeRate, CrossbowHeadShotMulti,
                    M14EBRFireRate, M14EBRFireAnimRate, M14EBRReloadRate, M14EBRReloadAnimeRate, M14EBRHeadShotMulti,
-                   M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti;
+                   M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti,
+                   MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate;
 }
 
 simulated function PostNetReceive()
@@ -85,6 +91,9 @@ simulated function Timer()
 {
   if (bEnableSharp){
     ApplySharpShooter();
+  }
+  if(bEnableMedic){
+    ApplyFieldMedic();
   }
 }
 
@@ -220,9 +229,24 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| SS Weapons Stat Changed ||-----");
 }
 
+simulated function ApplyFieldMedic(){
+  MutLog("-----|| Changing Field Medic Weapons Stats ||-----");
+  class'KFMod.MP7MMedicGun'.default.MagCapacity=MP7MMag;
+  class'KFMod.MP7MMedicGun'.default.Weight=MP7MWeight;
+  class'KFMod.MP7MFire'.default.DamageMax=MP7MDmgMax;
+  class'KFMod.MP7MPickup'.default.cost=MP7MCost;
+  class'KFMod.MP7MFire'.default.FireRate=MP7MFireRate;
+  class'KFMod.MP7MFire'.default.FireAnimRate=MP7MFireAnimRate;
+  class'KFMod.MP7MMedicGun'.default.ReloadRate=MP7MReloadRate;
+  class'KFMod.MP7MMedicGun'.default.ReloadAnimRate=MP7MReloadAnimeRate;
+  MutLog("-----|| MP7M: Applied ||-----");
+  MutLog("-----|| Medic Weapons Stat Changed ||-----");
+}
+
 simulated function GetServerVars(){
     // SS Vars
     default.bEnableSharp = bEnableSharp;
+    default.bEnableMedic = bEnableMedic;
     default.Single9mmMag = Single9mmMag;
     default.Single9mmDmgMax = Single9mmDmgMax;
     default.Single9mmFireRate = Single9mmFireRate;
@@ -337,12 +361,23 @@ simulated function GetServerVars(){
     default.M99FireAnimRate = M99FireAnimRate;
     default.M99ReloadRate = M99ReloadRate;
     default.M99ReloadAnimeRate = M99ReloadAnimeRate;
+    default.MP7MMag = MP7MMag;
+    default.MP7MDmgMax = MP7MDmgMax;
+    default.MP7MCost = MP7MCost;
+    default.MP7MWeight = MP7MWeight;
+    default.MP7MFireRate = MP7MFireRate;
+    default.MP7MFireAnimRate = MP7MFireAnimRate;
+    default.MP7MReloadRate = MP7MReloadRate;
+    default.MP7MReloadAnimeRate = MP7MReloadAnimeRate;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
 {
 	Super.FillPlayInfo(PlayInfo);
     PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableSharp", "Enable Changes for SharpShooter Weapons", 0, 0, "check");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableMedic", "Enable Changes for Field Medic Weapons", 0, 0, "check");
+
+    // SharpShooter
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmMag", "0. Single9mm Mag", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmDmgMax", "0. Single9mm Max Damage", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmFireRate", "0. Single9mm Fire Rate", 0, 0, "text");
@@ -457,6 +492,16 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "M99FireAnimRate", "0. M99 Fire Anime Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M99ReloadRate", "0. M99 Reload Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "M99ReloadAnimeRate", "0. M99 Reload Anime Rate", 0, 0, "text");
+
+    // Field Medic
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MMag", "1. MP7M Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MDmgMax", "1. MP7M Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MCost", "1. MP7M Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MWeight", "1. MP7M Weight", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MFireRate", "1. MP7M Fire Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MFireAnimRate", "1. MP7M Fire Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MReloadRate", "1. MP7M Reload Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MReloadAnimeRate", "1. MP7M Reload Anime Rate", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -465,6 +510,8 @@ static function string GetDescriptionText(string SettingName)
 	{
     case "bEnableSharp":
       return "Apply Stat Changes for SharpShooter weapons";
+    case "bEnableMedic":
+      return "Apply Stat Changes for Field Medic weapons";
 		case "Single9mmMag":
 			return "Mag Size | Default is 15";
     case "Single9mmDmgMax":
@@ -693,6 +740,22 @@ static function string GetDescriptionText(string SettingName)
 			return "Reload Rate | Default is 4.376";
     case "M99ReloadAnimeRate":
 			return "Reload Anime Rate | Default is 1.0";
+    case "MP7MMag":
+			return "Mag Size | Default is 20";
+    case "MP7MDmgMax":
+			return "Max Damage | Default is 25";
+    case "MP7MCost":
+			return "Cost | Default is 825";
+    case "MP7MWeight":
+			return "Weight | Default is 3";
+    case "MP7MFireRate":
+			return "Fire Rate | Default is 0.063";
+    case "MP7MFireAnimRate":
+			return "Anime Fire Rate | Default is 1.0";
+    case "MP7MReloadRate":
+			return "Reload Rate | Default is 3.166";
+    case "MP7MReloadAnimeRate":
+			return "Reload Anime Rate | Default is 1.0";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -718,12 +781,13 @@ defaultproperties
 
     // Mut Vars
     GroupName="KF-WeaponStatConfig"
-    FriendlyName="Weapon Stat Config - v1.0b"
-    Description="Change various weapon stats, currently supports Standard KF weapons only & SharpShooter (More Perks Coming Soon); - By Vel-San"
+    FriendlyName="Weapon Stat Config - v2.0b"
+    Description="Change various weapon stats, currently supports Standard KF weapons for SharpShooter & Field Medic only (More Perks Coming Soon); - By Vel-San"
 
     // Weapon Stats
     // SS
     bEnableSharp=True
+    bEnableMedic=True
     Single9mmMag=15
     Single9mmDmgMax=35
     Single9mmReloadRate=2.0
@@ -838,4 +902,14 @@ defaultproperties
     M99ReloadAnimeRate=1.0
     M99FireRate=0.175
     M99FireAnimRate=1.0
+
+    // Field Medic
+    MP7MMag=20
+    MP7MDmgMax=25
+    MP7MCost=825
+    MP7MWeight=3
+    MP7MReloadRate=3.166
+    MP7MReloadAnimeRate=1.0
+    MP7MFireRate=0.063
+    MP7MFireAnimRate=1.0
 }
