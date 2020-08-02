@@ -20,7 +20,8 @@ var() config int  Single9mmMag, Single9mmDmgMax,
                   SPSniperRifleMag, SPSniperRifleDmgMax, SPSniperRifleCost, SPSniperRifleWeight,
                   M14EBRMag, M14EBRDmgMax, M14EBRCost, M14EBRWeight,
                   M99Mag, M99DmgMax, M99Cost, M99Weight,
-                  MP7MMag, MP7MDmgMax, MP7MCost, MP7MWeight;
+                  MP7MMag, MP7MDmgMax, MP7MCost, MP7MWeight,
+                  MP5MMag, MP5MDmgMax, MP5MCost, MP5MWeight;
 
 var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
@@ -35,7 +36,8 @@ var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate
                    CrossbowFireRate, CrossbowFireAnimRate, CrossbowReloadRate, CrossbowReloadAnimeRate, CrossbowHeadShotMulti,
                    M14EBRFireRate, M14EBRFireAnimRate, M14EBRReloadRate, M14EBRReloadAnimeRate, M14EBRHeadShotMulti,
                    M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti,
-                   MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate;
+                   MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate,
+                   MP5MFireRate, MP5MFireAnimRate, MP5MReloadRate, MP5MReloadAnimeRate;
 
 var() config bool bEnableSharp;
 var() config bool bEnableMedic;
@@ -59,6 +61,7 @@ replication
                   M14EBRMag, M14EBRDmgMax, M14EBRCost, M14EBRWeight,
                   M99Mag, M99DmgMax, M99Cost, M99Weight,
                   MP7MMag, MP7MDmgMax, MP7MCost, MP7MWeight,
+                  MP5MMag, MP5MDmgMax, MP5MCost, MP5MWeight,
                   Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
                    MK23FireRate, MK23FireAnimRate, MK23ReloadRate, MK23ReloadAnimeRate, MK23HeadShotMulti,
@@ -72,7 +75,8 @@ replication
                    CrossbowFireRate, CrossbowFireAnimRate, CrossbowReloadRate, CrossbowReloadAnimeRate, CrossbowHeadShotMulti,
                    M14EBRFireRate, M14EBRFireAnimRate, M14EBRReloadRate, M14EBRReloadAnimeRate, M14EBRHeadShotMulti,
                    M99FireRate, M99FireAnimRate, M99ReloadRate, M99ReloadAnimeRate, M99HeadShotMulti,
-                   MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate;
+                   MP7MFireRate, MP7MFireAnimRate, MP7MReloadRate, MP7MReloadAnimeRate,
+                   MP5MFireRate, MP5MFireAnimRate, MP5MReloadRate, MP5MReloadAnimeRate;
 }
 
 simulated function PostNetReceive()
@@ -240,6 +244,15 @@ simulated function ApplyFieldMedic(){
   class'KFMod.MP7MMedicGun'.default.ReloadRate=MP7MReloadRate;
   class'KFMod.MP7MMedicGun'.default.ReloadAnimRate=MP7MReloadAnimeRate;
   MutLog("-----|| MP7M: Applied ||-----");
+  class'KFMod.MP5MMedicGun'.default.MagCapacity=MP5MMag;
+  class'KFMod.MP5MMedicGun'.default.Weight=MP5MWeight;
+  class'KFMod.MP5MFire'.default.DamageMax=MP5MDmgMax;
+  class'KFMod.MP5MPickup'.default.cost=MP5MCost;
+  class'KFMod.MP5MFire'.default.FireRate=MP5MFireRate;
+  class'KFMod.MP5MFire'.default.FireAnimRate=MP5MFireAnimRate;
+  class'KFMod.MP5MMedicGun'.default.ReloadRate=MP5MReloadRate;
+  class'KFMod.MP5MMedicGun'.default.ReloadAnimRate=MP5MReloadAnimeRate;
+  MutLog("-----|| MP5M: Applied ||-----");
   MutLog("-----|| Medic Weapons Stat Changed ||-----");
 }
 
@@ -369,6 +382,14 @@ simulated function GetServerVars(){
     default.MP7MFireAnimRate = MP7MFireAnimRate;
     default.MP7MReloadRate = MP7MReloadRate;
     default.MP7MReloadAnimeRate = MP7MReloadAnimeRate;
+    default.MP5MMag = MP5MMag;
+    default.MP5MDmgMax = MP5MDmgMax;
+    default.MP5MCost = MP5MCost;
+    default.MP5MWeight = MP5MWeight;
+    default.MP5MFireRate = MP5MFireRate;
+    default.MP5MFireAnimRate = MP5MFireAnimRate;
+    default.MP5MReloadRate = MP5MReloadRate;
+    default.MP5MReloadAnimeRate = MP5MReloadAnimeRate;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -502,6 +523,14 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MFireAnimRate", "1. MP7M Fire Anime Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MReloadRate", "1. MP7M Reload Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MReloadAnimeRate", "1. MP7M Reload Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MMag", "1. MP5M Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MDmgMax", "1. MP5M Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MCost", "1. MP5M Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MWeight", "1. MP5M Weight", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MFireRate", "1. MP5M Fire Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MFireAnimRate", "1. MP5M Fire Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MReloadRate", "1. MP5M Reload Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MReloadAnimeRate", "1. MP5M Reload Anime Rate", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -756,6 +785,22 @@ static function string GetDescriptionText(string SettingName)
 			return "Reload Rate | Default is 3.166";
     case "MP7MReloadAnimeRate":
 			return "Reload Anime Rate | Default is 1.0";
+    case "MP5MMag":
+			return "Mag Size | Default is 32";
+    case "MP5MDmgMax":
+			return "Max Damage | Default is 30";
+    case "MP5MCost":
+			return "Cost | Default is 1375";
+    case "MP5MWeight":
+			return "Weight | Default is 3";
+    case "MP5MFireRate":
+			return "Fire Rate | Default is 0.075";
+    case "MP5MFireAnimRate":
+			return "Anime Fire Rate | Default is 1.0";
+    case "MP5MReloadRate":
+			return "Reload Rate | Default is 3.8";
+    case "MP5MReloadAnimeRate":
+			return "Reload Anime Rate | Default is 1.0";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -912,4 +957,12 @@ defaultproperties
     MP7MReloadAnimeRate=1.0
     MP7MFireRate=0.063
     MP7MFireAnimRate=1.0
+    MP5MMag=32
+    MP5MDmgMax=30
+    MP5MCost=1375
+    MP5MWeight=3
+    MP5MReloadRate=3.8
+    MP5MReloadAnimeRate=1.0
+    MP5MFireRate=0.075
+    MP5MFireAnimRate=1.0
 }
