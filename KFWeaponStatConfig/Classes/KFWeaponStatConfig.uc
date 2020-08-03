@@ -25,7 +25,8 @@ var() config int  Single9mmMag, Single9mmDmgMax,
                   M7A3MMag, M7A3MDmgMax, M7A3MCost, M7A3MWeight,
                   KrissMMag, KrissMDmgMax, KrissMCost, KrissMWeight,
                   FlareRevolverMag, FlareRevolverDmgMax, FlareRevolverCost, FlareRevolverWeight,
-                  DualFlareRevolverMag, DualFlareRevolverCost, DualFlareRevolverWeight;
+                  DualFlareRevolverMag, DualFlareRevolverCost, DualFlareRevolverWeight,
+                  MAC10MPMag, MAC10MPDmgMax, MAC10MPCost, MAC10MPWeight;
 
 var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
@@ -45,7 +46,8 @@ var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate
                    M7A3MFireRate, M7A3MFireAnimRate, M7A3MReloadRate, M7A3MReloadAnimeRate,
                    KrissMFireRate, KrissMFireAnimRate, KrissMReloadRate, KrissMReloadAnimeRate,
                    FlareRevolverFireRate, FlareRevolverFireAnimRate, FlareRevolverReloadRate, FlareRevolverReloadAnimeRate, FlareRevolverHeadShotMulti,
-                   DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate;
+                   DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate,
+                   MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate;
 
 var() config bool bEnableSharp;
 var() config bool bEnableMedic;
@@ -76,6 +78,7 @@ replication
                   KrissMMag, KrissMDmgMax, KrissMCost, KrissMWeight,
                   FlareRevolverMag, FlareRevolverDmgMax, FlareRevolverCost, FlareRevolverWeight,
                   DualFlareRevolverMag, DualFlareRevolverCost, DualFlareRevolverWeight,
+                  MAC10MPMag, MAC10MPDmgMax, MAC10MPCost, MAC10MPWeight,
                   Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
                    MK23FireRate, MK23FireAnimRate, MK23ReloadRate, MK23ReloadAnimeRate, MK23HeadShotMulti,
@@ -94,7 +97,8 @@ replication
                    M7A3MFireRate, M7A3MFireAnimRate, M7A3MReloadRate, M7A3MReloadAnimeRate,
                    KrissMFireRate, KrissMFireAnimRate, KrissMReloadRate, KrissMReloadAnimeRate,
                    FlareRevolverFireRate, FlareRevolverFireAnimRate, FlareRevolverReloadRate, FlareRevolverReloadAnimeRate, FlareRevolverHeadShotMulti,
-                   DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate;
+                   DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate,
+                   MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate;
 }
 
 simulated function PostNetReceive()
@@ -315,6 +319,15 @@ simulated function ApplyFireBug(){
   class'KFMod.DualFlareRevolver'.default.ReloadRate=DualFlareRevolverReloadRate;
   class'KFMod.DualFlareRevolver'.default.ReloadAnimRate=DualFlareRevolverReloadAnimeRate;
   MutLog("-----|| DualFlareRevolver: Applied ||-----");
+  class'KFMod.MAC10MP'.default.MagCapacity=MAC10MPMag;
+  class'KFMod.MAC10MP'.default.Weight=MAC10MPWeight;
+  class'KFMod.MAC10Fire'.default.DamageMax=MAC10MPDmgMax;
+  class'KFMod.MAC10Pickup'.default.cost=MAC10MPCost;
+  class'KFMod.MAC10Fire'.default.FireRate=MAC10MPFireRate;
+  class'KFMod.MAC10Fire'.default.FireAnimRate=MAC10MPFireAnimRate;
+  class'KFMod.MAC10MP'.default.ReloadRate=MAC10MPReloadRate;
+  class'KFMod.MAC10MP'.default.ReloadAnimRate=MAC10MPReloadAnimeRate;
+  MutLog("-----|| MAC10MP: Applied ||-----");
   MutLog("-----|| Fire Bug Weapons Stat Changed ||-----");
 
 }
@@ -493,6 +506,14 @@ simulated function GetServerVars(){
     default.DualFlareRevolverFireAnimRate = DualFlareRevolverFireAnimRate;
     default.DualFlareRevolverReloadRate = DualFlareRevolverReloadRate;
     default.DualFlareRevolverReloadAnimeRate = DualFlareRevolverReloadAnimeRate;
+    default.MAC10MPMag = MAC10MPMag;
+    default.MAC10MPDmgMax = MAC10MPDmgMax;
+    default.MAC10MPCost = MAC10MPCost;
+    default.MAC10MPWeight = MAC10MPWeight;
+    default.MAC10MPFireRate = MAC10MPFireRate;
+    default.MAC10MPFireAnimRate = MAC10MPFireAnimRate;
+    default.MAC10MPReloadRate = MAC10MPReloadRate;
+    default.MAC10MPReloadAnimeRate = MAC10MPReloadAnimeRate;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -671,6 +692,14 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverFireAnimRate", "2. DualFlareRevolver Fire Anime Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverReloadRate", "2. DualFlareRevolver Reload Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverReloadAnimeRate", "2. DualFlareRevolver Reload Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPMag", "2. MAC10MP Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPDmgMax", "2. MAC10MP Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPCost", "2. MAC10MP Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPWeight", "2. MAC10MP Weight", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPFireRate", "2. MAC10MP Fire Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPFireAnimRate", "2. MAC10MP Fire Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPReloadRate", "2. MAC10MP Reload Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPReloadAnimeRate", "2. MAC10MP Reload Anime Rate", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -1007,6 +1036,22 @@ static function string GetDescriptionText(string SettingName)
 			return "Reload Rate | Default is 4.85";
     case "DualFlareRevolverReloadAnimeRate":
 			return "Reload Anime Rate | Default is 1.0";
+    case "MAC10MPMag":
+			return "Mag Size | Default is 30";
+    case "MAC10MPDmgMax":
+			return "Max Damage | Default is 35";
+    case "MAC10MPCost":
+			return "Cost | Default is 500";
+    case "MAC10MPWeight":
+			return "Weight | Default is 4";
+    case "MAC10MPFireRate":
+			return "Fire Rate | Default is 0.052";
+    case "MAC10MPFireAnimRate":
+			return "Anime Fire Rate | Default is 1.0";
+    case "MAC10MPReloadRate":
+			return "Reload Rate | Default is 3.0";
+    case "MAC10MPReloadAnimeRate":
+			return "Reload Anime Rate | Default is 1.0";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -1206,4 +1251,12 @@ defaultproperties
     DualFlareRevolverReloadAnimeRate=1.0
     DualFlareRevolverFireRate=0.20
     DualFlareRevolverFireAnimRate=1.0
+    MAC10MPMag=30
+    MAC10MPDmgMax=35
+    MAC10MPCost=500
+    MAC10MPWeight=4
+    MAC10MPReloadRate=3.0
+    MAC10MPReloadAnimeRate=1.0
+    MAC10MPFireRate=0.052
+    MAC10MPFireAnimRate=1.0
 }
