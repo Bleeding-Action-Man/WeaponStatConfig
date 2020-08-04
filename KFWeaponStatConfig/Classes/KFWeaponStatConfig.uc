@@ -27,7 +27,8 @@ var() config int  Single9mmMag, Single9mmDmgMax,
                   FlareRevolverMag, FlareRevolverDmgMax, FlareRevolverCost, FlareRevolverWeight,
                   DualFlareRevolverMag, DualFlareRevolverCost, DualFlareRevolverWeight,
                   MAC10MPMag, MAC10MPDmgMax, MAC10MPCost, MAC10MPWeight,
-                  TrenchgunMag, TrenchgunDmgMax, TrenchgunCost, TrenchgunWeight;
+                  TrenchgunMag, TrenchgunDmgMax, TrenchgunCost, TrenchgunWeight,
+                  HuskGunMag, HuskGunDmgMax, HuskGunCost, HuskGunWeight;
 
 var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
@@ -49,7 +50,8 @@ var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate
                    FlareRevolverFireRate, FlareRevolverFireAnimRate, FlareRevolverReloadRate, FlareRevolverReloadAnimeRate, FlareRevolverHeadShotMulti,
                    DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate,
                    MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate,
-                   TrenchgunFireRate, TrenchgunFireAnimRate, TrenchgunReloadRate, TrenchgunReloadAnimeRate, TrenchgunHeadShotMulti;
+                   TrenchgunFireRate, TrenchgunFireAnimRate, TrenchgunReloadRate, TrenchgunReloadAnimeRate, TrenchgunHeadShotMulti,
+                   HuskGunFireRate, HuskGunFireAnimRate, HuskGunReloadRate, HuskGunReloadAnimeRate, HuskGunHeadShotMulti;
 
 var() config bool bEnableSharp;
 var() config bool bEnableMedic;
@@ -82,6 +84,7 @@ replication
                   DualFlareRevolverMag, DualFlareRevolverCost, DualFlareRevolverWeight,
                   MAC10MPMag, MAC10MPDmgMax, MAC10MPCost, MAC10MPWeight,
                   TrenchgunMag, TrenchgunDmgMax, TrenchgunCost, TrenchgunWeight,
+                  HuskGunMag, HuskGunDmgMax, HuskGunCost, HuskGunWeight,
                   Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
                    MK23FireRate, MK23FireAnimRate, MK23ReloadRate, MK23ReloadAnimeRate, MK23HeadShotMulti,
@@ -102,7 +105,8 @@ replication
                    FlareRevolverFireRate, FlareRevolverFireAnimRate, FlareRevolverReloadRate, FlareRevolverReloadAnimeRate, FlareRevolverHeadShotMulti,
                    DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate,
                    MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate,
-                   TrenchgunFireRate, TrenchgunFireAnimRate, TrenchgunReloadRate, TrenchgunReloadAnimeRate, TrenchgunHeadShotMulti;
+                   TrenchgunFireRate, TrenchgunFireAnimRate, TrenchgunReloadRate, TrenchgunReloadAnimeRate, TrenchgunHeadShotMulti,
+                   HuskGunFireRate, HuskGunFireAnimRate, HuskGunReloadRate, HuskGunReloadAnimeRate, HuskGunHeadShotMulti;
 }
 
 simulated function PostNetReceive()
@@ -362,6 +366,17 @@ simulated function ApplyFireBug(){
   class'KFMod.Trenchgun'.default.ReloadRate=TrenchgunReloadRate;
   class'KFMod.Trenchgun'.default.ReloadAnimRate=TrenchgunReloadAnimeRate;
   MutLog("-----|| Trenchgun: Applied ||-----");
+  class'KFMod.HuskGun'.default.MagCapacity=HuskGunMag;
+  class'KFMod.HuskGun'.default.Weight=HuskGunWeight;
+  class'KFMod.HuskGunPickup'.default.Weight=HuskGunWeight;
+  class'KFMod.HuskGunProjectile'.default.ImpactDamage=HuskGunDmgMax;
+  class'KFMod.HuskGunProjectile'.default.HeadShotDamageMult=HuskGunHeadShotMulti;
+  class'KFMod.HuskGunPickup'.default.cost=HuskGunCost;
+  class'KFMod.HuskGunFire'.default.FireRate=HuskGunFireRate;
+  class'KFMod.HuskGunFire'.default.FireAnimRate=HuskGunFireAnimRate;
+  class'KFMod.HuskGun'.default.ReloadRate=HuskGunReloadRate;
+  class'KFMod.HuskGun'.default.ReloadAnimRate=HuskGunReloadAnimeRate;
+  MutLog("-----|| HuskGun: Applied ||-----");
   MutLog("-----|| Fire Bug Weapons Stat Changed ||-----");
 
 }
@@ -557,6 +572,15 @@ simulated function GetServerVars(){
     default.TrenchgunFireAnimRate = TrenchgunFireAnimRate;
     default.TrenchgunReloadRate = TrenchgunReloadRate;
     default.TrenchgunReloadAnimeRate = TrenchgunReloadAnimeRate;
+    default.HuskGunMag = HuskGunMag;
+    default.HuskGunDmgMax = HuskGunDmgMax;
+    default.HuskGunCost = HuskGunCost;
+    default.HuskGunWeight = HuskGunWeight;
+    default.HuskGunHeadShotMulti = HuskGunHeadShotMulti;
+    default.HuskGunFireRate = HuskGunFireRate;
+    default.HuskGunFireAnimRate = HuskGunFireAnimRate;
+    default.HuskGunReloadRate = HuskGunReloadRate;
+    default.HuskGunReloadAnimeRate = HuskGunReloadAnimeRate;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -752,6 +776,15 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunFireAnimRate", "2. Trenchgun Fire Anime Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunReloadRate", "2. Trenchgun Reload Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunReloadAnimeRate", "2. Trenchgun Reload Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunMag", "2. HuskGun Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunDmgMax", "2. HuskGun Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunCost", "2. HuskGun Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunWeight", "2. HuskGun Weight", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunHeadShotMulti", "2. HuskGun HeadShot Multiplier", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunFireRate", "2. HuskGun Fire Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunFireAnimRate", "2. HuskGun Fire Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunReloadRate", "2. HuskGun Reload Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunReloadAnimeRate", "2. HuskGun Reload Anime Rate", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -1122,6 +1155,24 @@ static function string GetDescriptionText(string SettingName)
 			return "Reload Rate | Default is 0.7";
     case "TrenchgunReloadAnimeRate":
 			return "Reload Anime Rate | Default is 1.0";
+    case "HuskGunMag":
+			return "Mag Size | Default is 1";
+    case "HuskGunDmgMax":
+			return "Max Damage | Default is 100";
+    case "HuskGunCost":
+			return "Cost | Default is 4000";
+    case "HuskGunWeight":
+			return "Weight | Default is 8";
+    case "HuskGunHeadShotMulti":
+			return "HeadShot Multiplier | Default is 1.5";
+    case "HuskGunFireRate":
+			return "Fire Rate | Default is 0.75";
+    case "HuskGunFireAnimRate":
+			return "Anime Fire Rate | Default is 1.0";
+    case "HuskGunReloadRate":
+			return "Reload Rate | Default is 0.010000";
+    case "HuskGunReloadAnimeRate":
+			return "Reload Anime Rate | Default is 1.0";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -1338,4 +1389,13 @@ defaultproperties
     TrenchgunReloadAnimeRate=1.0
     TrenchgunFireRate=0.965
     TrenchgunFireAnimRate=0.95
+    HuskGunMag=1
+    HuskGunDmgMax=100
+    HuskGunCost=4000
+    HuskGunWeight=8
+    HuskGunHeadShotMulti=1.5
+    HuskGunReloadRate=0.010000
+    HuskGunReloadAnimeRate=1.0
+    HuskGunFireRate=0.75
+    HuskGunFireAnimRate=1.0
 }
