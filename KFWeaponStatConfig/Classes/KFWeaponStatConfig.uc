@@ -26,7 +26,8 @@ var() config int  Single9mmMag, Single9mmDmgMax,
                   KrissMMag, KrissMDmgMax, KrissMCost, KrissMWeight,
                   FlareRevolverMag, FlareRevolverDmgMax, FlareRevolverCost, FlareRevolverWeight,
                   DualFlareRevolverMag, DualFlareRevolverCost, DualFlareRevolverWeight,
-                  MAC10MPMag, MAC10MPDmgMax, MAC10MPCost, MAC10MPWeight;
+                  MAC10MPMag, MAC10MPDmgMax, MAC10MPCost, MAC10MPWeight,
+                  TrenchgunMag, TrenchgunDmgMax, TrenchgunCost, TrenchgunWeight;
 
 var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
@@ -47,7 +48,8 @@ var() config float Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate
                    KrissMFireRate, KrissMFireAnimRate, KrissMReloadRate, KrissMReloadAnimeRate,
                    FlareRevolverFireRate, FlareRevolverFireAnimRate, FlareRevolverReloadRate, FlareRevolverReloadAnimeRate, FlareRevolverHeadShotMulti,
                    DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate,
-                   MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate;
+                   MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate,
+                   TrenchgunFireRate, TrenchgunFireAnimRate, TrenchgunReloadRate, TrenchgunReloadAnimeRate, TrenchgunHeadShotMulti;
 
 var() config bool bEnableSharp;
 var() config bool bEnableMedic;
@@ -79,6 +81,7 @@ replication
                   FlareRevolverMag, FlareRevolverDmgMax, FlareRevolverCost, FlareRevolverWeight,
                   DualFlareRevolverMag, DualFlareRevolverCost, DualFlareRevolverWeight,
                   MAC10MPMag, MAC10MPDmgMax, MAC10MPCost, MAC10MPWeight,
+                  TrenchgunMag, TrenchgunDmgMax, TrenchgunCost, TrenchgunWeight,
                   Single9mmFireRate, Single9mmFireAnimRate, Single9mmReloadRate, Single9mmReloadAnimeRate,
                    DualiesFireRate, DualiesFireAnimRate, DualiesReloadRate, DualiesReloadAnimeRate, DualiesHeadShotMulti,
                    MK23FireRate, MK23FireAnimRate, MK23ReloadRate, MK23ReloadAnimeRate, MK23HeadShotMulti,
@@ -98,7 +101,8 @@ replication
                    KrissMFireRate, KrissMFireAnimRate, KrissMReloadRate, KrissMReloadAnimeRate,
                    FlareRevolverFireRate, FlareRevolverFireAnimRate, FlareRevolverReloadRate, FlareRevolverReloadAnimeRate, FlareRevolverHeadShotMulti,
                    DualFlareRevolverFireRate, DualFlareRevolverFireAnimRate, DualFlareRevolverReloadRate, DualFlareRevolverReloadAnimeRate,
-                   MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate;
+                   MAC10MPFireRate, MAC10MPFireAnimRate, MAC10MPReloadRate, MAC10MPReloadAnimeRate,
+                   TrenchgunFireRate, TrenchgunFireAnimRate, TrenchgunReloadRate, TrenchgunReloadAnimeRate, TrenchgunHeadShotMulti;
 }
 
 simulated function PostNetReceive()
@@ -137,6 +141,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| Single9mm: Applied ||-----");
     class'KFMod.Dualies'.default.MagCapacity=DualiesMag;
     class'KFMod.Dualies'.default.Weight=DualiesWeight;
+    class'KFMod.DualiesPickup'.default.Weight=DualiesWeight;
     class'KFMod.DualiesFire'.default.DamageMax=DualiesDmgMax;
     class'KFMod.DualiesPickup'.default.cost=DualiesCost;
     class'KFMod.DamTypeDualies'.default.HeadShotDamageMult=DualiesHeadShotMulti;
@@ -147,6 +152,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| Dualies: Applied ||-----");
     class'KFMod.MK23Pistol'.default.MagCapacity=MK23Mag;
     class'KFMod.MK23Pistol'.default.Weight=MK23Weight;
+    class'KFMod.MK23Pickup'.default.Weight=MK23Weight;
     class'KFMod.MK23Fire'.default.DamageMax=MK23DmgMax;
     class'KFMod.MK23Pickup'.default.cost=MK23Cost;
     class'KFMod.DamTypeMK23Pistol'.default.HeadShotDamageMult=MK23HeadShotMulti;
@@ -157,6 +163,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| MK23: Applied ||-----");
     class'KFMod.DualMK23Pistol'.default.MagCapacity=DualMK23Mag;
     class'KFMod.DualMK23Pistol'.default.Weight=DualMK23Weight;
+    class'KFMod.DualMK23Pickup'.default.Weight=DualMK23Weight;
     class'KFMod.DualMK23Fire'.default.DamageMax=DualMK23DmgMax;
     class'KFMod.DualMK23Pickup'.default.cost=DualMK23Cost;
     class'KFMod.DamTypeDualMK23Pistol'.default.HeadShotDamageMult=DualMK23HeadShotMulti;
@@ -167,6 +174,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| DualMK23: Applied ||-----");
     class'KFMod.Magnum44Pistol'.default.MagCapacity=Single44MagnumMag;
     class'KFMod.Magnum44Pistol'.default.Weight=Single44MagnumWeight;
+    class'KFMod.Magnum44Pickup'.default.Weight=Single44MagnumWeight;
     class'KFMod.Magnum44Fire'.default.DamageMax=Single44MagnumDmgMax;
     class'KFMod.Magnum44Pickup'.default.cost=Single44MagnumCost;
     class'KFMod.DamTypeMagnum44Pistol'.default.HeadShotDamageMult=Single44MagnumHeadShotMulti;
@@ -177,6 +185,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| 44 Magnum: Applied ||-----");
     class'KFMod.Dual44Magnum'.default.MagCapacity=Dual44MagnumMag;
     class'KFMod.Dual44Magnum'.default.Weight=Dual44MagnumWeight;
+    class'KFMod.Dual44MagnumPickup'.default.Weight=Dual44MagnumWeight;
     class'KFMod.Dual44MagnumFire'.default.DamageMax=Dual44MagnumDmgMax;
     class'KFMod.Dual44MagnumPickup'.default.cost=Dual44MagnumCost;
     class'KFMod.DamTypeDual44Magnum'.default.HeadShotDamageMult=Dual44MagnumHeadShotMulti;
@@ -187,6 +196,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| 44 Dual Magnum: Applied ||-----");
     class'KFMod.Deagle'.default.MagCapacity=SingleDeagleMag;
     class'KFMod.Deagle'.default.Weight=SingleDeagleWeight;
+    class'KFMod.DeaglePickup'.default.Weight=SingleDeagleWeight;
     class'KFMod.DeagleFire'.default.DamageMax=SingleDeagleDmgMax;
     class'KFMod.DeaglePickup'.default.cost=SingleDeagleCost;
     class'KFMod.DamTypeDeagle'.default.HeadShotDamageMult=SingleDeagleHeadShotMulti;
@@ -197,6 +207,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| HandCannon: Applied ||-----");
     class'KFMod.DualDeagle'.default.MagCapacity=DualDeagleMag;
     class'KFMod.DualDeagle'.default.Weight=DualDeagleWeight;
+    class'KFMod.DualDeaglePickup'.default.Weight=DualDeagleWeight;
     class'KFMod.DualDeagleFire'.default.DamageMax=DualDeagleDmgMax;
     class'KFMod.DualDeaglePickup'.default.cost=DualDeagleCost;
     class'KFMod.DamTypeDualDeagle'.default.HeadShotDamageMult=DualDeagleHeadShotMulti;
@@ -207,6 +218,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| Dual HandCannon: Applied ||-----");
     class'KFMod.Winchester'.default.MagCapacity=WinchesterMag;
     class'KFMod.Winchester'.default.Weight=WinchesterWeight;
+    class'KFMod.WinchesterPickup'.default.Weight=WinchesterWeight;
     class'KFMod.WinchesterFire'.default.DamageMax=WinchesterDmgMax;
     class'KFMod.WinchesterPickup'.default.cost=WinchesterCost;
     class'KFMod.DamTypeWinchester'.default.HeadShotDamageMult=WinchesterHeadShotMulti;
@@ -217,6 +229,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| Winchester: Applied ||-----");
     class'KFMod.Crossbow'.default.MagCapacity=CrossbowMag;
     class'KFMod.Crossbow'.default.Weight=CrossbowWeight;
+    class'KFMod.CrossbowPickup'.default.Weight=CrossbowWeight;
     class'KFMod.CrossbowArrow'.default.Damage=CrossbowDmgMax;
     class'KFMod.CrossbowPickup'.default.cost=CrossbowCost;
     class'KFMod.CrossbowArrow'.default.HeadShotDamageMult=CrossbowHeadShotMulti;
@@ -227,6 +240,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| Crossbow: Applied ||-----");
     class'KFMod.SPSniperRifle'.default.MagCapacity=SPSniperRifleMag;
     class'KFMod.SPSniperRifle'.default.Weight=SPSniperRifleWeight;
+    class'KFMod.SPSniperPickup'.default.Weight=SPSniperRifleWeight;
     class'KFMod.SPSniperFire'.default.DamageMax=SPSniperRifleDmgMax;
     class'KFMod.SPSniperPickup'.default.cost=SPSniperRifleCost;
     class'KFMod.DamTypeSPSniper'.default.HeadShotDamageMult=SPSniperRifleHeadShotMulti;
@@ -237,6 +251,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| SPSniperRifle: Applied ||-----");
     class'KFMod.M14EBRBattleRifle'.default.MagCapacity=M14EBRMag;
     class'KFMod.M14EBRBattleRifle'.default.Weight=M14EBRWeight;
+    class'KFMod.M14EBRPickup'.default.Weight=M14EBRWeight;
     class'KFMod.M14EBRFire'.default.DamageMax=M14EBRDmgMax;
     class'KFMod.M14EBRPickup'.default.cost=M14EBRCost;
     class'KFMod.DamTypeM14EBR'.default.HeadShotDamageMult=M14EBRHeadShotMulti;
@@ -247,6 +262,7 @@ simulated function ApplySharpShooter(){
     MutLog("-----|| M14EBR: Applied ||-----");
     class'KFMod.M99SniperRifle'.default.MagCapacity=M99Mag;
     class'KFMod.M99SniperRifle'.default.Weight=M99Weight;
+    class'KFMod.M99Pickup'.default.Weight=M99Weight;
     class'KFMod.M99Bullet'.default.Damage=M99DmgMax;
     class'KFMod.M99Pickup'.default.cost=M99Cost;
     class'KFMod.M99Bullet'.default.HeadShotDamageMult=M99HeadShotMulti;
@@ -262,6 +278,7 @@ simulated function ApplyFieldMedic(){
   MutLog("-----|| Changing Field Medic Weapons Stats ||-----");
   class'KFMod.MP7MMedicGun'.default.MagCapacity=MP7MMag;
   class'KFMod.MP7MMedicGun'.default.Weight=MP7MWeight;
+  class'KFMod.MP7MPickup'.default.Weight=MP7MWeight;
   class'KFMod.MP7MFire'.default.DamageMax=MP7MDmgMax;
   class'KFMod.MP7MPickup'.default.cost=MP7MCost;
   class'KFMod.MP7MFire'.default.FireRate=MP7MFireRate;
@@ -271,6 +288,7 @@ simulated function ApplyFieldMedic(){
   MutLog("-----|| MP7M: Applied ||-----");
   class'KFMod.MP5MMedicGun'.default.MagCapacity=MP5MMag;
   class'KFMod.MP5MMedicGun'.default.Weight=MP5MWeight;
+  class'KFMod.MP5MPickup'.default.Weight=MP5MWeight;
   class'KFMod.MP5MFire'.default.DamageMax=MP5MDmgMax;
   class'KFMod.MP5MPickup'.default.cost=MP5MCost;
   class'KFMod.MP5MFire'.default.FireRate=MP5MFireRate;
@@ -280,6 +298,7 @@ simulated function ApplyFieldMedic(){
   MutLog("-----|| MP5M: Applied ||-----");
   class'KFMod.M7A3MMedicGun'.default.MagCapacity=M7A3MMag;
   class'KFMod.M7A3MMedicGun'.default.Weight=M7A3MWeight;
+  class'KFMod.M7A3MPickup'.default.Weight=M7A3MWeight;
   class'KFMod.M7A3MFire'.default.DamageMax=M7A3MDmgMax;
   class'KFMod.M7A3MPickup'.default.cost=M7A3MCost;
   class'KFMod.M7A3MFire'.default.FireRate=M7A3MFireRate;
@@ -289,6 +308,7 @@ simulated function ApplyFieldMedic(){
   MutLog("-----|| M7A3M: Applied ||-----");
   class'KFMod.KrissMMedicGun'.default.MagCapacity=KrissMMag;
   class'KFMod.KrissMMedicGun'.default.Weight=KrissMWeight;
+  class'KFMod.KrissMPickup'.default.Weight=KrissMWeight;
   class'KFMod.KrissMFire'.default.DamageMax=KrissMDmgMax;
   class'KFMod.KrissMPickup'.default.cost=KrissMCost;
   class'KFMod.KrissMFire'.default.FireRate=KrissMFireRate;
@@ -303,6 +323,7 @@ simulated function ApplyFireBug(){
   MutLog("-----|| Changing Fire Bug Weapons Stats ||-----");
   class'KFMod.FlareRevolver'.default.MagCapacity=FlareRevolverMag;
   class'KFMod.FlareRevolver'.default.Weight=FlareRevolverWeight;
+  class'KFMod.FlareRevolverPickup'.default.Weight=FlareRevolverWeight;
   class'KFMod.FlareRevolverProjectile'.default.ImpactDamage=FlareRevolverDmgMax;
   class'KFMod.FlareRevolverPickup'.default.cost=FlareRevolverCost;
   class'KFMod.FlareRevolverProjectile'.default.HeadShotDamageMult=FlareRevolverHeadShotMulti;
@@ -313,6 +334,7 @@ simulated function ApplyFireBug(){
   MutLog("-----|| FlareRevolver: Applied ||-----");
   class'KFMod.DualFlareRevolver'.default.MagCapacity=DualFlareRevolverMag;
   class'KFMod.DualFlareRevolver'.default.Weight=DualFlareRevolverWeight;
+  class'KFMod.DualFlareRevolverPickup'.default.Weight=DualFlareRevolverWeight;
   class'KFMod.DualFlareRevolverPickup'.default.cost=DualFlareRevolverCost;
   class'KFMod.DualFlareRevolverFire'.default.FireRate=DualFlareRevolverFireRate;
   class'KFMod.DualFlareRevolverFire'.default.FireAnimRate=DualFlareRevolverFireAnimRate;
@@ -321,6 +343,7 @@ simulated function ApplyFireBug(){
   MutLog("-----|| DualFlareRevolver: Applied ||-----");
   class'KFMod.MAC10MP'.default.MagCapacity=MAC10MPMag;
   class'KFMod.MAC10MP'.default.Weight=MAC10MPWeight;
+  class'KFMod.MAC10Pickup'.default.Weight=MAC10MPWeight;
   class'KFMod.MAC10Fire'.default.DamageMax=MAC10MPDmgMax;
   class'KFMod.MAC10Pickup'.default.cost=MAC10MPCost;
   class'KFMod.MAC10Fire'.default.FireRate=MAC10MPFireRate;
@@ -328,6 +351,17 @@ simulated function ApplyFireBug(){
   class'KFMod.MAC10MP'.default.ReloadRate=MAC10MPReloadRate;
   class'KFMod.MAC10MP'.default.ReloadAnimRate=MAC10MPReloadAnimeRate;
   MutLog("-----|| MAC10MP: Applied ||-----");
+  class'KFMod.Trenchgun'.default.MagCapacity=TrenchgunMag;
+  class'KFMod.Trenchgun'.default.Weight=TrenchgunWeight;
+  class'KFMod.TrenchgunPickup'.default.Weight=TrenchgunWeight;
+  class'KFMod.TrenchgunBullet'.default.Damage=TrenchgunDmgMax;
+  class'KFMod.TrenchgunBullet'.default.HeadShotDamageMult=TrenchgunHeadShotMulti;
+  class'KFMod.TrenchgunPickup'.default.cost=TrenchgunCost;
+  class'KFMod.TrenchgunFire'.default.FireRate=TrenchgunFireRate;
+  class'KFMod.TrenchgunFire'.default.FireAnimRate=TrenchgunFireAnimRate;
+  class'KFMod.Trenchgun'.default.ReloadRate=TrenchgunReloadRate;
+  class'KFMod.Trenchgun'.default.ReloadAnimRate=TrenchgunReloadAnimeRate;
+  MutLog("-----|| Trenchgun: Applied ||-----");
   MutLog("-----|| Fire Bug Weapons Stat Changed ||-----");
 
 }
@@ -514,6 +548,15 @@ simulated function GetServerVars(){
     default.MAC10MPFireAnimRate = MAC10MPFireAnimRate;
     default.MAC10MPReloadRate = MAC10MPReloadRate;
     default.MAC10MPReloadAnimeRate = MAC10MPReloadAnimeRate;
+    default.TrenchgunMag = TrenchgunMag;
+    default.TrenchgunDmgMax = TrenchgunDmgMax;
+    default.TrenchgunCost = TrenchgunCost;
+    default.TrenchgunWeight = TrenchgunWeight;
+    default.TrenchgunHeadShotMulti = TrenchgunHeadShotMulti;
+    default.TrenchgunFireRate = TrenchgunFireRate;
+    default.TrenchgunFireAnimRate = TrenchgunFireAnimRate;
+    default.TrenchgunReloadRate = TrenchgunReloadRate;
+    default.TrenchgunReloadAnimeRate = TrenchgunReloadAnimeRate;
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo)
@@ -700,6 +743,15 @@ static function FillPlayInfo(PlayInfo PlayInfo)
     PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPFireAnimRate", "2. MAC10MP Fire Anime Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPReloadRate", "2. MAC10MP Reload Rate", 0, 0, "text");
     PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPReloadAnimeRate", "2. MAC10MP Reload Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunMag", "2. Trenchgun Mag", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunDmgMax", "2. Trenchgun Max Damage", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunCost", "2. Trenchgun Cost", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunWeight", "2. Trenchgun Weight", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunHeadShotMulti", "2. TrenchGun HeadShot Multiplier", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunFireRate", "2. Trenchgun Fire Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunFireAnimRate", "2. Trenchgun Fire Anime Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunReloadRate", "2. Trenchgun Reload Rate", 0, 0, "text");
+    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunReloadAnimeRate", "2. Trenchgun Reload Anime Rate", 0, 0, "text");
 }
 
 static function string GetDescriptionText(string SettingName)
@@ -1052,6 +1104,24 @@ static function string GetDescriptionText(string SettingName)
 			return "Reload Rate | Default is 3.0";
     case "MAC10MPReloadAnimeRate":
 			return "Reload Anime Rate | Default is 1.0";
+    case "TrenchgunMag":
+			return "Mag Size | Default is 6";
+    case "TrenchgunDmgMax":
+			return "Max Damage | Default is 18";
+    case "TrenchgunCost":
+			return "Cost | Default is 1250";
+    case "TrenchgunWeight":
+			return "Weight | Default is 8";
+    case "TrenchgunHeadShotMulti":
+			return "HeadShot Multiplier | Default is 1.5";
+    case "TrenchgunFireRate":
+			return "Fire Rate | Default is 0.965";
+    case "TrenchgunFireAnimRate":
+			return "Anime Fire Rate | Default is 0.95";
+    case "TrenchgunReloadRate":
+			return "Reload Rate | Default is 0.7";
+    case "TrenchgunReloadAnimeRate":
+			return "Reload Anime Rate | Default is 1.0";
     default:
 			return Super.GetDescriptionText(SettingName);
 	}
@@ -1259,4 +1329,13 @@ defaultproperties
     MAC10MPReloadAnimeRate=1.0
     MAC10MPFireRate=0.052
     MAC10MPFireAnimRate=1.0
+    TrenchgunMag=6
+    TrenchgunDmgMax=18
+    TrenchgunCost=1250
+    TrenchgunWeight=8
+    TrenchgunHeadShotMulti=1.5
+    TrenchgunReloadRate=0.7
+    TrenchgunReloadAnimeRate=1.0
+    TrenchgunFireRate=0.965
+    TrenchgunFireAnimRate=0.95
 }
