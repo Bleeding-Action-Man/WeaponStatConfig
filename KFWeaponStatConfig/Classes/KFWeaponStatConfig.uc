@@ -57,6 +57,22 @@ var() config bool bEnableSharp;
 var() config bool bEnableMedic;
 var() config bool bEnableFireBug;
 
+//////////////////////////////////////////////////////////////////////////////
+// Testing New Logic For Weapon Loading
+
+// Normal Weapons that have no Projectile or Bullet Classes
+struct LoadedWeapon
+{
+  var config string WeaponClassName;
+  var config int MagCapacity, DamageMax, Weight, Cost;
+  var config float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
+};
+
+// Load each weapon in a list
+var() config array<LoadedWeapon> StandardWeapon;
+//////////////////////////////////////////////////////////////////////////////
+
+
 replication
 {
 	unreliable if (Role == ROLE_Authority)
@@ -118,7 +134,8 @@ simulated function PostNetReceive()
 
 simulated function PostNetBeginPlay()
 {
-  SetTimer(1, false);
+  // SetTimer(1, false);
+  ModifyWeapon(StandardWeapon);
 }
 
 simulated function Timer()
@@ -381,6 +398,54 @@ simulated function ApplyFireBug(){
 
 }
 
+// Dynamically Load and modify weapons that are found in the Config File
+simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
+{
+    local int i;
+    local class<KFWeapon> CurrentWeapon;
+    local class<KFFire> CurrentWeaponFire;
+    local class<KFWeaponPickup> CurrentWeaponPickup;
+    local class<KFProjectileWeaponDamageType> CurrentWeaponDmgType;
+
+    MutLog("-----|| Reading Config File For Weapons ||-----");
+
+    for(i=0; i<WeaponsList.Length; i++)
+    {
+      // Exit if Weapon Class Not Found
+      CurrentWeapon = class<KFWeapon>(DynamicLoadObject(WeaponsList[i].WeaponClassName, class'Class'));
+      if(CurrentWeapon != none)
+      {
+        // Log for Currently Detected Weapon
+        MutLog("-----|| Detected & Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
+
+        // Grab Needed Classes
+        CurrentWeaponFire = class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
+        CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
+        CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
+
+        // Base Class Related Changes
+        CurrentWeapon.default.MagCapacity = WeaponsList[i].MagCapacity;
+        CurrentWeapon.default.Weight = WeaponsList[i].Weight;
+        CurrentWeapon.default.ReloadRate = WeaponsList[i].ReloadRate;
+        MutLog("-----|| Reload Anime Rate Before: "$CurrentWeapon.default.ReloadAnimRate$" ||-----");
+        CurrentWeapon.default.ReloadAnimRate = WeaponsList[i].ReloadAnimRate;
+        MutLog("-----|| Reload Anime Rate After: "$CurrentWeapon.default.ReloadAnimRate$" ||-----");
+
+        // WeaponFire Class Related Changes
+        CurrentWeaponFire.default.DamageMax = WeaponsList[i].DamageMax;
+        CurrentWeaponFire.default.FireRate = WeaponsList[i].FireRate;
+        CurrentWeaponFire.default.FireAnimRate = WeaponsList[i].FireAnimRate;
+
+        // DamageType Class Related Changes
+        CurrentWeaponDmgType.default.HeadShotDamageMult = WeaponsList[i].HeadShotDamageMult;
+
+        // PickUp Class Related Changes
+        CurrentWeaponPickup.default.Weight = WeaponsList[i].Weight;
+        CurrentWeaponPickup.default.cost = WeaponsList[i].Cost;
+      }
+    }
+}
+
 simulated function GetServerVars(){
 
     // Options Vars
@@ -581,601 +646,6 @@ simulated function GetServerVars(){
     default.HuskGunFireAnimRate = HuskGunFireAnimRate;
     default.HuskGunReloadRate = HuskGunReloadRate;
     default.HuskGunReloadAnimeRate = HuskGunReloadAnimeRate;
-}
-
-static function FillPlayInfo(PlayInfo PlayInfo)
-{
-	Super.FillPlayInfo(PlayInfo);
-
-    // Options
-    PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableSharp", "Enable Changes for SharpShooter Weapons", 0, 0, "check");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableMedic", "Enable Changes for Field Medic Weapons", 0, 0, "check");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "bEnableFireBug", "Enable Changes for Fire Bug Weapons", 0, 0, "check");
-
-    // SharpShooter
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmMag", "0. Single9mm Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmDmgMax", "0. Single9mm Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmFireRate", "0. Single9mm Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmFireAnimRate", "0. Single9mm Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmReloadRate", "0. Single9mm Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single9mmReloadAnimeRate", "0. Single9mm Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesMag", "0. Dualies Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesDmgMax", "0. Dualies Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesCost", "0. Dualies Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesWeight", "0. Dualies Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesHeadShotMulti", "0. Dualies HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesFireRate", "0. Dualies Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesFireAnimRate", "0. Dualies Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesReloadRate", "0. Dualies Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualiesReloadAnimeRate", "0. Dualies Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Mag", "0. MK23 Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23DmgMax", "0. MK23 Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Cost", "0. MK23 Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23Weight", "0. MK23 Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23HeadShotMulti", "0. MK23 HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23FireRate", "0. MK23 Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23FireAnimRate", "0. MK23 Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23ReloadRate", "0. MK23 Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MK23ReloadAnimeRate", "0. MK23 Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23Mag", "0. DualMK23 Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23DmgMax", "0. DualMK23 Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23Cost", "0. DualMK23 Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23Weight", "0. DualMK23 Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23HeadShotMulti", "0. DualMK23 HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23FireRate", "0. DualMK23 Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23FireAnimRate", "0. DualMK23 Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23ReloadRate", "0. DualMK23 Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualMK23ReloadAnimeRate", "0. DualMK23 Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumMag", "0. 44 Magnum Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumDmgMax", "0. 44 Magnum Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumCost", "0. 44 Magnum Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumWeight", "0. 44 Magnum Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumHeadShotMulti", "0. Single44Magnum HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumFireRate", "0. Single44Magnum Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumFireAnimRate", "0. Single44Magnum Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumReloadRate", "0. Single44Magnum Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Single44MagnumReloadAnimeRate", "0. Single44Magnum Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumMag", "0. 44 Dual Magnum Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumDmgMax", "0. 44 Dual Magnum Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumCost", "0. 44 Dual Magnum Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumWeight", "0. 44 Dual Magnum Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumHeadShotMulti", "0. Dual44Magnum HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumFireRate", "0. Dual44Magnum Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumFireAnimRate", "0. Dual44Magnum Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumReloadRate", "0. Dual44Magnum Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "Dual44MagnumReloadAnimeRate", "0. Dual44Magnum Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleMag", "0. HandCannon Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleDmgMax", "0. HandCannon Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleCost", "0. HandCannon Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleWeight", "0. HandCannon Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleHeadShotMulti", "0. SingleDeagle HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleFireRate", "0. SingleDeagle Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleFireAnimRate", "0. SingleDeagle Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleReloadRate", "0. SingleDeagle Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SingleDeagleReloadAnimeRate", "0. SingleDeagle Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleMag", "0. Dual HandCannon Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleDmgMax", "0. Dual HandCannon Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleCost", "0. Dual HandCannon Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleWeight", "0. Dual HandCannon Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleHeadShotMulti", "0. DualDeagle HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleFireRate", "0. DualDeagle Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleFireAnimRate", "0. DualDeagle Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleReloadRate", "0. DualDeagle Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualDeagleReloadAnimeRate", "0. DualDeagle Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterMag", "0. Winchester Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterDmgMax", "0. Winchester Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterCost", "0. Winchester Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterWeight", "0. Winchester Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterHeadShotMulti", "0. Winchester HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterFireRate", "0. Winchester Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterFireAnimRate", "0. Winchester Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterReloadRate", "0. Winchester Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "WinchesterReloadAnimeRate", "0. Winchester Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowMag", "0. Crossbow Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowDmgMax", "0. Crossbow Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowCost", "0. Crossbow Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowWeight", "0. Crossbow Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowHeadShotMulti", "0. Crossbow HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowFireRate", "0. Crossbow Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowFireAnimRate", "0. Crossbow Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowReloadRate", "0. Crossbow Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "CrossbowReloadAnimeRate", "0. Crossbow Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleMag", "0. SPSniperRifle Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleDmgMax", "0. SPSniperRifle Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleCost", "0. SPSniperRifle Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleWeight", "0. SPSniperRifle Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleHeadShotMulti", "0. SPSniper HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleFireRate", "0. SPSniper Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleFireAnimRate", "0. SPSniper Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleReloadRate", "0. SPSniper Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "SPSniperRifleReloadAnimeRate", "0. SPSniper Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRMag", "0. M14EBR Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRDmgMax", "0. M14EBR Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRCost", "0. M14EBR Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRWeight", "0. M14EBR Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRHeadShotMulti", "0. M14EBR HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRFireRate", "0. M14EBR Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRFireAnimRate", "0. M14EBR Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRReloadRate", "0. M14EBR Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M14EBRReloadAnimeRate", "0. M14EBR Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99Mag", "0. M99 Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99DmgMax", "0. M99 Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99Cost", "0. M99 Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99Weight", "0. M99 Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99HeadShotMulti", "0. M99 HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99FireRate", "0. M99 Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99FireAnimRate", "0. M99 Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99ReloadRate", "0. M99 Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M99ReloadAnimeRate", "0. M99 Reload Anime Rate", 0, 0, "text");
-
-    // Field Medic
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MMag", "1. MP7M Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MDmgMax", "1. MP7M Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MCost", "1. MP7M Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MWeight", "1. MP7M Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MFireRate", "1. MP7M Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MFireAnimRate", "1. MP7M Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MReloadRate", "1. MP7M Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP7MReloadAnimeRate", "1. MP7M Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MMag", "1. MP5M Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MDmgMax", "1. MP5M Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MCost", "1. MP5M Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MWeight", "1. MP5M Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MFireRate", "1. MP5M Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MFireAnimRate", "1. MP5M Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MReloadRate", "1. MP5M Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MP5MReloadAnimeRate", "1. MP5M Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MMag", "1. M7A3M Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MDmgMax", "1. M7A3M Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MCost", "1. M7A3M Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MWeight", "1. M7A3M Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MFireRate", "1. M7A3M Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MFireAnimRate", "1. M7A3M Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MReloadRate", "1. M7A3M Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "M7A3MReloadAnimeRate", "1. M7A3M Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMMag", "1. KrissM Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMDmgMax", "1. KrissM Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMCost", "1. KrissM Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMWeight", "1. KrissM Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMFireRate", "1. KrissM Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMFireAnimRate", "1. KrissM Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMReloadRate", "1. KrissM Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "KrissMReloadAnimeRate", "1. KrissM Reload Anime Rate", 0, 0, "text");
-
-    // Fire Bug
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverMag", "2. FlareRevolver Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverDmgMax", "2. FlareRevolver Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverCost", "2. FlareRevolver Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverWeight", "2. FlareRevolver Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverHeadShotMulti", "2. FlareRevolver HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverFireRate", "2. FlareRevolver Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverFireAnimRate", "2. FlareRevolver Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverReloadRate", "2. FlareRevolver Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "FlareRevolverReloadAnimeRate", "2. FlareRevolver Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverMag", "2. DualFlareRevolver Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverCost", "2. DualFlareRevolver Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverWeight", "2. DualFlareRevolver Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverFireRate", "2. DualFlareRevolver Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverFireAnimRate", "2. DualFlareRevolver Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverReloadRate", "2. DualFlareRevolver Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "DualFlareRevolverReloadAnimeRate", "2. DualFlareRevolver Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPMag", "2. MAC10MP Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPDmgMax", "2. MAC10MP Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPCost", "2. MAC10MP Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPWeight", "2. MAC10MP Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPFireRate", "2. MAC10MP Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPFireAnimRate", "2. MAC10MP Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPReloadRate", "2. MAC10MP Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "MAC10MPReloadAnimeRate", "2. MAC10MP Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunMag", "2. Trenchgun Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunDmgMax", "2. Trenchgun Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunCost", "2. Trenchgun Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunWeight", "2. Trenchgun Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunHeadShotMulti", "2. TrenchGun HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunFireRate", "2. Trenchgun Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunFireAnimRate", "2. Trenchgun Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunReloadRate", "2. Trenchgun Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "TrenchgunReloadAnimeRate", "2. Trenchgun Reload Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunMag", "2. HuskGun Mag", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunDmgMax", "2. HuskGun Max Damage", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunCost", "2. HuskGun Cost", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunWeight", "2. HuskGun Weight", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunHeadShotMulti", "2. HuskGun HeadShot Multiplier", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunFireRate", "2. HuskGun Fire Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunFireAnimRate", "2. HuskGun Fire Anime Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunReloadRate", "2. HuskGun Reload Rate", 0, 0, "text");
-    PlayInfo.AddSetting("KFWeaponStatConfig", "HuskGunReloadAnimeRate", "2. HuskGun Reload Anime Rate", 0, 0, "text");
-}
-
-static function string GetDescriptionText(string SettingName)
-{
-	switch(SettingName)
-	{
-    case "bEnableSharp":
-      return "Apply Stat Changes for SharpShooter weapons";
-    case "bEnableMedic":
-      return "Apply Stat Changes for Field Medic weapons";
-    case "bEnableFireBug":
-      return "Apply Stat Changes for Fire Bug weapons";
-		case "Single9mmMag":
-			return "Mag Size | Default is 15";
-    case "Single9mmDmgMax":
-			return "Max Damage | Default is 35";
-    case "Single9mmFireRate":
-			return "Fire Rate | Default is 0.175";
-    case "Single9mmFireAnimRate":
-			return "Anime Fire Rate | Default is 1.5";
-    case "Single9mmReloadRate":
-			return "Reload Rate | Default is 2.0";
-    case "Single9mmReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "DualiesMag":
-			return "Mag Size | Default is 30";
-    case "DualiesDmgMax":
-			return "Max Damage | Default is 35";
-    case "DualiesCost":
-			return "Cost | Default is 150";
-    case "DualiesWeight":
-			return "Weight | Default is 4";
-    case "DualiesHeadShotMulti":
-			return "HeadShot Multiplier (Shared with Single 9mm) | Default is 1.1";
-    case "DualiesFireRate":
-			return "Fire Rate | Default is 0.1";
-    case "DualiesFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "DualiesReloadRate":
-			return "Reload Rate | Default is 3.5";
-    case "DualiesReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "MK23Mag":
-			return "Mag Size | Default is 12";
-    case "MK23DmgMax":
-			return "Max Damage | Default is 82";
-    case "MK23Cost":
-			return "Cost | Default is 500";
-    case "MK23Weight":
-			return "Weight | Default is 2";
-    case "MK23HeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "MK23FireRate":
-			return "Fire Rate | Default is 0.18";
-    case "MK23FireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "MK23ReloadRate":
-			return "Reload Rate | Default is 2.6";
-    case "MK23ReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "DualMK23Mag":
-			return "Mag Size | Default is 24";
-    case "DualMK23DmgMax":
-			return "Max Damage | Default is 82";
-    case "DualMK23Cost":
-			return "Cost | Default is 1000";
-    case "DualMK23Weight":
-			return "Cost | Default is 4";
-    case "DualMK23HeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "DualMK23FireRate":
-			return "Fire Rate | Default is 0.12";
-    case "DualMK23FireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "DualMK23ReloadRate":
-			return "Reload Rate | Default is 4.4667";
-    case "DualMK23ReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "Single44MagnumMag":
-			return "Mag Size | Default is 6";
-    case "Single44MagnumDmgMax":
-			return "Max Damage | Default is 105";
-    case "Single44MagnumCost":
-			return "Cost | Default is 450";
-    case "Single44MagnumWeight":
-			return "Weight | Default is 2";
-    case "Single44MagnumHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "Single44MagnumFireRate":
-			return "Fire Rate | Default is 0.15";
-    case "Single44MagnumFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "Single44MagnumReloadRate":
-			return "Reload Rate | Default is 2.525";
-    case "Single44MagnumReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "Dual44MagnumMag":
-			return "Mag Size | Default is 12";
-    case "Dual44MagnumDmgMax":
-			return "Max Damage | Default is 105";
-    case "Dual44MagnumCost":
-			return "Cost | Default is 900";
-    case "Dual44MagnumWeight":
-			return "Weight | Default is 4";
-    case "Dual44MagnumHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "Dual44MagnumFireRate":
-			return "Fire Rate | Default is 0.075";
-    case "Dual44MagnumFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "Dual44MagnumReloadRate":
-			return "Reload Rate | Default is 4.4667";
-    case "Dual44MagnumReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "SingleDeagleMag":
-			return "Mag Size | Default is 8";
-    case "SingleDeagleDmgMax":
-			return "Max Damage | Default is 115";
-    case "SingleDeagleCost":
-			return "Cost | Default is 500";
-    case "SingleDeagleWeight":
-			return "Weight | Default is 2";
-    case "SingleDeagleHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "SingleDeagleFireRate":
-			return "Fire Rate | Default is 0.25";
-    case "SingleDeagleFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "SingleDeagleReloadRate":
-			return "Reload Rate | Default is 2.2";
-    case "SingleDeagleReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "DualDeagleMag":
-			return "Mag Size | Default is 16";
-    case "DualDeagleDmgMax":
-			return "Max Damage | Default is 115";
-    case "DualDeagleCost":
-			return "Cost | Default is 1000";
-    case "DualDeagleWeight":
-			return "Weight | Default is 4";
-    case "DualDeagleHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "DualDeagleFireRate":
-			return "Fire Rate | Default is 0.13";
-    case "DualDeagleFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "DualDeagleReloadRate":
-			return "Reload Rate | Default is 3.5";
-    case "DualDeagleReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "WinchesterMag":
-			return "Mag Size | Default is 10";
-    case "WinchesterDmgMax":
-			return "Max Damage | Default is 140";
-    case "WinchesterCost":
-			return "Cost | Default is 200";
-    case "WinchesterWeight":
-			return "Weight | Default is 6";
-    case "WinchesterHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "WinchesterFireRate":
-			return "Fire Rate | Default is 0.9";
-    case "WinchesterFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "WinchesterReloadRate":
-			return "Reload Rate | Default is 0.66666666667";
-    case "WinchesterReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "CrossbowMag":
-			return "Mag Size | Default is 1";
-    case "CrossbowDmgMax":
-			return "Max Damage | Default is 300";
-    case "CrossbowCost":
-			return "Cost | Default is 800";
-    case "CrossbowWeight":
-			return "Weight | Default is 9";
-    case "CrossbowHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "CrossbowFireRate":
-			return "Fire Rate | Default is 1.8";
-    case "CrossbowFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "CrossbowReloadRate":
-			return "Reload Rate | Default is 0.01";
-    case "CrossbowReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "SPSniperRifleMag":
-			return "Mag Size | Default is 10";
-    case "SPSniperRifleDmgMax":
-			return "Max Damage | Default is 180";
-    case "SPSniperRifleCost":
-			return "Cost | Default is 1500";
-    case "SPSniperRifleWeight":
-			return "Weight | Default is 6";
-    case "SPSniperRifleHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "SPSniperRifleFireRate":
-			return "Fire Rate | Default is 0.94";
-    case "SPSniperRifleFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "SPSniperRifleReloadRate":
-			return "Reload Rate | Default is 2.866";
-    case "SPSniperRifleReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "M14EBRMag":
-			return "Mag Size | Default is 20";
-    case "M14EBRDmgMax":
-			return "Max Damage | Default is 80";
-    case "M14EBRCost":
-			return "Cost | Default is 2500";
-    case "M14EBRWeight":
-			return "Weight | Default is 8";
-    case "M14EBRHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "M14EBRFireRate":
-			return "Fire Rate | Default is 0.25";
-    case "M14EBRFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "M14EBRReloadRate":
-			return "Reload Rate | Default is 3.366";
-    case "M14EBRReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "M99Mag":
-			return "Mag Size | Default is 1";
-    case "M99DmgMax":
-			return "Max Damage | Default is 675";
-    case "M99Cost":
-			return "Cost | Default is 3500";
-    case "M99Weight":
-			return "Weight | Default is 13";
-    case "M99HeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.1";
-    case "M99FireRate":
-			return "Fire Rate | Default is 0.175";
-    case "M99FireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "M99ReloadRate":
-			return "Reload Rate | Default is 4.376";
-    case "M99ReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "MP7MMag":
-			return "Mag Size | Default is 20";
-    case "MP7MDmgMax":
-			return "Max Damage | Default is 25";
-    case "MP7MCost":
-			return "Cost | Default is 825";
-    case "MP7MWeight":
-			return "Weight | Default is 3";
-    case "MP7MFireRate":
-			return "Fire Rate | Default is 0.063";
-    case "MP7MFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "MP7MReloadRate":
-			return "Reload Rate | Default is 3.166";
-    case "MP7MReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "MP5MMag":
-			return "Mag Size | Default is 32";
-    case "MP5MDmgMax":
-			return "Max Damage | Default is 30";
-    case "MP5MCost":
-			return "Cost | Default is 1375";
-    case "MP5MWeight":
-			return "Weight | Default is 3";
-    case "MP5MFireRate":
-			return "Fire Rate | Default is 0.075";
-    case "MP5MFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "MP5MReloadRate":
-			return "Reload Rate | Default is 3.8";
-    case "MP5MReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "M7A3MMag":
-			return "Mag Size | Default is 15";
-    case "M7A3MDmgMax":
-			return "Max Damage | Default is 70";
-    case "M7A3MCost":
-			return "Cost | Default is 2050";
-    case "M7A3MWeight":
-			return "Weight | Default is 6";
-    case "M7A3MFireRate":
-			return "Fire Rate | Default is 0.166000";
-    case "M7A3MFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "M7A3MReloadRate":
-			return "Reload Rate | Default is 3.066000";
-    case "M7A3MReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "KrissMMag":
-			return "Mag Size | Default is 25";
-    case "KrissMDmgMax":
-			return "Max Damage | Default is 40";
-    case "KrissMCost":
-			return "Cost | Default is 2750";
-    case "KrissMWeight":
-			return "Weight | Default is 3";
-    case "KrissMFireRate":
-			return "Fire Rate | Default is 0.063";
-    case "KrissMFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "KrissMReloadRate":
-			return "Reload Rate | Default is 3.33";
-    case "KrissMReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "FlareRevolverMag":
-			return "Mag Size | Default is 6";
-    case "FlareRevolverDmgMax":
-			return "Max Damage | Default is 125";
-    case "FlareRevolverCost":
-			return "Cost | Default is 500";
-    case "FlareRevolverWeight":
-			return "Weight | Default is 2";
-    case "FlareRevolverHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.5";
-    case "FlareRevolverFireRate":
-			return "Fire Rate | Default is 0.4";
-    case "FlareRevolverFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "FlareRevolverReloadRate":
-			return "Reload Rate | Default is 3.2";
-    case "FlareRevolverReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "DualFlareRevolverMag":
-			return "Mag Size | Default is 12";
-    case "DualFlareRevolverCost":
-			return "Cost | Default is 1000";
-    case "DualFlareRevolverWeight":
-			return "Weight | Default is 4";
-    case "DualFlareRevolverFireRate":
-			return "Fire Rate | Default is 0.20";
-    case "DualFlareRevolverFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "DualFlareRevolverReloadRate":
-			return "Reload Rate | Default is 4.85";
-    case "DualFlareRevolverReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "MAC10MPMag":
-			return "Mag Size | Default is 30";
-    case "MAC10MPDmgMax":
-			return "Max Damage | Default is 35";
-    case "MAC10MPCost":
-			return "Cost | Default is 500";
-    case "MAC10MPWeight":
-			return "Weight | Default is 4";
-    case "MAC10MPFireRate":
-			return "Fire Rate | Default is 0.052";
-    case "MAC10MPFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "MAC10MPReloadRate":
-			return "Reload Rate | Default is 3.0";
-    case "MAC10MPReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "TrenchgunMag":
-			return "Mag Size | Default is 6";
-    case "TrenchgunDmgMax":
-			return "Max Damage | Default is 18";
-    case "TrenchgunCost":
-			return "Cost | Default is 1250";
-    case "TrenchgunWeight":
-			return "Weight | Default is 8";
-    case "TrenchgunHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.5";
-    case "TrenchgunFireRate":
-			return "Fire Rate | Default is 0.965";
-    case "TrenchgunFireAnimRate":
-			return "Anime Fire Rate | Default is 0.95";
-    case "TrenchgunReloadRate":
-			return "Reload Rate | Default is 0.7";
-    case "TrenchgunReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    case "HuskGunMag":
-			return "Mag Size | Default is 1";
-    case "HuskGunDmgMax":
-			return "Max Damage | Default is 100";
-    case "HuskGunCost":
-			return "Cost | Default is 4000";
-    case "HuskGunWeight":
-			return "Weight | Default is 8";
-    case "HuskGunHeadShotMulti":
-			return "HeadShot Multiplier | Default is 1.5";
-    case "HuskGunFireRate":
-			return "Fire Rate | Default is 0.75";
-    case "HuskGunFireAnimRate":
-			return "Anime Fire Rate | Default is 1.0";
-    case "HuskGunReloadRate":
-			return "Reload Rate | Default is 0.010000";
-    case "HuskGunReloadAnimeRate":
-			return "Reload Anime Rate | Default is 1.0";
-    default:
-			return Super.GetDescriptionText(SettingName);
-	}
 }
 
 simulated function TimeStampLog(coerce string s)
