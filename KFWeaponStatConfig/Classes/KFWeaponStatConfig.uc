@@ -7,21 +7,17 @@
 class KFWeaponStatConfig extends Mutator
                                 Config(KFWeaponStatConfig);
 
-//////////////////////////////////////////////////////////////////////////////
-// Testing New Logic For Weapon Loading
-
-// Normal Weapons that have no Projectile or Bullet Classes
 struct LoadedWeapon
 {
   var config string WeaponClassName;
   var config int MagCapacity, DamageMax, Weight, Cost;
   var config float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
+  // TO-DO
+  // Add More variables such as ImpactDamage for e.g. FlareRevolverGun
 };
 
-// Load each weapon in a list
+// Loads each weapon in a list
 var() config array<LoadedWeapon> StandardWeapon;
-
-//////////////////////////////////////////////////////////////////////////////
 
 replication
 {
@@ -40,6 +36,8 @@ simulated function PostNetBeginPlay()
   ModifyWeapon(StandardWeapon);
 }
 
+// TO-DO
+// Delete all of this commented section after total migration to Dynamic Weapon Loading
 /*
 simulated function ApplySharpShooter(){
     MutLog("-----|| Changing SharpShooter Weapons Stats ||-----");
@@ -296,6 +294,8 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
     local class<KFFire> CurrentWeaponFire;
     local class<KFWeaponPickup> CurrentWeaponPickup;
     local class<KFProjectileWeaponDamageType> CurrentWeaponDmgType;
+    // TO-DO
+    // More vars for ImpactDamage & Projectiles
 
     MutLog("-----|| Reading Config File For Weapons ||-----");
 
@@ -325,7 +325,17 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
         CurrentWeaponFire.default.FireAnimRate = WeaponsList[i].FireAnimRate;
 
         // DamageType Class Related Changes
+        // TO-DO
+        // Check For Projectile, WeaponProjectile or LAW.
+        // Change DamageMax accordingly because some cases it is
+        // connected with ImpactDamage instead of DamageMax e.g. FlareRevolvers
+        // P.S: Fuck You TripWireInteractive for these inconsistencies
+        if (CurrentWeaponFire.default.ProjectileClass != none){
         CurrentWeaponDmgType.default.HeadShotDamageMult = WeaponsList[i].HeadShotDamageMult;
+        }
+        else{
+
+        }
 
         // PickUp Class Related Changes
         CurrentWeaponPickup.default.Weight = WeaponsList[i].Weight;
@@ -341,6 +351,8 @@ simulated function GetServerVars()
   default.StandardWeapon.Length = StandardWeapon.Length;
   for(i=0; i<StandardWeapon.Length; i++)
   {
+    // TO-DO
+    // Implement duplicates detection and remove them
     default.StandardWeapon[i] = StandardWeapon[i];
   }
 }
@@ -364,6 +376,8 @@ defaultproperties
     bNetNotify=true
 
     // Mut Vars
+    // TO-DO
+    // Update version + Description
     GroupName="KF-WeaponStatConfig"
     FriendlyName="Weapon Stat Config - v3.0b"
     Description="Change various weapon stats on-the-fly using a pre-configured file! - By Vel-San"
