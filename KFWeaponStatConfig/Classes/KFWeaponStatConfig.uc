@@ -40,101 +40,6 @@ simulated function PostNetBeginPlay()
 // Delete all of this commented section after total migration to Dynamic Weapon Loading
 /*
 simulated function ApplySharpShooter(){
-    MutLog("-----|| Changing SharpShooter Weapons Stats ||-----");
-    class'KFMod.Single'.default.MagCapacity=Single9mmMag;
-    class'KFMod.SingleFire'.default.DamageMax=Single9mmDmgMax;
-    class'KFMod.SingleFire'.default.FireRate=Single9mmFireRate;
-    class'KFMod.SingleFire'.default.FireAnimRate=Single9mmFireAnimRate;
-    class'KFMod.Single'.default.ReloadRate=Single9mmReloadRate;
-    class'KFMod.Single'.default.ReloadAnimRate=Single9mmReloadAnimeRate;
-    MutLog("-----|| Single9mm: Applied ||-----");
-    class'KFMod.Dualies'.default.MagCapacity=DualiesMag;
-    class'KFMod.Dualies'.default.Weight=DualiesWeight;
-    class'KFMod.DualiesPickup'.default.Weight=DualiesWeight;
-    class'KFMod.DualiesFire'.default.DamageMax=DualiesDmgMax;
-    class'KFMod.DualiesPickup'.default.cost=DualiesCost;
-    class'KFMod.DamTypeDualies'.default.HeadShotDamageMult=DualiesHeadShotMulti;
-    class'KFMod.DualiesFire'.default.FireRate=DualiesFireRate;
-    class'KFMod.DualiesFire'.default.FireAnimRate=DualiesFireAnimRate;
-    class'KFMod.Dualies'.default.ReloadRate=DualiesReloadRate;
-    class'KFMod.Dualies'.default.ReloadAnimRate=DualiesReloadAnimeRate;
-    MutLog("-----|| Dualies: Applied ||-----");
-    class'KFMod.MK23Pistol'.default.MagCapacity=MK23Mag;
-    class'KFMod.MK23Pistol'.default.Weight=MK23Weight;
-    class'KFMod.MK23Pickup'.default.Weight=MK23Weight;
-    class'KFMod.MK23Fire'.default.DamageMax=MK23DmgMax;
-    class'KFMod.MK23Pickup'.default.cost=MK23Cost;
-    class'KFMod.DamTypeMK23Pistol'.default.HeadShotDamageMult=MK23HeadShotMulti;
-    class'KFMod.MK23Fire'.default.FireRate=MK23FireRate;
-    class'KFMod.MK23Fire'.default.FireAnimRate=MK23FireAnimRate;
-    class'KFMod.MK23Pistol'.default.ReloadRate=MK23ReloadRate;
-    class'KFMod.MK23Pistol'.default.ReloadAnimRate=MK23ReloadAnimeRate;
-    MutLog("-----|| MK23: Applied ||-----");
-    class'KFMod.DualMK23Pistol'.default.MagCapacity=DualMK23Mag;
-    class'KFMod.DualMK23Pistol'.default.Weight=DualMK23Weight;
-    class'KFMod.DualMK23Pickup'.default.Weight=DualMK23Weight;
-    class'KFMod.DualMK23Fire'.default.DamageMax=DualMK23DmgMax;
-    class'KFMod.DualMK23Pickup'.default.cost=DualMK23Cost;
-    class'KFMod.DamTypeDualMK23Pistol'.default.HeadShotDamageMult=DualMK23HeadShotMulti;
-    class'KFMod.DualMK23Fire'.default.FireRate=DualMK23FireRate;
-    class'KFMod.DualMK23Fire'.default.FireAnimRate=DualMK23FireAnimRate;
-    class'KFMod.DualMK23Pistol'.default.ReloadRate=DualMK23ReloadRate;
-    class'KFMod.DualMK23Pistol'.default.ReloadAnimRate=DualMK23ReloadAnimeRate;
-    MutLog("-----|| DualMK23: Applied ||-----");
-    class'KFMod.Magnum44Pistol'.default.MagCapacity=Single44MagnumMag;
-    class'KFMod.Magnum44Pistol'.default.Weight=Single44MagnumWeight;
-    class'KFMod.Magnum44Pickup'.default.Weight=Single44MagnumWeight;
-    class'KFMod.Magnum44Fire'.default.DamageMax=Single44MagnumDmgMax;
-    class'KFMod.Magnum44Pickup'.default.cost=Single44MagnumCost;
-    class'KFMod.DamTypeMagnum44Pistol'.default.HeadShotDamageMult=Single44MagnumHeadShotMulti;
-    class'KFMod.Magnum44Fire'.default.FireRate=Single44MagnumFireRate;
-    class'KFMod.Magnum44Fire'.default.FireAnimRate=Single44MagnumFireAnimRate;
-    class'KFMod.Magnum44Pistol'.default.ReloadRate=Single44MagnumReloadRate;
-    class'KFMod.Magnum44Pistol'.default.ReloadAnimRate=Single44MagnumReloadAnimeRate;
-    MutLog("-----|| 44 Magnum: Applied ||-----");
-    class'KFMod.Dual44Magnum'.default.MagCapacity=Dual44MagnumMag;
-    class'KFMod.Dual44Magnum'.default.Weight=Dual44MagnumWeight;
-    class'KFMod.Dual44MagnumPickup'.default.Weight=Dual44MagnumWeight;
-    class'KFMod.Dual44MagnumFire'.default.DamageMax=Dual44MagnumDmgMax;
-    class'KFMod.Dual44MagnumPickup'.default.cost=Dual44MagnumCost;
-    class'KFMod.DamTypeDual44Magnum'.default.HeadShotDamageMult=Dual44MagnumHeadShotMulti;
-    class'KFMod.Dual44MagnumFire'.default.FireRate=Dual44MagnumFireRate;
-    class'KFMod.Dual44MagnumFire'.default.FireAnimRate=Dual44MagnumFireAnimRate;
-    class'KFMod.Dual44Magnum'.default.ReloadRate=Dual44MagnumReloadRate;
-    class'KFMod.Dual44Magnum'.default.ReloadAnimRate=Dual44MagnumReloadAnimeRate;
-    MutLog("-----|| 44 Dual Magnum: Applied ||-----");
-    class'KFMod.Deagle'.default.MagCapacity=SingleDeagleMag;
-    class'KFMod.Deagle'.default.Weight=SingleDeagleWeight;
-    class'KFMod.DeaglePickup'.default.Weight=SingleDeagleWeight;
-    class'KFMod.DeagleFire'.default.DamageMax=SingleDeagleDmgMax;
-    class'KFMod.DeaglePickup'.default.cost=SingleDeagleCost;
-    class'KFMod.DamTypeDeagle'.default.HeadShotDamageMult=SingleDeagleHeadShotMulti;
-    class'KFMod.DeagleFire'.default.FireRate=SingleDeagleFireRate;
-    class'KFMod.DeagleFire'.default.FireAnimRate=SingleDeagleFireAnimRate;
-    class'KFMod.Deagle'.default.ReloadRate=SingleDeagleReloadRate;
-    class'KFMod.Deagle'.default.ReloadAnimRate=SingleDeagleReloadAnimeRate;
-    MutLog("-----|| HandCannon: Applied ||-----");
-    class'KFMod.DualDeagle'.default.MagCapacity=DualDeagleMag;
-    class'KFMod.DualDeagle'.default.Weight=DualDeagleWeight;
-    class'KFMod.DualDeaglePickup'.default.Weight=DualDeagleWeight;
-    class'KFMod.DualDeagleFire'.default.DamageMax=DualDeagleDmgMax;
-    class'KFMod.DualDeaglePickup'.default.cost=DualDeagleCost;
-    class'KFMod.DamTypeDualDeagle'.default.HeadShotDamageMult=DualDeagleHeadShotMulti;
-    class'KFMod.DualDeagleFire'.default.FireRate=DualDeagleFireRate;
-    class'KFMod.DualDeagleFire'.default.FireAnimRate=DualDeagleFireAnimRate;
-    class'KFMod.DualDeagle'.default.ReloadRate=DualDeagleReloadRate;
-    class'KFMod.DualDeagle'.default.ReloadAnimRate=DualDeagleReloadAnimeRate;
-    MutLog("-----|| Dual HandCannon: Applied ||-----");
-    class'KFMod.Winchester'.default.MagCapacity=WinchesterMag;
-    class'KFMod.Winchester'.default.Weight=WinchesterWeight;
-    class'KFMod.WinchesterPickup'.default.Weight=WinchesterWeight;
-    class'KFMod.WinchesterFire'.default.DamageMax=WinchesterDmgMax;
-    class'KFMod.WinchesterPickup'.default.cost=WinchesterCost;
-    class'KFMod.DamTypeWinchester'.default.HeadShotDamageMult=WinchesterHeadShotMulti;
-    class'KFMod.WinchesterFire'.default.FireRate=WinchesterFireRate;
-    class'KFMod.WinchesterFire'.default.FireAnimRate=WinchesterFireAnimRate;
-    class'KFMod.Winchester'.default.ReloadRate=WinchesterReloadRate;
-    class'KFMod.Winchester'.default.ReloadAnimRate=WinchesterReloadAnimeRate;
     MutLog("-----|| Winchester: Applied ||-----");
     class'KFMod.Crossbow'.default.MagCapacity=CrossbowMag;
     class'KFMod.Crossbow'.default.Weight=CrossbowWeight;
@@ -292,8 +197,10 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
     local int i;
     local class<KFWeapon> CurrentWeapon;
     local class<KFFire> CurrentWeaponFire;
+    local class<KFShotgunFire> CurrentWeaponShotgunFire; // Used For Weapons with Special Fire Classes
     local class<KFWeaponPickup> CurrentWeaponPickup;
     local class<KFProjectileWeaponDamageType> CurrentWeaponDmgType;
+    local class<Projectile> CurrentWeaponProjectile;
     // TO-DO
     // More vars for ImpactDamage & Projectiles
 
@@ -302,16 +209,25 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
     for(i=0; i<WeaponsList.Length; i++)
     {
       // Exit if Weapon Class Not Found
-      CurrentWeapon = class<KFWeapon>(DynamicLoadObject(WeaponsList[i].WeaponClassName, class'Class'));
-      if(CurrentWeapon != none)
+      if(class<KFWeapon>(DynamicLoadObject(WeaponsList[i].WeaponClassName, class'Class')) != none)
       {
+        CurrentWeapon = class<KFWeapon>(DynamicLoadObject(WeaponsList[i].WeaponClassName, class'Class'));
+
         // Log for Currently Detected Weapon
         MutLog("-----|| Detected & Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
 
         // Grab Needed Classes
+        if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
         CurrentWeaponFire = class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
-        CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
+        }
+        else{
+        CurrentWeaponShotgunFire = class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
+        CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
+        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
+        MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
+        }
+        CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
 
         // Base Class Related Changes
         CurrentWeapon.default.MagCapacity = WeaponsList[i].MagCapacity;
@@ -320,7 +236,13 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
         CurrentWeapon.default.ReloadAnimRate = WeaponsList[i].ReloadAnimRate;
 
         // WeaponFire Class Related Changes
-        CurrentWeaponFire.default.DamageMax = WeaponsList[i].DamageMax;
+        if (CurrentWeaponFire != none && CurrentWeaponFire.default.ProjectileClass == none && CurrentWeaponProjectile == none){
+          MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has No Projectile Class");
+          CurrentWeaponFire.default.DamageMax = WeaponsList[i].DamageMax;
+        }
+        else if (CurrentWeaponShotgunFire != none){
+
+        }
         CurrentWeaponFire.default.FireRate = WeaponsList[i].FireRate;
         CurrentWeaponFire.default.FireAnimRate = WeaponsList[i].FireAnimRate;
 
@@ -330,12 +252,14 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
         // Change DamageMax accordingly because some cases it is
         // connected with ImpactDamage instead of DamageMax e.g. FlareRevolvers
         // P.S: Fuck You TripWireInteractive for these inconsistencies
-        if (CurrentWeaponFire.default.ProjectileClass != none){
-        CurrentWeaponDmgType.default.HeadShotDamageMult = WeaponsList[i].HeadShotDamageMult;
-        }
-        else{
-
-        }
+        if (CurrentWeaponFire != none && CurrentWeaponFire.default.ProjectileClass == none && CurrentWeaponProjectile == none){
+          CurrentWeaponDmgType.default.HeadShotDamageMult = WeaponsList[i].HeadShotDamageMult;
+          }
+          else if (CurrentWeaponShotgunFire != none){
+            //MutLog("       >Special Class: " $string(CurrentWeaponProjectile.default.HeadShotDamageMult));
+          }
+          //CurrentWeaponProjectile.default.HeadShotDamageMult = WeaponsList[i].HeadShotDamageMult;
+          //CurrentWeaponProjectile.default.Damage = WeaponsList[i].DamageMax;
 
         // PickUp Class Related Changes
         CurrentWeaponPickup.default.Weight = WeaponsList[i].Weight;
