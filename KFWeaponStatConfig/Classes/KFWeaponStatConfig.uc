@@ -68,7 +68,6 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
         if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
         CurrentWeaponFire = class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
-        CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
 
         // WeaponFire Class Related Changes
         CurrentWeaponFire.default.DamageMax = WeaponsList[i].DamageMax;
