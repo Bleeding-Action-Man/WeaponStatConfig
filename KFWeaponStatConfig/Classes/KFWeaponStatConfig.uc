@@ -20,12 +20,22 @@ struct LoadedWeapon
 const WEAPONS_COUNT = 3;
 // Weapons List
 var() config string StandardWeapons[WEAPONS_COUNT];
+var string replicatedList[WEAPONS_COUNT];
 var array<LoadedWeapon> ActualStandardWeapons;
 
 replication
 {
-	unreliable if (Role == ROLE_Authority)
+	reliable if (Role == ROLE_Authority)
+                  replicatedList,
                   StandardWeapons;
+}
+
+function PostBeginPlay()
+{
+  local int i;
+  for(i=0; i<WEAPONS_COUNT; i++){
+    replicatedList[i] = StandardWeapons[i];
+  }
 }
 
 simulated function PostNetReceive()
@@ -35,6 +45,11 @@ simulated function PostNetReceive()
 }
 
 simulated function PostNetBeginPlay()
+{
+  SetTimer(1, false);
+}
+
+simulated function Timer()
 {
   ModifyWeapon(ActualStandardWeapons);
 }
@@ -158,9 +173,8 @@ simulated function GetServerVars()
 
   for(i=0; i<WEAPONS_COUNT; i++)
   {
-    // default.StandardWeapons[i] = StandardWeapons[i];
-    MutLog("-----|| Detected Config For: "$StandardWeapons[i]$" ||-----");
-    Split(StandardWeapons[i], ";", tempWeaponList);
+    MutLog("-----|| Detected Config For: "$replicatedList[i]$" ||-----");
+    Split(replicatedList[i], ";", tempWeaponList);
 
     WeaponClassName = tempWeaponList[0];
     MagCapacity = int(tempWeaponList[1]);
