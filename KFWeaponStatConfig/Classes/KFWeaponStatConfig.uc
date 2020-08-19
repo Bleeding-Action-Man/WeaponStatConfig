@@ -25,12 +25,12 @@ var array<LoadedWeapon> ActualStandardWeapons;
 
 replication
 {
-	reliable if (Role == ROLE_Authority)
+	unreliable if (Role == ROLE_Authority)
                   replicatedList,
                   StandardWeapons;
 }
 
-function PostBeginPlay()
+simulated function PostBeginPlay()
 {
   local int i;
   for(i=0; i<WEAPONS_COUNT; i++){
@@ -158,6 +158,16 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         // connected with ImpactDamage instead of DamageMax e.g. FlareRevolvers
         // P.S: Fuck You TripWireInteractive for these inconsistencies
 
+        MutLog("-----|| DEBUG ClassName: "$Weapon[i].WeaponClassName$" ||-----");
+        MutLog("-----|| DEBUG MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
+        MutLog("-----|| DEBUG DamageMax: "$Weapon[i].DamageMax$" ||-----");
+        MutLog("-----|| DEBUG Weight: "$Weapon[i].Weight$" ||-----");
+        MutLog("-----|| DEBUG Cost: "$Weapon[i].Cost$" ||-----");
+        MutLog("-----|| DEBUG HeadShotDamageMult: "$Weapon[i].HeadShotDamageMult$" ||-----");
+        MutLog("-----|| DEBUG FireRate: "$Weapon[i].FireRate$" ||-----");
+        MutLog("-----|| DEBUG FireAnimRate: "$Weapon[i].FireAnimRate$" ||-----");
+        MutLog("-----|| DEBUG ReloadRate: "$Weapon[i].ReloadRate$" ||-----");
+        MutLog("-----|| DEBUG ReloadAnimRate: "$Weapon[i].ReloadAnimRate$" ||-----");
       }
     }
 }
@@ -187,30 +197,19 @@ simulated function GetServerVars()
     ReloadRate = float(tempWeaponList[8]);
     ReloadAnimRate = float(tempWeaponList[9]);
 
-    MutLog("-----|| DEBUG ClassName: "$WeaponClassName$" ||-----");
-    MutLog("-----|| DEBUG MagCapacity: "$MagCapacity$" ||-----");
-    MutLog("-----|| DEBUG DamageMax: "$DamageMax$" ||-----");
-    MutLog("-----|| DEBUG Weight: "$Weight$" ||-----");
-    MutLog("-----|| DEBUG Cost: "$Cost$" ||-----");
-    MutLog("-----|| DEBUG HeadShotDamageMult: "$HeadShotDamageMult$" ||-----");
-    MutLog("-----|| DEBUG FireRate: "$FireRate$" ||-----");
-    MutLog("-----|| DEBUG FireAnimRate: "$FireAnimRate$" ||-----");
-    MutLog("-----|| DEBUG ReloadRate: "$ReloadRate$" ||-----");
-    MutLog("-----|| DEBUG ReloadAnimRate: "$ReloadAnimRate$" ||-----");
-
     // TO-DO
-    // Implement duplicates detection and remove them
+    // Implement duplicates detection
 
-    ActualStandardWeapons[i].WeaponClassName = tempWeaponList[0];
-    ActualStandardWeapons[i].MagCapacity = int(tempWeaponList[1]);
-    ActualStandardWeapons[i].DamageMax = int(tempWeaponList[2]);
-    ActualStandardWeapons[i].Weight = int(tempWeaponList[3]);
-    ActualStandardWeapons[i].Cost = int(tempWeaponList[4]);
-    ActualStandardWeapons[i].HeadShotDamageMult = int(tempWeaponList[5]);
-    ActualStandardWeapons[i].FireRate = float(tempWeaponList[6]);
-    ActualStandardWeapons[i].FireAnimRate = float(tempWeaponList[7]);
-    ActualStandardWeapons[i].ReloadRate = float(tempWeaponList[8]);
-    ActualStandardWeapons[i].ReloadAnimRate = float(tempWeaponList[9]);
+    ActualStandardWeapons[i].WeaponClassName = WeaponClassName;
+    ActualStandardWeapons[i].MagCapacity = MagCapacity;
+    ActualStandardWeapons[i].DamageMax = DamageMax;
+    ActualStandardWeapons[i].Weight = Weight;
+    ActualStandardWeapons[i].Cost = Cost;
+    ActualStandardWeapons[i].HeadShotDamageMult = HeadShotDamageMult;
+    ActualStandardWeapons[i].FireRate = FireRate;
+    ActualStandardWeapons[i].FireAnimRate = FireAnimRate;
+    ActualStandardWeapons[i].ReloadRate = ReloadRate;
+    ActualStandardWeapons[i].ReloadAnimRate = ReloadAnimRate;
 
   }
 }
@@ -243,7 +242,7 @@ defaultproperties
     // Temp tempWeaponList just to have a default value
     // Always keep the same order when adding or editing values:
     // ClassName; Mag; DmgMax; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
-    StandardWeapons(0)="KFMod.Single;50;500;5;0;2.0;0.175;1.5;1;2.5"
+    StandardWeapons(0)="KFMod.Single;50;500;2;0;2.0;0.175;1.5;1;2.5"
     StandardWeapons(1)="KFMod.Crossbow;12;500;0;0;2.0;0.1;1;1;2.5"
     StandardWeapons(2)="KFMod.AA12AutoShotgun;35;500;0;0;2.0;0.175;1.5;1;2.5"
 }
