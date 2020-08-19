@@ -16,13 +16,16 @@ struct LoadedWeapon
   // Add More variables such as ImpactDamage for e.g. FlareRevolverGun
 };
 
-// Loads each weapon in a list
-var() config array<LoadedWeapon> StandardWeapon;
+// Weapons Count
+const WEAPONS_COUNT = 3;
+// Weapons List
+var() config string StandardWeapons[WEAPONS_COUNT];
+var array<LoadedWeapon> ActualStandardWeapons;
 
 replication
 {
 	unreliable if (Role == ROLE_Authority)
-                  StandardWeapon;
+                  StandardWeapons;
 }
 
 simulated function PostNetReceive()
@@ -33,16 +36,17 @@ simulated function PostNetReceive()
 
 simulated function PostNetBeginPlay()
 {
-  ModifyWeapon(StandardWeapon);
+  ModifyWeapon(ActualStandardWeapons);
 }
 
 // Dynamically Load and modify weapons that are found in the Config File
-simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
+simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
 {
     local int i;
     local class<KFWeapon> CurrentWeapon;
     local class<KFFire> CurrentWeaponFire;
-    local class<KFShotgunFire> CurrentWeaponShotgunFire; // Used For Weapons with Special Fire Classes
+    local class<KFShotgunFire> CurrentWeaponShotgunFire;
+    local class<KFMeleeFire> CurrentWeaponKFMeleeFire;
     local class<KFWeaponPickup> CurrentWeaponPickup;
     local class<KFProjectileWeaponDamageType> CurrentWeaponDmgType;
     local class<Projectile> CurrentWeaponProjectile;
@@ -53,16 +57,16 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
 
     MutLog("-----|| Reading Config File For Weapons ||-----");
 
-    for(i=0; i<WeaponsList.Length; i++)
+    for(i=0; i<Weapon.Length; i++)
     {
       // Exit if Weapon Class Not Found
-      if(class<KFWeapon>(DynamicLoadObject(WeaponsList[i].WeaponClassName, class'Class')) != none)
+      if(class<KFWeapon>(DynamicLoadObject(Weapon[i].WeaponClassName, class'Class')) != none)
       {
-        CurrentWeapon = class<KFWeapon>(DynamicLoadObject(WeaponsList[i].WeaponClassName, class'Class'));
+        CurrentWeapon = class<KFWeapon>(DynamicLoadObject(Weapon[i].WeaponClassName, class'Class'));
         CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
 
         // Log for Currently Detected Weapon
-        MutLog("-----|| Detected & Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
+        MutLog("-----|| Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
 
         // Grab Needed Classes & Check WeaponFire types, then proceed to change values accordingly
         if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
@@ -70,12 +74,12 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
 
         // WeaponFire Class Related Changes
-        CurrentWeaponFire.default.DamageMax = WeaponsList[i].DamageMax;
-        CurrentWeaponFire.default.FireRate = WeaponsList[i].FireRate;
-        CurrentWeaponFire.default.FireAnimRate = WeaponsList[i].FireAnimRate;
+        CurrentWeaponFire.default.DamageMax = Weapon[i].DamageMax;
+        CurrentWeaponFire.default.FireRate = Weapon[i].FireRate;
+        CurrentWeaponFire.default.FireAnimRate = Weapon[i].FireAnimRate;
 
         // DmgType Class Related Changes
-        CurrentWeaponDmgType.default.HeadShotDamageMult = WeaponsList[i].HeadShotDamageMult;
+        CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
 
         }
         else if (class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
@@ -88,16 +92,16 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
         MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
 
         // WeaponFire Class Related Changes
-        CurrentWeaponProjectile.default.Damage = WeaponsList[i].DamageMax;
-        CurrentWeaponShotgunFire.default.FireRate = WeaponsList[i].FireRate;
-        CurrentWeaponShotgunFire.default.FireAnimRate = WeaponsList[i].FireAnimRate;
+        CurrentWeaponProjectile.default.Damage = Weapon[i].DamageMax;
+        CurrentWeaponShotgunFire.default.FireRate = Weapon[i].FireRate;
+        CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].FireAnimRate;
 
         // DmgType Class Related Changes
         CurrentWeaponDmgType.default.HeadShotDamageMult = 1;
 
         switch(GetItemName(string(CurrentWeapon))){
           case "CrossbowArrow":
-            class'KFMod.CrossbowArrow'.default.HeadShotDamageMult = WeaponsList[i].HeadShotDamageMult;
+            class'KFMod.CrossbowArrow'.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
             }
         }
 
@@ -109,9 +113,9 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
         MutLog("       >Special Class: " $string(CurrentWeaponShotgunBullet));
 
         // WeaponFire Class Related Changes
-        CurrentWeaponShotgunBullet.default.Damage = WeaponsList[i].DamageMax;
-        CurrentWeaponShotgunFire.default.FireRate = WeaponsList[i].FireRate;
-        CurrentWeaponShotgunFire.default.FireAnimRate = WeaponsList[i].FireAnimRate;
+        CurrentWeaponShotgunBullet.default.Damage = Weapon[i].DamageMax;
+        CurrentWeaponShotgunFire.default.FireRate = Weapon[i].FireRate;
+        CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].FireAnimRate;
 
         // DmgType Class Related Changes
         CurrentWeaponDmgType.default.HeadShotDamageMult = 1;
@@ -123,14 +127,14 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
 
         // Vars Shared among all weapons the same, no need to condition-check
         // Base Class Related Changes
-        CurrentWeapon.default.MagCapacity = WeaponsList[i].MagCapacity;
-        CurrentWeapon.default.Weight = WeaponsList[i].Weight;
-        CurrentWeapon.default.ReloadRate = WeaponsList[i].ReloadRate;
-        CurrentWeapon.default.ReloadAnimRate = WeaponsList[i].ReloadAnimRate;
+        CurrentWeapon.default.MagCapacity = Weapon[i].MagCapacity;
+        CurrentWeapon.default.Weight = Weapon[i].Weight;
+        CurrentWeapon.default.ReloadRate = Weapon[i].ReloadRate;
+        CurrentWeapon.default.ReloadAnimRate = Weapon[i].ReloadAnimRate;
 
         // PickUp Class Related Changes
-        CurrentWeaponPickup.default.Weight = WeaponsList[i].Weight;
-        CurrentWeaponPickup.default.cost = WeaponsList[i].Cost;
+        CurrentWeaponPickup.default.Weight = Weapon[i].Weight;
+        CurrentWeaponPickup.default.cost = Weapon[i].Cost;
 
         // DamageType Class Related Changes
         // TO-DO
@@ -145,14 +149,55 @@ simulated function ModifyWeapon(array<LoadedWeapon> WeaponsList)
 
 simulated function GetServerVars()
 {
-  local int i;
+  local string WeaponClassName;
+  local int i, MagCapacity, DamageMax, Weight, Cost;
+  local float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
+  local array<string> tempWeaponList;
 
-  default.StandardWeapon.Length = StandardWeapon.Length;
-  for(i=0; i<StandardWeapon.Length; i++)
+  ActualStandardWeapons.Length = WEAPONS_COUNT;
+
+  for(i=0; i<WEAPONS_COUNT; i++)
   {
+    // default.StandardWeapons[i] = StandardWeapons[i];
+    MutLog("-----|| Detected Config For: "$StandardWeapons[i]$" ||-----");
+    Split(StandardWeapons[i], ";", tempWeaponList);
+
+    WeaponClassName = tempWeaponList[0];
+    MagCapacity = int(tempWeaponList[1]);
+    DamageMax = int(tempWeaponList[2]);
+    Weight = int(tempWeaponList[3]);
+    Cost = int(tempWeaponList[4]);
+    HeadShotDamageMult = float(tempWeaponList[5]);
+    FireRate = float(tempWeaponList[6]);
+    FireAnimRate = float(tempWeaponList[7]);
+    ReloadRate = float(tempWeaponList[8]);
+    ReloadAnimRate = float(tempWeaponList[9]);
+
+    MutLog("-----|| DEBUG ClassName: "$WeaponClassName$" ||-----");
+    MutLog("-----|| DEBUG MagCapacity: "$MagCapacity$" ||-----");
+    MutLog("-----|| DEBUG DamageMax: "$DamageMax$" ||-----");
+    MutLog("-----|| DEBUG Weight: "$Weight$" ||-----");
+    MutLog("-----|| DEBUG Cost: "$Cost$" ||-----");
+    MutLog("-----|| DEBUG HeadShotDamageMult: "$HeadShotDamageMult$" ||-----");
+    MutLog("-----|| DEBUG FireRate: "$FireRate$" ||-----");
+    MutLog("-----|| DEBUG FireAnimRate: "$FireAnimRate$" ||-----");
+    MutLog("-----|| DEBUG ReloadRate: "$ReloadRate$" ||-----");
+    MutLog("-----|| DEBUG ReloadAnimRate: "$ReloadAnimRate$" ||-----");
+
     // TO-DO
     // Implement duplicates detection and remove them
-    default.StandardWeapon[i] = StandardWeapon[i];
+
+    ActualStandardWeapons[i].WeaponClassName = tempWeaponList[0];
+    ActualStandardWeapons[i].MagCapacity = int(tempWeaponList[1]);
+    ActualStandardWeapons[i].DamageMax = int(tempWeaponList[2]);
+    ActualStandardWeapons[i].Weight = int(tempWeaponList[3]);
+    ActualStandardWeapons[i].Cost = int(tempWeaponList[4]);
+    ActualStandardWeapons[i].HeadShotDamageMult = int(tempWeaponList[5]);
+    ActualStandardWeapons[i].FireRate = float(tempWeaponList[6]);
+    ActualStandardWeapons[i].FireAnimRate = float(tempWeaponList[7]);
+    ActualStandardWeapons[i].ReloadRate = float(tempWeaponList[8]);
+    ActualStandardWeapons[i].ReloadAnimRate = float(tempWeaponList[9]);
+
   }
 }
 
@@ -181,6 +226,10 @@ defaultproperties
     FriendlyName="Weapon Stat Config - v3.0b"
     Description="Change various weapon stats on-the-fly using a pre-configured file! - By Vel-San"
 
-    // Temp entry just to have a default value
-    StandardWeapon(0)=(WeaponClassName="KFMod.Single",MagCapacity=35,DamageMax=500,Weight=0,Cost=0,HeadShotDamageMult=1.1,FireRate=0.175,FireAnimRate=1.5,ReloadRate=2.0,ReloadAnimRate=2.0)
+    // Temp tempWeaponList just to have a default value
+    // Always keep the same order when adding or editing values:
+    // ClassName; Mag; DmgMax; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
+    StandardWeapons(0)="KFMod.Single;50;500;5;0;2.0;0.175;1.5;1;2.5"
+    StandardWeapons(1)="KFMod.Crossbow;12;500;0;0;2.0;0.1;1;1;2.5"
+    StandardWeapons(2)="KFMod.AA12AutoShotgun;35;500;0;0;2.0;0.175;1.5;1;2.5"
 }
