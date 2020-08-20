@@ -1,5 +1,20 @@
 # KF-WeaponStatConfig
 
-Change default stats for all 'Vanilla' Killing Floor 1 weapons // WIP
+// WIP
+
+This mutator allows you to configure:
+
+- Max Dmg
+- Impact Dmg ( For Rocket Launchers / Demo Weapons )
+- Magazine Size
+- Cost
+- Weight
+- HeadShot multiplier
+- Reload Speed
+- Reload Animation Speed
+- Fire Rate
+- Fire Rate Animation speed
+
+Of all weapons. Custom or Officle!
 
 Beta version on my [Steam WorkShop](https://steamcommunity.com/id/Vel-San/myworkshopfiles/)
