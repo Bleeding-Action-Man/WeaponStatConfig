@@ -16,8 +16,10 @@ struct LoadedWeapon
   // Add More variables such as ImpactDamage for e.g. FlareRevolverGun
 };
 
+// Debugging
+var config bool DEBUG;
 // Weapons Count
-const WEAPONS_COUNT = 3;
+const WEAPONS_COUNT = 150;
 // Weapons List
 var() config string StandardWeapons[WEAPONS_COUNT];
 var string replicatedList[WEAPONS_COUNT];
@@ -26,6 +28,7 @@ var array<LoadedWeapon> ActualStandardWeapons;
 replication
 {
 	unreliable if (Role == ROLE_Authority)
+                  DEBUG,
                   replicatedList,
                   StandardWeapons;
 }
@@ -38,15 +41,11 @@ simulated function PostBeginPlay()
   }
 }
 
-simulated function PostNetReceive()
-{
-  TimeStampLog("-----|| KF-WeaponStatsConfig Server Vars Replicated ||-----");
-	GetServerVars();
-}
-
 simulated function PostNetBeginPlay()
 {
-  SetTimer(1, false);
+  TimeStampLog("-----|| KF-WeaponStatsConfig Server Vars Replicated ||-----");
+  GetServerVars();
+  SetTimer(0.1, false);
 }
 
 simulated function Timer()
@@ -70,7 +69,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
     // TO-DO
     // More vars for ImpactDamage
 
-    MutLog("-----|| Reading Config File For Weapons ||-----");
+    MutLog("-----|| Analyzing Configurations ||-----");
 
     for(i=0; i<Weapon.Length; i++)
     {
@@ -158,16 +157,18 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         // connected with ImpactDamage instead of DamageMax e.g. FlareRevolvers
         // P.S: Fuck You TripWireInteractive for these inconsistencies
 
-        MutLog("-----|| DEBUG ClassName: "$Weapon[i].WeaponClassName$" ||-----");
-        MutLog("-----|| DEBUG MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
-        MutLog("-----|| DEBUG DamageMax: "$Weapon[i].DamageMax$" ||-----");
-        MutLog("-----|| DEBUG Weight: "$Weapon[i].Weight$" ||-----");
-        MutLog("-----|| DEBUG Cost: "$Weapon[i].Cost$" ||-----");
-        MutLog("-----|| DEBUG HeadShotDamageMult: "$Weapon[i].HeadShotDamageMult$" ||-----");
-        MutLog("-----|| DEBUG FireRate: "$Weapon[i].FireRate$" ||-----");
-        MutLog("-----|| DEBUG FireAnimRate: "$Weapon[i].FireAnimRate$" ||-----");
-        MutLog("-----|| DEBUG ReloadRate: "$Weapon[i].ReloadRate$" ||-----");
-        MutLog("-----|| DEBUG ReloadAnimRate: "$Weapon[i].ReloadAnimRate$" ||-----");
+        if (DEBUG){
+          MutLog("-----|| DEBUG ClassName: "$Weapon[i].WeaponClassName$" ||-----");
+          MutLog("-----|| DEBUG MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
+          MutLog("-----|| DEBUG DamageMax: "$Weapon[i].DamageMax$" ||-----");
+          MutLog("-----|| DEBUG Weight: "$Weapon[i].Weight$" ||-----");
+          MutLog("-----|| DEBUG Cost: "$Weapon[i].Cost$" ||-----");
+          MutLog("-----|| DEBUG HeadShotDamageMult: "$Weapon[i].HeadShotDamageMult$" ||-----");
+          MutLog("-----|| DEBUG FireRate: "$Weapon[i].FireRate$" ||-----");
+          MutLog("-----|| DEBUG FireAnimRate: "$Weapon[i].FireAnimRate$" ||-----");
+          MutLog("-----|| DEBUG ReloadRate: "$Weapon[i].ReloadRate$" ||-----");
+          MutLog("-----|| DEBUG ReloadAnimRate: "$Weapon[i].ReloadAnimRate$" ||-----");
+        }
       }
     }
 }
@@ -175,42 +176,50 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
 simulated function GetServerVars()
 {
   local string WeaponClassName;
-  local int i, MagCapacity, DamageMax, Weight, Cost;
+  local int i, Count, MagCapacity, DamageMax, Weight, Cost;
   local float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
   local array<string> tempWeaponList;
 
-  ActualStandardWeapons.Length = WEAPONS_COUNT;
+  for(i=0; i<WEAPONS_COUNT; i++){
+    if (replicatedList[i] != ""){
+      Count = Count + 1;
+    }
+  }
+
+  ActualStandardWeapons.Length = Count;
+  default.DEBUG = DEBUG;
 
   for(i=0; i<WEAPONS_COUNT; i++)
   {
-    MutLog("-----|| Detected Config For: "$replicatedList[i]$" ||-----");
-    Split(replicatedList[i], ";", tempWeaponList);
+    if (replicatedList[i] != ""){
+      MutLog("-----|| Detected Config " $i$ " : "$replicatedList[i]$" ||-----");
+      Split(replicatedList[i], ";", tempWeaponList);
 
-    WeaponClassName = tempWeaponList[0];
-    MagCapacity = int(tempWeaponList[1]);
-    DamageMax = int(tempWeaponList[2]);
-    Weight = int(tempWeaponList[3]);
-    Cost = int(tempWeaponList[4]);
-    HeadShotDamageMult = float(tempWeaponList[5]);
-    FireRate = float(tempWeaponList[6]);
-    FireAnimRate = float(tempWeaponList[7]);
-    ReloadRate = float(tempWeaponList[8]);
-    ReloadAnimRate = float(tempWeaponList[9]);
+      WeaponClassName = tempWeaponList[0];
+      MagCapacity = int(tempWeaponList[1]);
+      DamageMax = int(tempWeaponList[2]);
+      Weight = int(tempWeaponList[3]);
+      Cost = int(tempWeaponList[4]);
+      HeadShotDamageMult = float(tempWeaponList[5]);
+      FireRate = float(tempWeaponList[6]);
+      FireAnimRate = float(tempWeaponList[7]);
+      ReloadRate = float(tempWeaponList[8]);
+      ReloadAnimRate = float(tempWeaponList[9]);
 
-    // TO-DO
-    // Implement duplicates detection
+      // TO-DO
+      // Implement duplicates detection
 
-    ActualStandardWeapons[i].WeaponClassName = WeaponClassName;
-    ActualStandardWeapons[i].MagCapacity = MagCapacity;
-    ActualStandardWeapons[i].DamageMax = DamageMax;
-    ActualStandardWeapons[i].Weight = Weight;
-    ActualStandardWeapons[i].Cost = Cost;
-    ActualStandardWeapons[i].HeadShotDamageMult = HeadShotDamageMult;
-    ActualStandardWeapons[i].FireRate = FireRate;
-    ActualStandardWeapons[i].FireAnimRate = FireAnimRate;
-    ActualStandardWeapons[i].ReloadRate = ReloadRate;
-    ActualStandardWeapons[i].ReloadAnimRate = ReloadAnimRate;
-
+      ActualStandardWeapons[i].WeaponClassName = WeaponClassName;
+      ActualStandardWeapons[i].MagCapacity = MagCapacity;
+      ActualStandardWeapons[i].DamageMax = DamageMax;
+      ActualStandardWeapons[i].Weight = Weight;
+      ActualStandardWeapons[i].Cost = Cost;
+      ActualStandardWeapons[i].HeadShotDamageMult = HeadShotDamageMult;
+      ActualStandardWeapons[i].FireRate = FireRate;
+      ActualStandardWeapons[i].FireAnimRate = FireAnimRate;
+      ActualStandardWeapons[i].ReloadRate = ReloadRate;
+      ActualStandardWeapons[i].ReloadAnimRate = ReloadAnimRate;
+    }
   }
 }
 
@@ -239,10 +248,10 @@ defaultproperties
     FriendlyName="Weapon Stat Config - v3.0b"
     Description="Change various weapon stats on-the-fly using a pre-configured file! - By Vel-San"
 
-    // Temp tempWeaponList just to have a default value
-    // Always keep the same order when adding or editing values:
+    // Debugging
+    DEBUG=false
+
+    // Always keep the same order when adding or editing values !!!
     // ClassName; Mag; DmgMax; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
-    StandardWeapons(0)="KFMod.Single;50;500;2;0;2.0;0.175;1.5;1;2.5"
-    StandardWeapons(1)="KFMod.Crossbow;12;500;0;0;2.0;0.1;1;1;2.5"
-    StandardWeapons(2)="KFMod.AA12AutoShotgun;35;500;0;0;2.0;0.175;1.5;1;2.5"
+    // StandardWeapons(0)="KFMod.Single;50;500;2;0;2.0;0.175;1.5;1;2.5"
 }
