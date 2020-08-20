@@ -70,6 +70,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
     local class<KFHighROFFire> CurrentWeaponKFHighROFFire;
 
     local class<KFProjectileWeaponDamageType> CurrentWeaponDmgType;
+    local class<DamTypeMelee> CurrentWeaponDamTypeMelee;
     local class<Projectile> CurrentWeaponProjectile;
     local class<ShotgunBullet> CurrentWeaponShotgunBullet;
     local class<LAWProj> CurrentWeaponLAWProj;
@@ -101,6 +102,21 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
 
         }
+        else if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
+        CurrentWeaponKFMeleeFire = class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
+        CurrentWeaponDamTypeMelee = class<DamTypeMelee>(DynamicLoadObject(string(CurrentWeaponKFMeleeFire.default.hitDamageClass), class'Class'));
+
+        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Melee Weapon");
+
+        // WeaponFire Class Related Changes
+        CurrentWeaponKFMeleeFire.default.MeleeDamage = Weapon[i].DamageMax;
+        CurrentWeaponKFMeleeFire.default.FireRate = Weapon[i].FireRate;
+        CurrentWeaponKFMeleeFire.default.FireAnimRate = Weapon[i].FireAnimRate;
+
+        // DmgType Class Related Changes
+        CurrentWeaponDamTypeMelee.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
+        }
+
         else if (class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
         CurrentWeaponShotgunFire = class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         if (class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none && class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none){
@@ -165,10 +181,13 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
 
         // Vars Shared among all weapons the same, no need to condition-check
         // Base Class Related Changes
-        CurrentWeapon.default.MagCapacity = Weapon[i].MagCapacity;
         CurrentWeapon.default.Weight = Weapon[i].Weight;
-        CurrentWeapon.default.ReloadRate = Weapon[i].ReloadRate;
-        CurrentWeapon.default.ReloadAnimRate = Weapon[i].ReloadAnimRate;
+        // Ignore if current weapon is a Melee
+        if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none){
+            CurrentWeapon.default.MagCapacity = Weapon[i].MagCapacity;
+            CurrentWeapon.default.ReloadRate = Weapon[i].ReloadRate;
+            CurrentWeapon.default.ReloadAnimRate = Weapon[i].ReloadAnimRate;
+        }
 
         // PickUp Class Related Changes
         CurrentWeaponPickup.default.Weight = Weapon[i].Weight;
@@ -271,5 +290,8 @@ defaultproperties
 
     // Always keep the same order when adding or editing values !!!
     // ClassName; Mag; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
-    // StandardWeapons(0)="KFMod.Single;50;500;100;2;0;2.0;0.175;1.5;1;2.5"
+    // FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations make it slow-mo, increase/decrease gradually
+    // FireRate & ReloadRate: - To Increase | Low or High Values might break firerate or make it slow-mo, increase/decrease gradually
+    // MagCapacity, ReloadRate & ReloadAnimRate are ignored for MeleeWeapons
+    // Entry in Config File looks like: StandardWeapons[0]="KFMod.Single;50;500;100;2;0;2.0;0.175;1.5;1;2.5"
 }
