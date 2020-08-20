@@ -19,7 +19,10 @@ struct LoadedWeapon
 // Debugging
 var config bool DEBUG;
 // Weapons Count
-const WEAPONS_COUNT = 150;
+// KFMod Class Weapons Count: 54, taken from here: http://wiki.tripwireinteractive.com/index.php/Weapons_(Killing_Floor)
+// All Official Weapons Count: 68, taken from here: http://kf-wiki.com/wiki/Inventory_system
+// 100 is set as a safe-guard. If we need more I'll make it 100+
+const WEAPONS_COUNT = 100;
 // Weapons List
 var() config string StandardWeapons[WEAPONS_COUNT];
 var string replicatedList[WEAPONS_COUNT];
@@ -242,11 +245,9 @@ defaultproperties
     bNetNotify=true
 
     // Mut Vars
-    // TO-DO
-    // Update version + Description
     GroupName="KF-WeaponStatConfig"
-    FriendlyName="Weapon Stat Config - v3.0b"
-    Description="Change various weapon stats on-the-fly using a pre-configured file! - By Vel-San"
+    FriendlyName="Weapon Stats Config - v1.0r"
+    Description="Change Weapon Stats on-the-fly! - By Vel-San & dkanus"
 
     // Debugging
     DEBUG=false
