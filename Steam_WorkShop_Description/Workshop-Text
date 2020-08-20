@@ -39,6 +39,23 @@ Of all weapons. Custom or Officle!
 3- Restart the game and you can see the mutators in your list
 4- Before you start your server, navigate to your directory and edit the configuration file. Add/Remove whatever weapon you want. Follow instructions in the config file to understand what each value does.
 
+Sample config can be as the following:
+
+[code]
+[KFWeaponStatConfig.KFWeaponStatConfig]
+# Keep False unless you want to see every value for every weapon in your logs
+DEBUG=True
+# Always keep the same order when adding or editing values !!!
+# ClassName; Mag; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
+# FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations make it slow-mo, increase/decrease gradually
+# FireRate & ReloadRate: - To Increase | Low or High Values might break firerate or make it slow-mo, increase/decrease gradually
+# MagCapacity, ReloadRate & ReloadAnimRate are ignored for MeleeWeapons
+StandardWeapons[0]="KFMod.Single;50;1500;0;0;0;2.0;0.175;1.5;0.1;2.5"
+StandardWeapons[1]="KFMod.Crossbow;12;500;1;500;0;2.0;0.1;2.5;0.1;2.5"
+StandardWeapons[2]="KFMod.AA12AutoShotgun;35;500;0;0;0;2.0;0.175;1.5;1;2.5"
+StandardWeapons[3]="KFMod.Magnum44Pistol;35;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
+StandardWeapons[4]="KFMod.HuskGun;35;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
+StandardWeapons[5]="KFMod.Knife;50;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"[/code]
 
 [H1][b][u]Class Names[/u][/b][/H1]
 
