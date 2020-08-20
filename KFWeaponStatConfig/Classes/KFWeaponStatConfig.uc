@@ -10,10 +10,8 @@ class KFWeaponStatConfig extends Mutator
 struct LoadedWeapon
 {
   var config string WeaponClassName;
-  var config int MagCapacity, DamageMax, Weight, Cost;
+  var config int MagCapacity, DamageMax, ImpactDamage, Weight, Cost;
   var config float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
-  // TO-DO
-  // Add More variables such as ImpactDamage for e.g. FlareRevolverGun
 };
 
 // Debugging
@@ -62,17 +60,19 @@ simulated function Timer()
 simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
 {
     local int i;
+
     local class<KFWeapon> CurrentWeapon;
+    local class<KFWeaponPickup> CurrentWeaponPickup;
+
     local class<KFFire> CurrentWeaponFire;
     local class<KFShotgunFire> CurrentWeaponShotgunFire;
     local class<KFMeleeFire> CurrentWeaponKFMeleeFire;
-    local class<KFWeaponPickup> CurrentWeaponPickup;
+    local class<KFHighROFFire> CurrentWeaponKFHighROFFire;
+
     local class<KFProjectileWeaponDamageType> CurrentWeaponDmgType;
     local class<Projectile> CurrentWeaponProjectile;
     local class<ShotgunBullet> CurrentWeaponShotgunBullet;
-
-    // TO-DO
-    // More vars for ImpactDamage
+    local class<LAWProj> CurrentWeaponLAWProj;
 
     MutLog("-----|| Analyzing Configurations ||-----");
 
@@ -103,7 +103,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         }
         else if (class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
         CurrentWeaponShotgunFire = class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
-        if (class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none){
+        if (class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none && class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none){
         CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
 
@@ -141,6 +141,25 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
 
         // TO-DO
         // Add Switch statement to manually change HeadShotDamageMult like the above switch
+        }
+        else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none){
+        CurrentWeaponLAWProj = class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
+        CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponLAWProj.default.ImpactDamageType), class'Class'));
+
+        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A LAW-Proj Class");
+        MutLog("       >Special Class: " $string(CurrentWeaponLAWProj));
+
+        // WeaponFire Class Related Changes
+        CurrentWeaponLAWProj.default.Damage = Weapon[i].DamageMax;
+        CurrentWeaponLAWProj.default.ImpactDamage = Weapon[i].ImpactDamage;
+        CurrentWeaponShotgunFire.default.FireRate = Weapon[i].FireRate;
+        CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].FireAnimRate;
+
+        // DmgType Class Related Changes
+        CurrentWeaponDmgType.default.HeadShotDamageMult = 1;
+
+        // TO-DO
+        // Add Switch statement to manually change HeadShotDamageMult like the above switch
             }
         }
 
@@ -155,17 +174,11 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         CurrentWeaponPickup.default.Weight = Weapon[i].Weight;
         CurrentWeaponPickup.default.cost = Weapon[i].Cost;
 
-        // DamageType Class Related Changes
-        // TO-DO
-        // Check For Projectile, WeaponProjectile or LAW.
-        // Change DamageMax accordingly because some cases it is
-        // connected with ImpactDamage instead of DamageMax e.g. FlareRevolvers
-        // P.S: Fuck You TripWireInteractive for these inconsistencies
-
         if (DEBUG){
           MutLog("-----|| DEBUG ClassName: "$Weapon[i].WeaponClassName$" ||-----");
           MutLog("-----|| DEBUG MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
           MutLog("-----|| DEBUG DamageMax: "$Weapon[i].DamageMax$" ||-----");
+          MutLog("-----|| DEBUG ImpactDamage: "$Weapon[i].ImpactDamage$" ||-----");
           MutLog("-----|| DEBUG Weight: "$Weapon[i].Weight$" ||-----");
           MutLog("-----|| DEBUG Cost: "$Weapon[i].Cost$" ||-----");
           MutLog("-----|| DEBUG HeadShotDamageMult: "$Weapon[i].HeadShotDamageMult$" ||-----");
@@ -181,7 +194,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
 simulated function GetServerVars()
 {
   local string WeaponClassName;
-  local int i, Count, MagCapacity, DamageMax, Weight, Cost;
+  local int i, Count, MagCapacity, DamageMax, ImpactDamage, Weight, Cost;
   local float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
   local array<string> tempWeaponList;
 
@@ -203,13 +216,14 @@ simulated function GetServerVars()
       WeaponClassName = tempWeaponList[0];
       MagCapacity = int(tempWeaponList[1]);
       DamageMax = int(tempWeaponList[2]);
-      Weight = int(tempWeaponList[3]);
-      Cost = int(tempWeaponList[4]);
-      HeadShotDamageMult = float(tempWeaponList[5]);
-      FireRate = float(tempWeaponList[6]);
-      FireAnimRate = float(tempWeaponList[7]);
-      ReloadRate = float(tempWeaponList[8]);
-      ReloadAnimRate = float(tempWeaponList[9]);
+      ImpactDamage = int(tempWeaponList[3]);
+      Weight = int(tempWeaponList[4]);
+      Cost = int(tempWeaponList[5]);
+      HeadShotDamageMult = float(tempWeaponList[6]);
+      FireRate = float(tempWeaponList[7]);
+      FireAnimRate = float(tempWeaponList[8]);
+      ReloadRate = float(tempWeaponList[9]);
+      ReloadAnimRate = float(tempWeaponList[10]);
 
       // TO-DO
       // Implement duplicates detection
@@ -217,6 +231,7 @@ simulated function GetServerVars()
       ActualStandardWeapons[i].WeaponClassName = WeaponClassName;
       ActualStandardWeapons[i].MagCapacity = MagCapacity;
       ActualStandardWeapons[i].DamageMax = DamageMax;
+      ActualStandardWeapons[i].ImpactDamage = ImpactDamage;
       ActualStandardWeapons[i].Weight = Weight;
       ActualStandardWeapons[i].Cost = Cost;
       ActualStandardWeapons[i].HeadShotDamageMult = HeadShotDamageMult;
@@ -255,6 +270,6 @@ defaultproperties
     DEBUG=false
 
     // Always keep the same order when adding or editing values !!!
-    // ClassName; Mag; DmgMax; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
-    // StandardWeapons(0)="KFMod.Single;50;500;2;0;2.0;0.175;1.5;1;2.5"
+    // ClassName; Mag; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
+    // StandardWeapons(0)="KFMod.Single;50;500;100;2;0;2.0;0.175;1.5;1;2.5"
 }
