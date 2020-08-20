@@ -18,11 +18,13 @@ struct LoadedWeapon
 
 // Debugging
 var config bool DEBUG;
+
 // Weapons Count
 // KFMod Class Weapons Count: 54, taken from here: http://wiki.tripwireinteractive.com/index.php/Weapons_(Killing_Floor)
-// All Official Weapons Count: 68, taken from here: http://kf-wiki.com/wiki/Inventory_system
-// 100 is set as a safe-guard. If we need more I'll make it 100+
-const WEAPONS_COUNT = 100;
+// All Official Weapons Count: 85, taken from here: http://kf-wiki.com/wiki/Inventory_system
+// 120 is set as a safe-guard. If we need more I'll make it 120+
+const WEAPONS_COUNT = 120;
+
 // Weapons List
 var() config string StandardWeapons[WEAPONS_COUNT];
 var string replicatedList[WEAPONS_COUNT];
