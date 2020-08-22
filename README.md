@@ -17,4 +17,4 @@ This mutator allows you to configure:
 
 Of all weapons. Custom or Officle!
 
-Beta version on my [Steam WorkShop](https://steamcommunity.com/id/Vel-San/myworkshopfiles/)
+Find it here [Steam WorkShop](https://steamcommunity.com/id/Vel-San/myworkshopfiles/)

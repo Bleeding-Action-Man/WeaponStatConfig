@@ -16,9 +16,9 @@ Of all weapons. Custom or Officle!
 
 [H1][b][u]Features that will be added[/u][/b][/H1]
 
-- All weapons are currently supported except ones that use this class > KFHighROFFire <
+[strike]- All weapons are currently supported except ones that use this class > KFHighROFFire <
     e.g: Any weapon that has HIGH RATE OF FIRE.
-- This will be added in the next version for sure!
+- This will be added in the next version for sure![/strike] [b]ADDED IN V1.1r[/b]
 
 - [url=https://github.com/Vel-San/KF-WeaponStatConfig/commits/master]Track My Progress Here[/url]
 
@@ -43,19 +43,21 @@ Sample config can be as the following:
 
 [code]
 [KFWeaponStatConfig.KFWeaponStatConfig]
-# Keep False unless you want to see every value for every weapon in your logs
 DEBUG=True
 # Always keep the same order when adding or editing values !!!
 # ClassName; Mag; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
-# FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations make it slow-mo, increase/decrease gradually
+# FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations or make it slow-mo, increase/decrease gradually
 # FireRate & ReloadRate: - To Increase | Low or High Values might break firerate or make it slow-mo, increase/decrease gradually
 # MagCapacity, ReloadRate & ReloadAnimRate are ignored for MeleeWeapons
-StandardWeapons[0]="KFMod.Single;50;1500;0;0;0;2.0;0.175;1.5;0.1;2.5"
-StandardWeapons[1]="KFMod.Crossbow;12;500;1;500;0;2.0;0.1;2.5;0.1;2.5"
+# ImpactDamage is only for weapons with Impact such as Rocket Laucnhers (e.g. Demo Weapons)
+StandardWeapons[0]="KFMod.Single;50;700;0;0;0;2.0;0.1;1.5;1;2.5"
+StandardWeapons[1]="KFMod.Crossbow;12;1500;0;1;5;2.0;0.1;2.5;0.1;2.5"
 StandardWeapons[2]="KFMod.AA12AutoShotgun;35;500;0;0;0;2.0;0.175;1.5;1;2.5"
 StandardWeapons[3]="KFMod.Magnum44Pistol;35;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
 StandardWeapons[4]="KFMod.HuskGun;35;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
-StandardWeapons[5]="KFMod.Knife;50;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"[/code]
+StandardWeapons[5]="KFMod.Knife;50;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"
+StandardWeapons[0]="KFMod.KrissMMedicGun;50;700;0;0;0;2.0;0.1;1.5;1;2.5"
+[/code]
 
 [H1][b][u]Class Names[/u][/b][/H1]
 
@@ -67,7 +69,7 @@ You Tell Me.
 
 [H1][b][u]Manual Download Links (Recommended)[/u][/b][/H1]
 
-You can find it under 'Not Whitelisted' folder named 'KF-WeaponStatConfig-v1.0r'
+You can find it under 'Not Whitelisted' folder named 'KF-WeaponStatConfig-v1.1r'
 
 MEGA Link: https://mega DOT nz/folder/YDoEmKiC#s6FGAtgh40-TvB4bHsLaMQ
 

@@ -89,9 +89,11 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         MutLog("-----|| Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
 
         // Grab Needed Classes & Check WeaponFire types, then proceed to change values accordingly
-        if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
+        if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none && class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none){
         CurrentWeaponFire = class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
+
+        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Standard Weapon");
 
         // WeaponFire Class Related Changes
         CurrentWeaponFire.default.DamageMax = Weapon[i].DamageMax;
@@ -102,6 +104,21 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
 
         }
+        else if (class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
+        CurrentWeaponKFHighROFFire = class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
+        CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponKFHighROFFire.default.DamageType), class'Class'));
+
+        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
+
+        // WeaponFire Class Related Changes
+        CurrentWeaponKFHighROFFire.default.DamageMax = Weapon[i].DamageMax;
+        CurrentWeaponKFHighROFFire.default.FireRate = Weapon[i].FireRate;
+        CurrentWeaponKFHighROFFire.default.FireAnimRate = Weapon[i].FireAnimRate;
+
+        // DmgType Class Related Changes
+        CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
+        }
+
         else if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
         CurrentWeaponKFMeleeFire = class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDamTypeMelee = class<DamTypeMelee>(DynamicLoadObject(string(CurrentWeaponKFMeleeFire.default.hitDamageClass), class'Class'));
@@ -282,16 +299,25 @@ defaultproperties
 
     // Mut Vars
     GroupName="KF-WeaponStatConfig"
-    FriendlyName="Weapon Stats Config - v1.0r"
+    FriendlyName="Weapon Stats Config - v1.1r"
     Description="Change Weapon Stats on-the-fly! - By Vel-San & dkanus"
 
     // Debugging
     DEBUG=false
 
+    // This is a sample config for ones who lost their .ini & are smart enough to decompile and check the source-code ;)
     // Always keep the same order when adding or editing values !!!
     // ClassName; Mag; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
-    // FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations make it slow-mo, increase/decrease gradually
+    // FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations or make it slow-mo, increase/decrease gradually
     // FireRate & ReloadRate: - To Increase | Low or High Values might break firerate or make it slow-mo, increase/decrease gradually
     // MagCapacity, ReloadRate & ReloadAnimRate are ignored for MeleeWeapons
-    // Entry in Config File looks like: StandardWeapons[0]="KFMod.Single;50;500;100;2;0;2.0;0.175;1.5;1;2.5"
+    // ImpactDamage is only for weapons with Impact such as Rocket Laucnhers (e.g. Demo Weapons)
+    // StandardWeapons[0]="KFMod.Single;50;700;0;0;0;2.0;0.1;1.5;1;2.5"
+    // StandardWeapons[1]="KFMod.Crossbow;12;1500;0;1;5;2.0;0.1;2.5;0.1;2.5"
+    // StandardWeapons[2]="KFMod.AA12AutoShotgun;35;500;0;0;0;2.0;0.175;1.5;1;2.5"
+    // StandardWeapons[3]="KFMod.Magnum44Pistol;35;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
+    // StandardWeapons[4]="KFMod.HuskGun;35;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
+    // StandardWeapons[5]="KFMod.Knife;50;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"
+    // StandardWeapons[0]="KFMod.KrissMMedicGun;50;700;0;0;0;2.0;0.1;1.5;1;2.5"
+
 }
