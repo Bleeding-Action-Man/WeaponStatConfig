@@ -10,7 +10,7 @@ class KFWeaponStatConfig extends Mutator
 struct LoadedWeapon
 {
   var config string WeaponClassName;
-  var config int MagCapacity, DamageMax, ImpactDamage, Weight, Cost;
+  var config int MagCapacity, AmmoCost, DamageMax, ImpactDamage, Weight, Cost;
   var config float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
 };
 
@@ -20,8 +20,8 @@ var config bool DEBUG;
 // Weapons Count
 // KFMod Class Weapons Count: 54, taken from here: http://wiki.tripwireinteractive.com/index.php/Weapons_(Killing_Floor)
 // All Official Weapons Count: 85, taken from here: http://kf-wiki.com/wiki/Inventory_system
-// 120 is set as a safe-guard. If we need more I'll make it 120+
-const WEAPONS_COUNT = 120;
+// 150 is set as a safe-guard. If we need more I'll make it 150+
+const WEAPONS_COUNT = 150;
 
 // Weapons List
 var() config string StandardWeapons[WEAPONS_COUNT];
@@ -209,10 +209,12 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         // PickUp Class Related Changes
         CurrentWeaponPickup.default.Weight = Weapon[i].Weight;
         CurrentWeaponPickup.default.cost = Weapon[i].Cost;
+        CurrentWeaponPickup.default.AmmoCost = Weapon[i].AmmoCost;
 
         if (DEBUG){
           MutLog("-----|| DEBUG ClassName: "$Weapon[i].WeaponClassName$" ||-----");
           MutLog("-----|| DEBUG MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
+          MutLog("-----|| DEBUG AmmoCost: "$Weapon[i].AmmoCost$" ||-----");
           MutLog("-----|| DEBUG DamageMax: "$Weapon[i].DamageMax$" ||-----");
           MutLog("-----|| DEBUG ImpactDamage: "$Weapon[i].ImpactDamage$" ||-----");
           MutLog("-----|| DEBUG Weight: "$Weapon[i].Weight$" ||-----");
@@ -230,7 +232,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
 simulated function GetServerVars()
 {
   local string WeaponClassName;
-  local int i, Count, MagCapacity, DamageMax, ImpactDamage, Weight, Cost;
+  local int i, Count, MagCapacity, AmmoCost, DamageMax, ImpactDamage, Weight, Cost;
   local float HeadShotDamageMult, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
   local array<string> tempWeaponList;
 
@@ -251,21 +253,23 @@ simulated function GetServerVars()
 
       WeaponClassName = tempWeaponList[0];
       MagCapacity = int(tempWeaponList[1]);
-      DamageMax = int(tempWeaponList[2]);
-      ImpactDamage = int(tempWeaponList[3]);
-      Weight = int(tempWeaponList[4]);
-      Cost = int(tempWeaponList[5]);
-      HeadShotDamageMult = float(tempWeaponList[6]);
-      FireRate = float(tempWeaponList[7]);
-      FireAnimRate = float(tempWeaponList[8]);
-      ReloadRate = float(tempWeaponList[9]);
-      ReloadAnimRate = float(tempWeaponList[10]);
+      AmmoCost = int(tempWeaponList[2]);
+      DamageMax = int(tempWeaponList[3]);
+      ImpactDamage = int(tempWeaponList[4]);
+      Weight = int(tempWeaponList[5]);
+      Cost = int(tempWeaponList[6]);
+      HeadShotDamageMult = float(tempWeaponList[7]);
+      FireRate = float(tempWeaponList[8]);
+      FireAnimRate = float(tempWeaponList[9]);
+      ReloadRate = float(tempWeaponList[10]);
+      ReloadAnimRate = float(tempWeaponList[11]);
 
       // TO-DO
       // Implement duplicates detection
 
       ActualStandardWeapons[i].WeaponClassName = WeaponClassName;
       ActualStandardWeapons[i].MagCapacity = MagCapacity;
+      ActualStandardWeapons[i].AmmoCost = AmmoCost;
       ActualStandardWeapons[i].DamageMax = DamageMax;
       ActualStandardWeapons[i].ImpactDamage = ImpactDamage;
       ActualStandardWeapons[i].Weight = Weight;
@@ -299,7 +303,7 @@ defaultproperties
 
     // Mut Vars
     GroupName="KF-WeaponStatConfig"
-    FriendlyName="Weapon Stats Config - v1.1r"
+    FriendlyName="Weapon Stats Config - v1.2r"
     Description="Change Weapon Stats on-the-fly! - By Vel-San & dkanus"
 
     // Debugging
@@ -307,17 +311,17 @@ defaultproperties
 
     // This is a sample config for ones who lost their .ini & are smart enough to decompile and check the source-code ;)
     // Always keep the same order when adding or editing values !!!
-    // ClassName; Mag; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
+    // ClassName; Mag; AmmoCost; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
     // FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations or make it slow-mo, increase/decrease gradually
     // FireRate & ReloadRate: - To Increase | Low or High Values might break firerate or make it slow-mo, increase/decrease gradually
     // MagCapacity, ReloadRate & ReloadAnimRate are ignored for MeleeWeapons
     // ImpactDamage is only for weapons with Impact such as Rocket Laucnhers (e.g. Demo Weapons)
-    // StandardWeapons[0]="KFMod.Single;50;700;0;0;0;2.0;0.1;1.5;1;2.5"
-    // StandardWeapons[1]="KFMod.Crossbow;12;1500;0;1;5;2.0;0.1;2.5;0.1;2.5"
-    // StandardWeapons[2]="KFMod.AA12AutoShotgun;35;500;0;0;0;2.0;0.175;1.5;1;2.5"
-    // StandardWeapons[3]="KFMod.Magnum44Pistol;35;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
-    // StandardWeapons[4]="KFMod.HuskGun;35;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
-    // StandardWeapons[5]="KFMod.Knife;50;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"
-    // StandardWeapons[0]="KFMod.KrissMMedicGun;50;700;0;0;0;2.0;0.1;1.5;1;2.5"
+    // StandardWeapons[0]="KFMod.Single;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
+    // StandardWeapons[1]="KFMod.Crossbow;12;5;1500;0;1;5;2.0;0.1;2.5;0.1;2.5"
+    // StandardWeapons[2]="KFMod.AA12AutoShotgun;35;5;500;0;0;0;2.0;0.175;1.5;1;2.5"
+    // StandardWeapons[3]="KFMod.Magnum44Pistol;35;5;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
+    // StandardWeapons[4]="KFMod.HuskGun;35;5;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
+    // StandardWeapons[5]="KFMod.Knife;50;5;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"
+    // StandardWeapons[0]="KFMod.KrissMMedicGun;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
 
 }
