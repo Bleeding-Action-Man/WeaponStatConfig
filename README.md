@@ -16,6 +16,6 @@ This mutator allows you to configure:
 - Fire Rate
 - Fire Rate Animation speed
 
-Of all weapons. Custom or Officle!
+Of all weapons, Custom & Official!
 
 Find it here [Steam WorkShop](https://steamcommunity.com/id/Vel-San/myworkshopfiles/)
