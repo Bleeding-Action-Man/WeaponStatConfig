@@ -12,7 +12,7 @@ This mutator allows you to configure:
 - Fire Rate
 - Fire Rate Animation speed
 
-Of all weapons. Custom or Officle!
+Of all weapons. Custom or Official!
 
 
 [H1][b][u]Features that will be added[/u][/b][/H1]
@@ -57,7 +57,15 @@ StandardWeapons[2]="KFMod.AA12AutoShotgun;35;5;500;0;0;0;2.0;0.175;1.5;1;2.5"
 StandardWeapons[3]="KFMod.Magnum44Pistol;35;5;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
 StandardWeapons[4]="KFMod.HuskGun;35;5;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
 StandardWeapons[5]="KFMod.Knife;50;5;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"
-StandardWeapons[0]="KFMod.KrissMMedicGun;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
+StandardWeapons[6]="KFMod.KrissMMedicGun;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
+# Check the .ini for a full list of default values, for the below array
+# List below is only meant to generate default stats for weapons. If debug is set to true, stats will be generated
+PrintStatsFor[0]="KFMod.BlowerThrower"
+[/code]
+
+[code]All KF Weapon Classes
+
+https://pastebin.com/StRzZntT
 [/code]
 
 [H1][b][u]Class Names[/u][/b][/H1]
