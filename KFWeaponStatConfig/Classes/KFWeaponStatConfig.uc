@@ -167,6 +167,8 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         // DmgType Class Related Changes
         CurrentWeaponDmgType.default.HeadShotDamageMult = 1;
 
+        // TODO: Find a way to get rid of this ugly hack.. some weapons
+        // have 2 HeadShotDamageMult, one in the base class and another in the DmgType
         switch(GetItemName(string(CurrentWeapon))){
           case "CrossbowArrow":
             class'KFMod.CrossbowArrow'.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
@@ -188,8 +190,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         // DmgType Class Related Changes
         CurrentWeaponDmgType.default.HeadShotDamageMult = 1;
 
-        // TO-DO
-        // Add Switch statement to manually change HeadShotDamageMult like the above switch
+        // TODO: Add Switch statement to manually change HeadShotDamageMult like the above switch
         }
         else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none){
         CurrentWeaponLAWProj = class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
@@ -207,8 +208,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         // DmgType Class Related Changes
         CurrentWeaponDmgType.default.HeadShotDamageMult = 1;
 
-        // TO-DO
-        // Add Switch statement to manually change HeadShotDamageMult like the above switch
+        // TODO: Add Switch statement to manually change HeadShotDamageMult like the above switch
             }
         }
 
@@ -228,18 +228,18 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         CurrentWeaponPickup.default.AmmoCost = Weapon[i].AmmoCost;
 
         if (bDEBUG){
-          MutLog("-----|| bDEBUG ClassName: "$Weapon[i].WeaponClassName$" ||-----");
-          MutLog("-----|| bDEBUG MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
-          MutLog("-----|| bDEBUG AmmoCost: "$Weapon[i].AmmoCost$" ||-----");
-          MutLog("-----|| bDEBUG DamageMax: "$Weapon[i].DamageMax$" ||-----");
-          MutLog("-----|| bDEBUG ImpactDamage: "$Weapon[i].ImpactDamage$" ||-----");
-          MutLog("-----|| bDEBUG Weight: "$Weapon[i].Weight$" ||-----");
-          MutLog("-----|| bDEBUG Cost: "$Weapon[i].Cost$" ||-----");
-          MutLog("-----|| bDEBUG HeadShotDamageMult: "$Weapon[i].HeadShotDamageMult$" ||-----");
-          MutLog("-----|| bDEBUG FireRate: "$Weapon[i].FireRate$" ||-----");
-          MutLog("-----|| bDEBUG FireAnimRate: "$Weapon[i].FireAnimRate$" ||-----");
-          MutLog("-----|| bDEBUG ReloadRate: "$Weapon[i].ReloadRate$" ||-----");
-          MutLog("-----|| bDEBUG ReloadAnimRate: "$Weapon[i].ReloadAnimRate$" ||-----");
+          MutLog("-----|| DEBUG - ClassName: "$Weapon[i].WeaponClassName$" ||-----");
+          MutLog("-----|| DEBUG - MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
+          MutLog("-----|| DEBUG - AmmoCost: "$Weapon[i].AmmoCost$" ||-----");
+          MutLog("-----|| DEBUG - DamageMax: "$Weapon[i].DamageMax$" ||-----");
+          MutLog("-----|| DEBUG - ImpactDamage: "$Weapon[i].ImpactDamage$" ||-----");
+          MutLog("-----|| DEBUG - Weight: "$Weapon[i].Weight$" ||-----");
+          MutLog("-----|| DEBUG - Cost: "$Weapon[i].Cost$" ||-----");
+          MutLog("-----|| DEBUG - HeadShotDamageMult: "$Weapon[i].HeadShotDamageMult$" ||-----");
+          MutLog("-----|| DEBUG - FireRate: "$Weapon[i].FireRate$" ||-----");
+          MutLog("-----|| DEBUG - FireAnimRate: "$Weapon[i].FireAnimRate$" ||-----");
+          MutLog("-----|| DEBUG - ReloadRate: "$Weapon[i].ReloadRate$" ||-----");
+          MutLog("-----|| DEBUG - ReloadAnimRate: "$Weapon[i].ReloadAnimRate$" ||-----");
         }
       }
     }
@@ -264,7 +264,7 @@ simulated function GetServerVars()
   }
 
   ActualStandardWeapons.Length = Count;
-  default.bDEBUG = bDEBUG;
+  default.bDEBUG = bDEBUG; // This might not be needed at all
 
   for (i=0; i<WEAPONS_COUNT; i++)
   {
@@ -286,8 +286,7 @@ simulated function GetServerVars()
       ReloadRate = float(tempWeaponList[10]);
       ReloadAnimRate = float(tempWeaponList[11]);
 
-      // TO-DO
-      // Implement duplicates detection
+      // TODO: Implement duplicates detection
 
       ActualStandardWeapons[i].WeaponClassName = WeaponClassName;
       ActualStandardWeapons[i].MagCapacity = MagCapacity;
