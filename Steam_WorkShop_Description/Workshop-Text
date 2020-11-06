@@ -44,13 +44,14 @@ Sample config can be as the following:
 
 [code]
 [KFWeaponStatConfig.KFWeaponStatConfig]
-DEBUG=True
+bDEBUG=True
 # Always keep the same order when adding or editing values !!!
 # ClassName; Mag; AmmoCost; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
 # FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations or make it slow-mo, increase/decrease gradually
 # FireRate & ReloadRate: - To Increase | Low or High Values might break firerate or make it slow-mo, increase/decrease gradually
 # MagCapacity, ReloadRate & ReloadAnimRate are ignored for MeleeWeapons
 # ImpactDamage is only for weapons with Impact such as Rocket Laucnhers (e.g. Demo Weapons)
+# This list will 'Edit' the weapon stats
 StandardWeapons[0]="KFMod.Single;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
 StandardWeapons[1]="KFMod.Crossbow;12;5;1500;0;1;5;2.0;0.1;2.5;0.1;2.5"
 StandardWeapons[2]="KFMod.AA12AutoShotgun;35;5;500;0;0;0;2.0;0.175;1.5;1;2.5"
@@ -58,9 +59,14 @@ StandardWeapons[3]="KFMod.Magnum44Pistol;35;5;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
 StandardWeapons[4]="KFMod.HuskGun;35;5;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
 StandardWeapons[5]="KFMod.Knife;50;5;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"
 StandardWeapons[6]="KFMod.KrissMMedicGun;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
-# Check the .ini for a full list of default values, for the below array
+
+[KFWeaponStatConfig.Helper]
 # List below is only meant to generate default stats for weapons. If debug is set to true, stats will be generated
-PrintStatsFor[0]="KFMod.BlowerThrower"
+PrintStatsFor="KFMod.BlowerThrower"
+PrintStatsFor="KFMod.BoomStick"
+PrintStatsFor="KFMod.Bullpup"
+PrintStatsFor="KFMod.BullpupDM"
+PrintStatsFor="KFMod.BullpupSP"
 [/code]
 
 [code]All KF Weapon Classes
@@ -74,7 +80,7 @@ https://pastebin.com/StRzZntT
 
 [H1][b][u]Manual Download Links (Recommended)[/u][/b][/H1]
 
-You can find it under 'Not Whitelisted' folder named 'KF-WeaponStatConfig-v1.2r'
+You can find it under 'Not-Whitelisted' folder named 'KF-WeaponStatConfig-v1.3'
 
 MEGA Link: https://mega DOT nz/folder/YDoEmKiC#s6FGAtgh40-TvB4bHsLaMQ
 
@@ -83,3 +89,5 @@ MEGA Link: https://mega DOT nz/folder/YDoEmKiC#s6FGAtgh40-TvB4bHsLaMQ
 - [url=https://steamcommunity.com/app/1250/discussions/0/4153959504619222451/]Players who motivated me here[/url]
 
 - HUGE Credits to [b]dkanus[/b] for helping me immensly with understanding various concepts about replications
+
+- HUGE Credits to [b]NikC[/b] for helping me with code cleanup, Config file optimization & variable replications
