@@ -16,23 +16,19 @@ struct LoadedWeapon
 };
 
 // Debugging
-var config bool bDEBUG;
+var config bool bDebug;
 
-// Weapons Count
-// KFMod Class Weapons Count: 54, taken from here: http://wiki.tripwireinteractive.com/index.php/Weapons_(Killing_Floor)
-// All Official Weapons Count: 85, taken from here: http://kf-wiki.com/wiki/Inventory_system
-// 150 is set as a safe-guard. If we need more I'll make it 150+
 const WEAPONS_COUNT = 150;
 
 // Weapons List
-var() config string StandardWeapons[WEAPONS_COUNT];
+var config string StandardWeapons[WEAPONS_COUNT];
 var string replicatedList[WEAPONS_COUNT];
 var array<LoadedWeapon> ActualStandardWeapons;
 
 replication
 {
   unreliable if (Role == ROLE_Authority)
-                  bDEBUG,
+                  bDebug,
                   replicatedList,
                   StandardWeapons;
 }
@@ -47,8 +43,8 @@ simulated function PostBeginPlay()
     replicatedList[i] = StandardWeapons[i];
   }
 
-  MutLog("TESTINNNNNNNNNNNNNNNNNNNNNNNNNNNNG! KFWeaponStatConfig -> class'Helper'.static.PrintDefaultStats(bDEBUG)");
-  class'Helper'.static.PrintDefaultStats(bDEBUG);
+  MutLog("TESTINNNNNNNNNNNNNNNNNNNNNNNNNNNNG! KFWeaponStatConfig -> class'Helper'.static.PrintDefaultStats(bDebug)");
+  class'Helper'.static.PrintDefaultStats(bDebug);
 }
 
 
@@ -227,7 +223,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> Weapon)
         CurrentWeaponPickup.default.cost = Weapon[i].Cost;
         CurrentWeaponPickup.default.AmmoCost = Weapon[i].AmmoCost;
 
-        if (bDEBUG){
+        if (bDebug){
           MutLog("-----|| DEBUG - ClassName: "$Weapon[i].WeaponClassName$" ||-----");
           MutLog("-----|| DEBUG - MagCapacity: "$Weapon[i].MagCapacity$" ||-----");
           MutLog("-----|| DEBUG - AmmoCost: "$Weapon[i].AmmoCost$" ||-----");
@@ -264,7 +260,7 @@ simulated function GetServerVars()
   }
 
   ActualStandardWeapons.Length = Count;
-  default.bDEBUG = bDEBUG; // This might not be needed at all
+  default.bDebug = bDebug; // This might not be needed at all
 
   for (i=0; i<WEAPONS_COUNT; i++)
   {

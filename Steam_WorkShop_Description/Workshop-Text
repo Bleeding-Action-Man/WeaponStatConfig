@@ -44,7 +44,7 @@ Sample config can be as the following:
 
 [code]
 [KFWeaponStatConfig.KFWeaponStatConfig]
-bDEBUG=True
+bDebug=True
 # Always keep the same order when adding or editing values !!!
 # ClassName; Mag; AmmoCost; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
 # FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations or make it slow-mo, increase/decrease gradually
@@ -65,8 +65,6 @@ StandardWeapons[6]="KFMod.KrissMMedicGun;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
 PrintStatsFor="KFMod.BlowerThrower"
 PrintStatsFor="KFMod.BoomStick"
 PrintStatsFor="KFMod.Bullpup"
-PrintStatsFor="KFMod.BullpupDM"
-PrintStatsFor="KFMod.BullpupSP"
 [/code]
 
 [code]All KF Weapon Classes

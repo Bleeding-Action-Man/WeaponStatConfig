@@ -6,7 +6,7 @@ var config array<string> PrintStatsFor;
 
 
 // Print all default values for weapons in default.PrintStatsFor array from the config
-static function PrintDefaultStats(optional bool bDEBUG)
+static function PrintDefaultStats(optional bool bDebug)
 {
   local int i;
   local array<KFWeaponStatConfig.LoadedWeapon> DefaultStats;
@@ -26,12 +26,11 @@ static function PrintDefaultStats(optional bool bDEBUG)
   local class<LAWProj> CurrentWeaponLAWProj;
 
   // print nothing if we don't want to
-  if (!bDEBUG)
-    return;
+  if (!bDebug) return;
 
-  MutLog("-----|| Analyzing Default Weapons ||-----");
+  DefaultStats.Length = default.PrintStatsFor.Length;
 
-  DefaultStats.Length = 89;
+  MutLog("-----|| Analyzing Default Weapons [" $DefaultStats.Length$ "] ||-----");
 
   for (i=0; i<default.PrintStatsFor.Length; i++)
   {
@@ -186,18 +185,18 @@ static function PrintDefaultStats(optional bool bDEBUG)
       DefaultStats[i].Cost = CurrentWeaponPickup.default.cost;
       DefaultStats[i].AmmoCost = CurrentWeaponPickup.default.AmmoCost;
 
-      MutLog("-----|| DEBUG ClassName: "$DefaultStats[i].WeaponClassName$" ||-----");
-      MutLog("-----|| DEBUG MagCapacity: "$DefaultStats[i].MagCapacity$" ||-----");
-      MutLog("-----|| DEBUG AmmoCost: "$DefaultStats[i].AmmoCost$" ||-----");
-      MutLog("-----|| DEBUG DamageMax: "$DefaultStats[i].DamageMax$" ||-----");
-      MutLog("-----|| DEBUG ImpactDamage: "$DefaultStats[i].ImpactDamage$" ||-----");
-      MutLog("-----|| DEBUG Weight: "$DefaultStats[i].Weight$" ||-----");
-      MutLog("-----|| DEBUG Cost: "$DefaultStats[i].Cost$" ||-----");
-      MutLog("-----|| DEBUG HeadShotDamageMult: "$DefaultStats[i].HeadShotDamageMult$" ||-----");
-      MutLog("-----|| DEBUG FireRate: "$DefaultStats[i].FireRate$" ||-----");
-      MutLog("-----|| DEBUG FireAnimRate: "$DefaultStats[i].FireAnimRate$" ||-----");
-      MutLog("-----|| DEBUG ReloadRate: "$DefaultStats[i].ReloadRate$" ||-----");
-      MutLog("-----|| DEBUG ReloadAnimRate: "$DefaultStats[i].ReloadAnimRate$" ||-----");
+      MutLog("-----|| DEBUG - ClassName: "$DefaultStats[i].WeaponClassName$" ||-----");
+      MutLog("-----|| DEBUG - MagCapacity: "$DefaultStats[i].MagCapacity$" ||-----");
+      MutLog("-----|| DEBUG - AmmoCost: "$DefaultStats[i].AmmoCost$" ||-----");
+      MutLog("-----|| DEBUG - DamageMax: "$DefaultStats[i].DamageMax$" ||-----");
+      MutLog("-----|| DEBUG - ImpactDamage: "$DefaultStats[i].ImpactDamage$" ||-----");
+      MutLog("-----|| DEBUG - Weight: "$DefaultStats[i].Weight$" ||-----");
+      MutLog("-----|| DEBUG - Cost: "$DefaultStats[i].Cost$" ||-----");
+      MutLog("-----|| DEBUG - HeadShotDamageMult: "$DefaultStats[i].HeadShotDamageMult$" ||-----");
+      MutLog("-----|| DEBUG - FireRate: "$DefaultStats[i].FireRate$" ||-----");
+      MutLog("-----|| DEBUG - FireAnimRate: "$DefaultStats[i].FireAnimRate$" ||-----");
+      MutLog("-----|| DEBUG - ReloadRate: "$DefaultStats[i].ReloadRate$" ||-----");
+      MutLog("-----|| DEBUG - ReloadAnimRate: "$DefaultStats[i].ReloadAnimRate$" ||-----");
     }
   }
 }
