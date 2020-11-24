@@ -26,6 +26,15 @@ var array<LoadedWeapon> RepWeapon;
 var string RepWeaponClassName;
 var int RepMagCapacity, RepAmmoCost, RepDamageMax, RepImpactDamage, RepWeight, RepCost;
 var float RepHeadShotDamageMult, RepFireRate, RepFireAnimRate, RepReloadRate, RepReloadAnimRate;
+var transient bool bRepDone;
+
+replication
+{
+  reliable if (Role == ROLE_Authority)
+                RepWeaponClassName,
+                RepMagCapacity, RepAmmoCost, RepDamageMax, RepImpactDamage, RepWeight, RepCost,
+                RepHeadShotDamageMult, RepFireRate, RepFireAnimRate, RepReloadRate, RepReloadAnimRate;
+}
 
 function PostBeginPlay()
 {
@@ -34,14 +43,6 @@ function PostBeginPlay()
   RepWeapon.Length = Weapon.Length;
   GetServerVars(RepWeapon);
   ModifyWeapon(RepWeapon);
-}
-
-replication
-{
-  unreliable if (Role == ROLE_Authority)
-                RepWeaponClassName,
-                RepMagCapacity, RepAmmoCost, RepDamageMax, RepImpactDamage, RepWeight, RepCost,
-                RepHeadShotDamageMult, RepFireRate, RepFireAnimRate, RepReloadRate, RepReloadAnimRate;
 }
 
 
