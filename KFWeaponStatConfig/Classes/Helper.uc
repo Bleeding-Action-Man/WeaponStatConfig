@@ -26,7 +26,7 @@ static function PrintDefaultStats(optional bool bDebug)
   local class<LAWProj> CurrentWeaponLAWProj;
 
   // print nothing if we don't want to
-  if (!bDebug) return;
+  if (!bDebug || default.PrintStatsFor.Length == 0) return;
 
   DefaultStats.Length = default.PrintStatsFor.Length;
 
@@ -41,7 +41,7 @@ static function PrintDefaultStats(optional bool bDebug)
       CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
 
       MutLog("############## " $string(CurrentWeapon)$ " ##############");
-      DefaultStats[i].WeaponClassName = string(CurrentWeapon);
+      DefaultStats[i].sWeaponClassName = string(CurrentWeapon);
 
       // Grab Needed Classes & Check WeaponFire types, then proceed to change values accordingly
       if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none && class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none)
@@ -50,12 +50,12 @@ static function PrintDefaultStats(optional bool bDebug)
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
 
         // WeaponFire Class Related Changes
-        DefaultStats[i].DamageMax = CurrentWeaponFire.default.DamageMax;
-        DefaultStats[i].FireRate = CurrentWeaponFire.default.FireRate;
-        DefaultStats[i].FireAnimRate = CurrentWeaponFire.default.FireAnimRate;
+        DefaultStats[i].iDamageMax = CurrentWeaponFire.default.DamageMax;
+        DefaultStats[i].fFireRate = CurrentWeaponFire.default.FireRate;
+        DefaultStats[i].fFireAnimRate = CurrentWeaponFire.default.FireAnimRate;
 
         // DmgType Class Related Changes
-        DefaultStats[i].HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
+        DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
 
       }
 
@@ -67,12 +67,12 @@ static function PrintDefaultStats(optional bool bDebug)
         MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
 
         // WeaponFire Class Related Changes
-        DefaultStats[i].DamageMax = CurrentWeaponKFHighROFFire.default.DamageMax;
-        DefaultStats[i].FireRate = CurrentWeaponKFHighROFFire.default.FireRate;
-        DefaultStats[i].FireAnimRate = CurrentWeaponKFHighROFFire.default.FireAnimRate;
+        DefaultStats[i].iDamageMax = CurrentWeaponKFHighROFFire.default.DamageMax;
+        DefaultStats[i].fFireRate = CurrentWeaponKFHighROFFire.default.FireRate;
+        DefaultStats[i].fFireAnimRate = CurrentWeaponKFHighROFFire.default.FireAnimRate;
 
         // DmgType Class Related Changes
-        DefaultStats[i].HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
+        DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
       }
 
       else if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none)
@@ -83,12 +83,12 @@ static function PrintDefaultStats(optional bool bDebug)
         MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Melee Weapon");
 
         // WeaponFire Class Related Changes
-        DefaultStats[i].DamageMax = CurrentWeaponKFMeleeFire.default.MeleeDamage;
-        DefaultStats[i].FireRate = CurrentWeaponKFMeleeFire.default.FireRate;
-        DefaultStats[i].FireAnimRate = CurrentWeaponKFMeleeFire.default.FireAnimRate;
+        DefaultStats[i].iDamageMax = CurrentWeaponKFMeleeFire.default.MeleeDamage;
+        DefaultStats[i].fFireRate = CurrentWeaponKFMeleeFire.default.FireRate;
+        DefaultStats[i].fFireAnimRate = CurrentWeaponKFMeleeFire.default.FireAnimRate;
 
         // DmgType Class Related Changes
-        DefaultStats[i].HeadShotDamageMult = CurrentWeaponDamTypeMelee.default.HeadShotDamageMult;
+        DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDamTypeMelee.default.HeadShotDamageMult;
       }
 
       else if (class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none)
@@ -103,12 +103,12 @@ static function PrintDefaultStats(optional bool bDebug)
           MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
 
           // WeaponFire Class Related Changes
-          DefaultStats[i].DamageMax = CurrentWeaponProjectile.default.Damage;
-          DefaultStats[i].FireRate = CurrentWeaponShotgunFire.default.FireRate;
-          DefaultStats[i].FireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
+          DefaultStats[i].iDamageMax = CurrentWeaponProjectile.default.Damage;
+          DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
+          DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
           // DmgType Class Related Changes
-          DefaultStats[i].HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
+          DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
 
           // TODO: Fix this to be compatible with the above statement
           // switch(GetItemName(string(CurrentWeapon)))
@@ -127,12 +127,12 @@ static function PrintDefaultStats(optional bool bDebug)
           MutLog("       >Special Class: " $string(CurrentWeaponShotgunBullet));
 
           // WeaponFire Class Related Changes
-          DefaultStats[i].DamageMax = CurrentWeaponShotgunBullet.default.Damage;
-          DefaultStats[i].FireRate = CurrentWeaponShotgunFire.default.FireRate;
-          DefaultStats[i].FireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
+          DefaultStats[i].iDamageMax = CurrentWeaponShotgunBullet.default.Damage;
+          DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
+          DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
           // DmgType Class Related Changes
-          DefaultStats[i].HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
+          DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
 
           // TODO: Fix this to be compatible with the above statement
           // switch(GetItemName(string(CurrentWeapon)))
@@ -151,13 +151,13 @@ static function PrintDefaultStats(optional bool bDebug)
           MutLog("       >Special Class: " $string(CurrentWeaponLAWProj));
 
           // WeaponFire Class Related Changes
-          DefaultStats[i].DamageMax = CurrentWeaponLAWProj.default.Damage;
-          DefaultStats[i].ImpactDamage = CurrentWeaponLAWProj.default.ImpactDamage;
-          DefaultStats[i].FireRate = CurrentWeaponShotgunFire.default.FireRate;
-          DefaultStats[i].FireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
+          DefaultStats[i].iDamageMax = CurrentWeaponLAWProj.default.Damage;
+          DefaultStats[i].iImpactDamage = CurrentWeaponLAWProj.default.ImpactDamage;
+          DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
+          DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
           // DmgType Class Related Changes
-          DefaultStats[i].HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
+          DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
 
           // TODO: Fix this to be compatible with the above statement
           // switch(GetItemName(string(CurrentWeapon)))
@@ -170,33 +170,33 @@ static function PrintDefaultStats(optional bool bDebug)
 
       // Vars Shared among all weapons the same, no need to condition-check
       // Base Class Related Changes
-      DefaultStats[i].Weight = CurrentWeapon.default.Weight;
+      DefaultStats[i].iWeight = CurrentWeapon.default.Weight;
 
       // Ignore if current weapon is a Melee
       if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none)
       {
-        DefaultStats[i].MagCapacity = CurrentWeapon.default.MagCapacity;
-        DefaultStats[i].ReloadRate = CurrentWeapon.default.ReloadRate;
-        DefaultStats[i].ReloadAnimRate = CurrentWeapon.default.ReloadAnimRate;
+        DefaultStats[i].iMagCapacity = CurrentWeapon.default.MagCapacity;
+        DefaultStats[i].fReloadRate = CurrentWeapon.default.ReloadRate;
+        DefaultStats[i].fReloadAnimRate = CurrentWeapon.default.ReloadAnimRate;
       }
 
       // PickUp Class Related Changes
-      DefaultStats[i].Weight = CurrentWeaponPickup.default.Weight;
-      DefaultStats[i].Cost = CurrentWeaponPickup.default.cost;
-      DefaultStats[i].AmmoCost = CurrentWeaponPickup.default.AmmoCost;
+      DefaultStats[i].iWeight = CurrentWeaponPickup.default.Weight;
+      DefaultStats[i].iCost = CurrentWeaponPickup.default.cost;
+      DefaultStats[i].iAmmoCost = CurrentWeaponPickup.default.AmmoCost;
 
-      MutLog("-----|| DEBUG - ClassName: "$DefaultStats[i].WeaponClassName$" ||-----");
-      MutLog("-----|| DEBUG - MagCapacity: "$DefaultStats[i].MagCapacity$" ||-----");
-      MutLog("-----|| DEBUG - AmmoCost: "$DefaultStats[i].AmmoCost$" ||-----");
-      MutLog("-----|| DEBUG - DamageMax: "$DefaultStats[i].DamageMax$" ||-----");
-      MutLog("-----|| DEBUG - ImpactDamage: "$DefaultStats[i].ImpactDamage$" ||-----");
-      MutLog("-----|| DEBUG - Weight: "$DefaultStats[i].Weight$" ||-----");
-      MutLog("-----|| DEBUG - Cost: "$DefaultStats[i].Cost$" ||-----");
-      MutLog("-----|| DEBUG - HeadShotDamageMult: "$DefaultStats[i].HeadShotDamageMult$" ||-----");
-      MutLog("-----|| DEBUG - FireRate: "$DefaultStats[i].FireRate$" ||-----");
-      MutLog("-----|| DEBUG - FireAnimRate: "$DefaultStats[i].FireAnimRate$" ||-----");
-      MutLog("-----|| DEBUG - ReloadRate: "$DefaultStats[i].ReloadRate$" ||-----");
-      MutLog("-----|| DEBUG - ReloadAnimRate: "$DefaultStats[i].ReloadAnimRate$" ||-----");
+      MutLog("-----|| DEBUG - ClassName: "$DefaultStats[i].sWeaponClassName$" ||-----");
+      MutLog("-----|| DEBUG - MagCapacity: "$DefaultStats[i].iMagCapacity$" ||-----");
+      MutLog("-----|| DEBUG - AmmoCost: "$DefaultStats[i].iAmmoCost$" ||-----");
+      MutLog("-----|| DEBUG - DamageMax: "$DefaultStats[i].iDamageMax$" ||-----");
+      MutLog("-----|| DEBUG - ImpactDamage: "$DefaultStats[i].iImpactDamage$" ||-----");
+      MutLog("-----|| DEBUG - Weight: "$DefaultStats[i].iWeight$" ||-----");
+      MutLog("-----|| DEBUG - Cost: "$DefaultStats[i].iCost$" ||-----");
+      MutLog("-----|| DEBUG - HeadShotDamageMult: "$DefaultStats[i].fHeadShotDamageMult$" ||-----");
+      MutLog("-----|| DEBUG - FireRate: "$DefaultStats[i].fFireRate$" ||-----");
+      MutLog("-----|| DEBUG - FireAnimRate: "$DefaultStats[i].fFireAnimRate$" ||-----");
+      MutLog("-----|| DEBUG - ReloadRate: "$DefaultStats[i].fReloadRate$" ||-----");
+      MutLog("-----|| DEBUG - ReloadAnimRate: "$DefaultStats[i].fReloadAnimRate$" ||-----");
     }
   }
 }
