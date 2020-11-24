@@ -17,10 +17,10 @@ struct LoadedWeapon
 };
 
 // Debugging
-var() config bool bDebug;
+var config bool bDebug;
 
 // Weapons List to be loaded from Config File
-var() config array<LoadedWeapon> Weapon;
+var config array<LoadedWeapon> Weapon;
 
 var array<LoadedWeapon> RepWeapon;
 var string RepWeaponClassName;
@@ -37,7 +37,6 @@ function PostBeginPlay()
 }
 
 replication
-
 {
   unreliable if (Role == ROLE_Authority)
                 RepWeaponClassName,

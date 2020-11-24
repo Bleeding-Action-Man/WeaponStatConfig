@@ -12,16 +12,15 @@ This mutator allows you to configure:
 - Fire Rate
 - Fire Rate Animation speed
 
+
 Of all weapons. Custom or Official!
 
-
-[H1][b][u]Features that will be added[/u][/b][/H1]
-
-[strike]- All weapons are currently supported except ones that use this class > KFHighROFFire <
-    e.g: Any weapon that has HIGH RATE OF FIRE.
-- This will be added in the next version for sure![/strike] [b]ADDED IN V1.1r[/b]
-
 - [url=https://github.com/Vel-San/KF-WeaponStatConfig/commits/master]Track My Progress Here[/url]
+
+[H1][b][u]Notes[/u][/b][/H1]
+
+- As of [b]v1.3[/b], this mutator is [b]WHITELISTED[/b]
+- This is a server-side mutator, players do not have to download anything! (You don't have to compress and host it)
 
 [H1][b][u]Number Of Files[/u][/b][/H1]
 
@@ -45,29 +44,35 @@ Sample config can be as the following:
 [code]
 [KFWeaponStatConfig.KFWeaponStatConfig]
 bDebug=True
-# Always keep the same order when adding or editing values !!!
-# ClassName; Mag; AmmoCost; DmgMax; ImpactDamage; Weight; Cost; HeadShot Multi; FireRate; FireRate Anim; ReloadRate; ReloadRate Anime
 # FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations or make it slow-mo, increase/decrease gradually
-# FireRate & ReloadRate: - To Increase | Low or High Values might break firerate or make it slow-mo, increase/decrease gradually
+# FireRate & ReloadRate: - To Increase | Low or High Values might break fFireRate or make it slow-mo, increase/decrease gradually
 # MagCapacity, ReloadRate & ReloadAnimRate are ignored for MeleeWeapons
 # ImpactDamage is only for weapons with Impact such as Rocket Laucnhers (e.g. Demo Weapons)
 # This list will 'Edit' the weapon stats
-StandardWeapons[0]="KFMod.Single;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
-StandardWeapons[1]="KFMod.Crossbow;12;5;1500;0;1;5;2.0;0.1;2.5;0.1;2.5"
-StandardWeapons[2]="KFMod.AA12AutoShotgun;35;5;500;0;0;0;2.0;0.175;1.5;1;2.5"
-StandardWeapons[3]="KFMod.Magnum44Pistol;35;5;500;0;1;0;2.0;0.175;1.5;0.5;2.5"
-StandardWeapons[4]="KFMod.HuskGun;35;5;500;10;1;0;2.0;0.175;1.5;0.5;2.5"
-StandardWeapons[5]="KFMod.Knife;50;5;1500;0;0;0;2.0;0.5;1.1;0.175;1.5"
-StandardWeapons[6]="KFMod.KrissMMedicGun;50;5;700;0;0;0;2.0;0.1;1.5;1;2.5"
+Weapon=(sWeaponClassName="KFMod.Single",iMagCapacity=50,iDamageMax=3000,iWeight=0,iCost=0,iImpactDamage=0,fHeadShotDamageMult=2.0,fFireRate=0.175,fFireAnimRate=1.5,fReloadRate=2.0,fReloadAnimRate=2.0)
+Weapon=(sWeaponClassName="KFMod.M99SniperRifle",iMagCapacity=10,iDamageMax=5000,iWeight=2,iCost=5,iImpactDamage=0,fHeadShotDamageMult=2.0,fFireRate=1,fFireAnimRate=1.0,fReloadRate=1,fReloadAnimRate=2.5)
+Weapon=(sWeaponClassName="KFMod.KrissMMedicGun",iMagCapacity=100,iDamageMax=3000,iWeight=2,iCost=5,iImpactDamage=0,fHeadShotDamageMult=2.0,fFireRate=0.06,fFireAnimRate=1,fReloadRate=1.5,fReloadAnimRate=2.5)
+Weapon=(sWeaponClassName="KFMod.NeonKrissMMedicGun",iMagCapacity=100,iDamageMax=3000,iWeight=2,iCost=5,iImpactDamage=0,fHeadShotDamageMult=2.0,fFireRate=0.06,fFireAnimRate=1,fReloadRate=1.5,fReloadAnimRate=2.5)
+Weapon=(sWeaponClassName="KFMod.MP5MMedicGun",iMagCapacity=100,iDamageMax=3000,iWeight=2,iCost=5,iImpactDamage=0,fHeadShotDamageMult=2.0,fFireRate=0.08,fFireAnimRate=1,fReloadRate=1.5,fReloadAnimRate=2.7)
+Weapon=(sWeaponClassName="KFMod.M32GrenadeLauncher",iMagCapacity=35,iDamageMax=3000,iWeight=2,iCost=5,iImpactDamage=0,fHeadShotDamageMult=2.0,fFireRate=0.33,fFireAnimRate=1.0,fReloadRate=1.0,fReloadAnimRate=1.8)
+
+
 
 [KFWeaponStatConfig.Helper]
-# List below is only meant to generate default stats for weapons. If debug is set to true, stats will be generated
+# This list is to 'Print' default stats for a weapon
+# If bDebug=True --> Stats will be printed in your server.log (or Killingfloor.log)
 PrintStatsFor="KFMod.BlowerThrower"
 PrintStatsFor="KFMod.BoomStick"
 PrintStatsFor="KFMod.Bullpup"
+PrintStatsFor="KFMod.CamoM32GrenadeLauncher"
+PrintStatsFor="KFMod.CamoM4AssaultRifle"
+PrintStatsFor="KFMod.CamoMP5MMedicGun"
+PrintStatsFor="KFMod.CamoShotgun"
+PrintStatsFor="KFMod.Chainsaw"
 [/code]
 
-[code]All KF Weapon Classes
+[code]
+All KF Weapon Classes (Some might be not found or removed by TWI)
 
 https://pastebin.com/StRzZntT
 [/code]
@@ -78,7 +83,7 @@ https://pastebin.com/StRzZntT
 
 [H1][b][u]Manual Download Links (Recommended)[/u][/b][/H1]
 
-You can find it under 'Not-Whitelisted' folder named 'KF-WeaponStatConfig-v1.3'
+You can find it under 'Whitelisted' folder named 'KF-WeaponStatConfig-v1.3'
 
 MEGA Link: https://mega DOT nz/folder/YDoEmKiC#s6FGAtgh40-TvB4bHsLaMQ
 
