@@ -47,7 +47,7 @@ replication
 
 
 // Dynamically Load and modify weapons that are found in the Config File
-simulated function ModifyWeapon(array<LoadedWeapon> TmpWeapons)
+function ModifyWeapon(array<LoadedWeapon> TmpWeapons)
 {
   local int i;
 
@@ -225,7 +225,7 @@ simulated function ModifyWeapon(array<LoadedWeapon> TmpWeapons)
     }
 }
 
-simulated function GetServerVars(out array<LoadedWeapon> TempWeapons)
+function GetServerVars(out array<LoadedWeapon> TempWeapons)
 {
   local int i;
 
@@ -263,13 +263,13 @@ simulated function GetServerVars(out array<LoadedWeapon> TempWeapons)
   }
 }
 
-simulated function TimeStampLog(coerce string s)
+function TimeStampLog(coerce string s)
 {
   log("["$Level.TimeSeconds$"s]" @ s, 'WeaponStatsConfig');
 }
 
 
-simulated function MutLog(string s)
+function MutLog(string s)
 {
   log(s, 'WeaponStatsConfig');
 }
@@ -277,12 +277,6 @@ simulated function MutLog(string s)
 
 defaultproperties
 {
-  // Mandatory Vars
-  bAddToServerPackages=true
-  bAlwaysRelevant=true
-  RemoteRole=ROLE_SimulatedProxy
-  bNetNotify=true
-
   // Mut Vars
   GroupName="KF-WeaponStatConfig"
   FriendlyName="Weapon Stats Configurator - v1.3"
