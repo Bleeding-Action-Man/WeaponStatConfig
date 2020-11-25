@@ -1,12 +1,15 @@
 This mutator allows you to configure:
 
 - Max Dmg
-- Impact Dmg ( For Rocket Launchers / Demo Weapons )
+- InventoryGroup
 - Magazine Size
 - Ammo Cost
 - Cost
 - Weight
+- Impact Dmg ( For Rocket Launchers / Demo Weapons )
+- ProjPerFire
 - HeadShot multiplier
+- Spread
 - Reload Speed
 - Reload Animation Speed
 - Fire Rate
@@ -89,6 +92,8 @@ You can find it under 'Not-Whitelisted' folder named 'KF-WeaponStatConfig-v2.3'
 
 - [url=https://steamcommunity.com/app/1250/discussions/0/4153959504619222451/]Players who motivated me here[/url]
 
-- HUGE Credits to [b]dkanus[/b] for helping me immensly with understanding various concepts about replications
+- Credits to [b]dkanus[/b] for helping me immensly with understanding various concepts about replications
 
-- HUGE Credits to [b]NikC[/b] for helping me with code cleanup, Config file optimization & variable replications
+- Credits to [b]NikC[/b] for helping me with code cleanup, Config file optimization & variable replications
+
+- Credits to [b]VitalVomits[/b] for thoroughly testing and suggesting features

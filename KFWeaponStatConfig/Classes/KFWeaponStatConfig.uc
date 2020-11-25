@@ -9,7 +9,7 @@ class KFWeaponStatConfig extends Mutator
 
 
 // Struct of Weapons Array declared in Config File
-// TODO: Add ProjPerFire & AltFire Changes
+// TODO: Add More Varibales, when needed ;p
 struct LoadedWeapon
 {
   var config string sWeaponClassName;
@@ -54,7 +54,7 @@ simulated function Timer()
   // Get Count + Vars to Client
   Count = GetServerVars();
 
-  // Trigger WeaponModification
+  // Trigger Weapon Modification
   if(Count > 0) ModifyWeapon(Count);
   else MutLog("-----|| 0 Weapons Found in Config - Aborting ||-----");
 }
