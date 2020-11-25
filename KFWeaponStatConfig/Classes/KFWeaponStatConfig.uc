@@ -288,6 +288,6 @@ defaultproperties
 
   // Mut Vars
   GroupName="KF-WeaponStatConfig"
-  FriendlyName="Weapon Stats Configurator - v2.2"
+  FriendlyName="Weapon Stats Configurator - v2.3"
   Description="Change Standard & Custom Weapon Stats - By Vel-San, dkanus & NikC"
 }

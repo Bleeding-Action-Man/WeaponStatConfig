@@ -51,6 +51,7 @@ static function PrintDefaultStats(optional bool bDebug)
 
         // WeaponFire Class Related Changes
         DefaultStats[i].iDamageMax = CurrentWeaponFire.default.DamageMax;
+        DefaultStats[i].fSpread = CurrentWeaponFire.default.Spread;
         DefaultStats[i].fFireRate = CurrentWeaponFire.default.FireRate;
         DefaultStats[i].fFireAnimRate = CurrentWeaponFire.default.FireAnimRate;
 
@@ -68,6 +69,7 @@ static function PrintDefaultStats(optional bool bDebug)
 
         // WeaponFire Class Related Changes
         DefaultStats[i].iDamageMax = CurrentWeaponKFHighROFFire.default.DamageMax;
+        DefaultStats[i].fSpread = CurrentWeaponKFHighROFFire.default.Spread;
         DefaultStats[i].fFireRate = CurrentWeaponKFHighROFFire.default.FireRate;
         DefaultStats[i].fFireAnimRate = CurrentWeaponKFHighROFFire.default.FireAnimRate;
 
@@ -84,6 +86,7 @@ static function PrintDefaultStats(optional bool bDebug)
 
         // WeaponFire Class Related Changes
         DefaultStats[i].iDamageMax = CurrentWeaponKFMeleeFire.default.MeleeDamage;
+        DefaultStats[i].fSpread = CurrentWeaponKFMeleeFire.default.Spread;
         DefaultStats[i].fFireRate = CurrentWeaponKFMeleeFire.default.FireRate;
         DefaultStats[i].fFireAnimRate = CurrentWeaponKFMeleeFire.default.FireAnimRate;
 
@@ -104,6 +107,8 @@ static function PrintDefaultStats(optional bool bDebug)
 
           // WeaponFire Class Related Changes
           DefaultStats[i].iDamageMax = CurrentWeaponProjectile.default.Damage;
+          DefaultStats[i].fSpread = CurrentWeaponShotgunFire.default.Spread;
+          DefaultStats[i].iProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
@@ -128,6 +133,8 @@ static function PrintDefaultStats(optional bool bDebug)
 
           // WeaponFire Class Related Changes
           DefaultStats[i].iDamageMax = CurrentWeaponShotgunBullet.default.Damage;
+          DefaultStats[i].fSpread = CurrentWeaponShotgunFire.default.Spread;
+          DefaultStats[i].iProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
@@ -152,6 +159,8 @@ static function PrintDefaultStats(optional bool bDebug)
 
           // WeaponFire Class Related Changes
           DefaultStats[i].iDamageMax = CurrentWeaponLAWProj.default.Damage;
+          DefaultStats[i].fSpread = CurrentWeaponShotgunFire.default.Spread;
+          DefaultStats[i].iProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
           DefaultStats[i].iImpactDamage = CurrentWeaponLAWProj.default.ImpactDamage;
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
@@ -171,6 +180,7 @@ static function PrintDefaultStats(optional bool bDebug)
       // Vars Shared among all weapons the same, no need to condition-check
       // Base Class Related Changes
       DefaultStats[i].iWeight = CurrentWeapon.default.Weight;
+      DefaultStats[i].iInventoryGroup = CurrentWeapon.default.InventoryGroup;
 
       // Ignore if current weapon is a Melee
       if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none)
@@ -186,6 +196,7 @@ static function PrintDefaultStats(optional bool bDebug)
       DefaultStats[i].iAmmoCost = CurrentWeaponPickup.default.AmmoCost;
 
       MutLog("-----|| DEBUG - ClassName: "$DefaultStats[i].sWeaponClassName$" ||-----");
+      MutLog("-----|| DEBUG - InventoryGroup: "$DefaultStats[i].iInventoryGroup$" ||-----");
       MutLog("-----|| DEBUG - MagCapacity: "$DefaultStats[i].iMagCapacity$" ||-----");
       MutLog("-----|| DEBUG - AmmoCost: "$DefaultStats[i].iAmmoCost$" ||-----");
       MutLog("-----|| DEBUG - DamageMax: "$DefaultStats[i].iDamageMax$" ||-----");
@@ -193,6 +204,8 @@ static function PrintDefaultStats(optional bool bDebug)
       MutLog("-----|| DEBUG - Weight: "$DefaultStats[i].iWeight$" ||-----");
       MutLog("-----|| DEBUG - Cost: "$DefaultStats[i].iCost$" ||-----");
       MutLog("-----|| DEBUG - HeadShotDamageMult: "$DefaultStats[i].fHeadShotDamageMult$" ||-----");
+      MutLog("-----|| DEBUG - Spread: "$DefaultStats[i].fSpread$" ||-----");
+      MutLog("-----|| DEBUG - ProjPerFire: "$DefaultStats[i].iProjPerFire$" ||-----");
       MutLog("-----|| DEBUG - FireRate: "$DefaultStats[i].fFireRate$" ||-----");
       MutLog("-----|| DEBUG - FireAnimRate: "$DefaultStats[i].fFireAnimRate$" ||-----");
       MutLog("-----|| DEBUG - ReloadRate: "$DefaultStats[i].fReloadRate$" ||-----");
