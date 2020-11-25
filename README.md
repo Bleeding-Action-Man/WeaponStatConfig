@@ -5,12 +5,15 @@
 This mutator allows you to configure:
 
 - Max Dmg
-- Impact Dmg ( For Rocket Launchers / Demo Weapons )
+- InventoryGroup
 - Magazine Size
 - Ammo Cost
 - Cost
 - Weight
+- Impact Dmg ( For Rocket Launchers / Demo Weapons )
+- ProjPerFire
 - HeadShot multiplier
+- Spread
 - Reload Speed
 - Reload Animation Speed
 - Fire Rate

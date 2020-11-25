@@ -9,11 +9,12 @@ class KFWeaponStatConfig extends Mutator
 
 
 // Struct of Weapons Array declared in Config File
+// TODO: Add ProjPerFire & AltFire Changes
 struct LoadedWeapon
 {
   var config string sWeaponClassName;
-  var config int iMagCapacity, iAmmoCost, iDamageMax, iImpactDamage, iWeight, iCost;
-  var config float fHeadShotDamageMult, fFireRate, fFireAnimRate, fReloadRate, fReloadAnimRate;
+  var config int iMagCapacity, iAmmoCost, iDamageMax, iImpactDamage, iWeight, iCost, iInventoryGroup, iProjPerFire;
+  var config float fHeadShotDamageMult, fSpread, fFireRate, fFireAnimRate, fReloadRate, fReloadAnimRate;
 };
 
 // Weapons Count | Default 200, but can be changed if Server Owners need more :)
@@ -99,6 +100,7 @@ simulated function ModifyWeapon(int TmpCount)
 
         // WeaponFire Class Related Changes
         CurrentWeaponFire.default.DamageMax = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread != 999) CurrentWeaponFire.default.Spread = Weapon[i].fSpread;
         CurrentWeaponFire.default.FireRate = Weapon[i].fFireRate;
         CurrentWeaponFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
 
@@ -114,6 +116,7 @@ simulated function ModifyWeapon(int TmpCount)
 
         // WeaponFire Class Related Changes
         CurrentWeaponKFHighROFFire.default.DamageMax = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread != 999) CurrentWeaponKFHighROFFire.default.Spread = Weapon[i].fSpread;
         CurrentWeaponKFHighROFFire.default.FireRate = Weapon[i].fFireRate;
         CurrentWeaponKFHighROFFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
 
@@ -129,6 +132,7 @@ simulated function ModifyWeapon(int TmpCount)
 
         // WeaponFire Class Related Changes
         CurrentWeaponKFMeleeFire.default.MeleeDamage = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread != 999) CurrentWeaponKFMeleeFire.default.Spread = Weapon[i].fSpread;
         CurrentWeaponKFMeleeFire.default.FireRate = Weapon[i].fFireRate;
         CurrentWeaponKFMeleeFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
 
@@ -147,6 +151,8 @@ simulated function ModifyWeapon(int TmpCount)
 
         // WeaponFire Class Related Changes
         CurrentWeaponProjectile.default.Damage = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
         CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
         CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
 
@@ -170,6 +176,8 @@ simulated function ModifyWeapon(int TmpCount)
 
         // WeaponFire Class Related Changes
         CurrentWeaponShotgunBullet.default.Damage = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
         CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
         CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
 
@@ -187,6 +195,8 @@ simulated function ModifyWeapon(int TmpCount)
 
         // WeaponFire Class Related Changes
         CurrentWeaponLAWProj.default.Damage = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
         CurrentWeaponLAWProj.default.ImpactDamage = Weapon[i].iImpactDamage;
         CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
         CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
@@ -201,6 +211,7 @@ simulated function ModifyWeapon(int TmpCount)
         // Vars Shared among all weapons the same, no need to condition-check
         // Base Class Related Changes
         CurrentWeapon.default.Weight = Weapon[i].iWeight;
+        CurrentWeapon.default.InventoryGroup = Weapon[i].iInventoryGroup;
         // Ignore if current weapon is a Melee
         if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none){
             CurrentWeapon.default.MagCapacity = Weapon[i].iMagCapacity;
@@ -215,17 +226,20 @@ simulated function ModifyWeapon(int TmpCount)
 
         if (Debug){
           MutLog("-----|| DEBUG - ClassName: "$Weapon[i].sWeaponClassName$" ||-----");
-          MutLog("-----|| DEBUG - iMagCapacity: "$Weapon[i].iMagCapacity$" ||-----");
-          MutLog("-----|| DEBUG - iAmmoCost: "$Weapon[i].iAmmoCost$" ||-----");
-          MutLog("-----|| DEBUG - iDamageMax: "$Weapon[i].iDamageMax$" ||-----");
-          MutLog("-----|| DEBUG - iImpactDamage: "$Weapon[i].iImpactDamage$" ||-----");
-          MutLog("-----|| DEBUG - iWeight: "$Weapon[i].iWeight$" ||-----");
-          MutLog("-----|| DEBUG - iCost: "$Weapon[i].iCost$" ||-----");
-          MutLog("-----|| DEBUG - fHeadShotDamageMult: "$Weapon[i].fHeadShotDamageMult$" ||-----");
-          MutLog("-----|| DEBUG - fFireRate: "$Weapon[i].fFireRate$" ||-----");
-          MutLog("-----|| DEBUG - fFireAnimRate: "$Weapon[i].fFireAnimRate$" ||-----");
-          MutLog("-----|| DEBUG - fReloadRate: "$Weapon[i].fReloadRate$" ||-----");
-          MutLog("-----|| DEBUG - fReloadAnimRate: "$Weapon[i].fReloadAnimRate$" ||-----");
+          MutLog("-----|| DEBUG - InventoryGroup: "$Weapon[i].iInventoryGroup$" ||-----");
+          MutLog("-----|| DEBUG - MagCapacity: "$Weapon[i].iMagCapacity$" ||-----");
+          MutLog("-----|| DEBUG - AmmoCost: "$Weapon[i].iAmmoCost$" ||-----");
+          MutLog("-----|| DEBUG - DamageMax: "$Weapon[i].iDamageMax$" ||-----");
+          MutLog("-----|| DEBUG - ImpactDamage: "$Weapon[i].iImpactDamage$" ||-----");
+          MutLog("-----|| DEBUG - Weight: "$Weapon[i].iWeight$" ||-----");
+          MutLog("-----|| DEBUG - Cost: "$Weapon[i].iCost$" ||-----");
+          MutLog("-----|| DEBUG - HeadShotDamageMult: "$Weapon[i].fHeadShotDamageMult$" ||-----");
+          MutLog("-----|| DEBUG - Spread: "$Weapon[i].fSpread$" ||-----");
+          MutLog("-----|| DEBUG - ProjPerFire: "$Weapon[i].iProjPerFire$" ||-----");
+          MutLog("-----|| DEBUG - FireRate: "$Weapon[i].fFireRate$" ||-----");
+          MutLog("-----|| DEBUG - FireAnimRate: "$Weapon[i].fFireAnimRate$" ||-----");
+          MutLog("-----|| DEBUG - ReloadRate: "$Weapon[i].fReloadRate$" ||-----");
+          MutLog("-----|| DEBUG - ReloadAnimRate: "$Weapon[i].fReloadAnimRate$" ||-----");
         }
       }
     }
@@ -274,6 +288,6 @@ defaultproperties
 
   // Mut Vars
   GroupName="KF-WeaponStatConfig"
-  FriendlyName="Weapon Stats Configurator - v2.1"
+  FriendlyName="Weapon Stats Configurator - v2.2"
   Description="Change Standard & Custom Weapon Stats - By Vel-San, dkanus & NikC"
 }
