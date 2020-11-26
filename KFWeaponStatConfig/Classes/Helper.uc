@@ -20,6 +20,7 @@ static function PrintDefaultStats(optional bool bDebug)
   local class<KFHighROFFire> CurrentWeaponKFHighROFFire;
 
   local class<KFProjectileWeaponDamageType> CurrentWeaponDmgType;
+  local class<DamTypeM79Grenade> CurrentWeaponM79DmgType;
   local class<DamTypeMelee> CurrentWeaponDamTypeMelee;
   local class<Projectile> CurrentWeaponProjectile;
   local class<ShotgunBullet> CurrentWeaponShotgunBullet;
@@ -100,7 +101,18 @@ static function PrintDefaultStats(optional bool bDebug)
         if (class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none && class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none)
         {
           CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
-          CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
+           if (class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class')) != none )
+          {
+            CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
+            // DmgType Class Related Changes
+            DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
+          }
+          else if (class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class')) != none)
+          {
+            CurrentWeaponM79DmgType = class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
+            // DmgType Class Related Changes
+            DefaultStats[i].fHeadShotDamageMult = CurrentWeaponM79DmgType.default.HeadShotDamageMult;
+          }
 
           MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
           MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
@@ -111,9 +123,6 @@ static function PrintDefaultStats(optional bool bDebug)
           DefaultStats[i].iProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
-
-          // DmgType Class Related Changes
-          DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
 
           // TODO: Fix this to be compatible with the above statement
           // switch(GetItemName(string(CurrentWeapon)))
