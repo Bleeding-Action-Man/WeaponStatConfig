@@ -147,36 +147,47 @@ simulated function ModifyWeapon(int TmpCount)
         && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none
         && class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none)
         {
-        CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
-        if (class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class')) != none )
-        {
-          CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
-          // DmgType Class Related Changes
-          CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
-        }
-        else if (class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class')) != none)
-        {
-          CurrentWeaponM79DmgType = class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
-          // DmgType Class Related Changes
-          CurrentWeaponM79DmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
-        }
+          CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
+          if (class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class')) != none )
+          {
+            CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
+            // DmgType Class Related Changes
+            CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+          }
+          else if (class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class')) != none)
+          {
+            CurrentWeaponM79DmgType = class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
+            // DmgType Class Related Changes
+            CurrentWeaponM79DmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+          }
 
-        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
-        MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
+          MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
+          MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
 
-        // WeaponFire Class Related Changes
-        CurrentWeaponProjectile.default.Damage = Weapon[i].iDamageMax;
-        if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
-        if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
-        CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
-        CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+          // WeaponFire Class Related Changes
+          CurrentWeaponProjectile.default.Damage = Weapon[i].iDamageMax;
+          if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
+          if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
+          CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
+          CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
 
-        // TODO: Find a way to get rid of this ugly hack.. some weapons
-        // have 2 fHeadShotDamageMult, one in the base class and another in the DmgType
-        switch(GetItemName(string(CurrentWeapon))){
-          case "CrossbowArrow":
-            class'KFMod.CrossbowArrow'.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
-            }
+          // For classes that are either: CrossbowArrow, M99Bullet CrossbuzzsawBlade
+          // Or children of said classes, we have a different HeadShotMultiplier
+          if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbuzzsawBlade'))
+          {
+            MutLog("       >Has Special HeadShot Implementation (CrossBuzzsawBlade)");
+            class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+          }
+          else if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbowArrow'))
+          {
+            MutLog("       >Has Special HeadShot Implementation (CrossbowArrow)");
+            class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+          }
+          else if (ClassIsChildOf(CurrentWeaponProjectile, class'M99Bullet'))
+          {
+            MutLog("       >Has Special HeadShot Implementation (M99Bullet)");
+            class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+          }
         }
 
         else if (class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none){
@@ -196,7 +207,6 @@ simulated function ModifyWeapon(int TmpCount)
         // DmgType Class Related Changes
         CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
 
-        // TODO: Add Switch statement to manually change fHeadShotDamageMult like the above switch
         }
         else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none){
         CurrentWeaponLAWProj = class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
@@ -216,7 +226,6 @@ simulated function ModifyWeapon(int TmpCount)
         // DmgType Class Related Changes
         CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
 
-        // TODO: Add Switch statement to manually change fHeadShotDamageMult like the above switch
             }
         }
 

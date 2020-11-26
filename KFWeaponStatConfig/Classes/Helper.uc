@@ -124,12 +124,23 @@ static function PrintDefaultStats(optional bool bDebug)
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
-          // TODO: Fix this to be compatible with the above statement
-          // switch(GetItemName(string(CurrentWeapon)))
-          // {
-          //   case "CrossbowArrow":
-          //     class'KFMod.CrossbowArrow'.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
-          // }
+          // For classes that are either: CrossbowArrow, M99Bullet CrossbuzzsawBlade
+          // Or children of said classes, we have a different HeadShotMultiplier
+          if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbuzzsawBlade'))
+          {
+            MutLog("       >Has Special HeadShot Implementation (CrossBuzzsawBlade)");
+            DefaultStats[i].fHeadShotDamageMult = class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult;
+          }
+          else if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbowArrow'))
+          {
+            MutLog("       >Has Special HeadShot Implementation (CrossbowArrow)");
+            DefaultStats[i].fHeadShotDamageMult = class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult;
+          }
+          else if (ClassIsChildOf(CurrentWeaponProjectile, class'M99Bullet'))
+          {
+            MutLog("       >Has Special HeadShot Implementation (M99Bullet)");
+            DefaultStats[i].fHeadShotDamageMult = class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult;
+          }
         }
 
         else if (class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none)
@@ -150,12 +161,6 @@ static function PrintDefaultStats(optional bool bDebug)
           // DmgType Class Related Changes
           DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
 
-          // TODO: Fix this to be compatible with the above statement
-          // switch(GetItemName(string(CurrentWeapon)))
-          // {
-          //   case "CrossbowArrow":
-          //     class'KFMod.CrossbowArrow'.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
-          // }
         }
 
         else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none)
@@ -177,12 +182,6 @@ static function PrintDefaultStats(optional bool bDebug)
           // DmgType Class Related Changes
           DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
 
-          // TODO: Fix this to be compatible with the above statement
-          // switch(GetItemName(string(CurrentWeapon)))
-          // {
-          //   case "CrossbowArrow":
-          //     class'KFMod.CrossbowArrow'.default.HeadShotDamageMult = Weapon[i].HeadShotDamageMult;
-          // }
         }
       }
 
