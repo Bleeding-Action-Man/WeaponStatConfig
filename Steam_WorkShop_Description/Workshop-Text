@@ -63,6 +63,8 @@ aWeapon[9]=(sWeaponClassName="KFEnhancedMusket.EnhancedMusket",iInventoryGroup=4
 [KFWeaponStatConfig.Helper]
 # This list is to 'Print' default stats for a weapon
 # If bDebug=True --> Stats will be printed in your server.log (or Killingfloor.log)
+# This will also generate a copy-paste ready template that you can use in the above config
+# but please do not forget to add "" Quotes to the class name after you paste
 PrintStatsFor="KFMod.M99SniperRifle"
 PrintStatsFor="KFMod.M32GrenadeLauncher"
 PrintStatsFor="KFMod.CamoM32GrenadeLauncher"
