@@ -9,6 +9,7 @@ var config array<string> PrintStatsFor;
 static function PrintDefaultStats(optional bool bDebug)
 {
   local int i;
+  local string sReadyMadeConfig;
   local array<KFWeaponStatConfig.LoadedWeapon> DefaultStats;
 
   local class<KFWeapon> CurrentWeapon;
@@ -41,7 +42,7 @@ static function PrintDefaultStats(optional bool bDebug)
       CurrentWeapon = class<KFWeapon>(DynamicLoadObject(default.PrintStatsFor[i], class'Class'));
       CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
 
-      MutLog("############## " $string(CurrentWeapon)$ " ##############");
+      MutLog("############## " $string(CurrentWeapon)$ " | " $CurrentWeaponPickup.default.ItemName$ " ##############");
       DefaultStats[i].sWeaponClassName = string(CurrentWeapon);
 
       // Grab Needed Classes & Check WeaponFire types, then proceed to change values accordingly
@@ -159,7 +160,7 @@ static function PrintDefaultStats(optional bool bDebug)
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
           // DmgType Class Related Changes
-          DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
+          DefaultStats[i].fHeadShotDamageMult = CurrentWeaponShotgunBullet.default.HeadShotDamageMult;
 
         }
 
@@ -202,23 +203,16 @@ static function PrintDefaultStats(optional bool bDebug)
       DefaultStats[i].iWeight = CurrentWeaponPickup.default.Weight;
       DefaultStats[i].iCost = CurrentWeaponPickup.default.cost;
       DefaultStats[i].iAmmoCost = CurrentWeaponPickup.default.AmmoCost;
-
-      MutLog("-----|| DEBUG - ClassName: "$DefaultStats[i].sWeaponClassName$" ||-----");
-      MutLog("-----|| DEBUG - InventoryGroup: "$DefaultStats[i].iInventoryGroup$" ||-----");
-      MutLog("-----|| DEBUG - MagCapacity: "$DefaultStats[i].iMagCapacity$" ||-----");
-      MutLog("-----|| DEBUG - AmmoCost: "$DefaultStats[i].iAmmoCost$" ||-----");
-      MutLog("-----|| DEBUG - DamageMax: "$DefaultStats[i].iDamageMax$" ||-----");
-      MutLog("-----|| DEBUG - ImpactDamage: "$DefaultStats[i].iImpactDamage$" ||-----");
-      MutLog("-----|| DEBUG - Weight: "$DefaultStats[i].iWeight$" ||-----");
-      MutLog("-----|| DEBUG - Cost: "$DefaultStats[i].iCost$" ||-----");
-      MutLog("-----|| DEBUG - HeadShotDamageMult: "$DefaultStats[i].fHeadShotDamageMult$" ||-----");
-      MutLog("-----|| DEBUG - Spread: "$DefaultStats[i].fSpread$" ||-----");
-      MutLog("-----|| DEBUG - ProjPerFire: "$DefaultStats[i].iProjPerFire$" ||-----");
-      MutLog("-----|| DEBUG - FireRate: "$DefaultStats[i].fFireRate$" ||-----");
-      MutLog("-----|| DEBUG - FireAnimRate: "$DefaultStats[i].fFireAnimRate$" ||-----");
-      MutLog("-----|| DEBUG - ReloadRate: "$DefaultStats[i].fReloadRate$" ||-----");
-      MutLog("-----|| DEBUG - ReloadAnimRate: "$DefaultStats[i].fReloadAnimRate$" ||-----");
     }
+  }
+
+  MutLog("-----|| Below is a Ready-Made config of your loaded weapons ||-----");
+  for(i=0; i < DefaultStats.Length; i++)
+  {
+    // Generate a copy-paste ready config for this weapon, with default variables
+    sReadyMadeConfig = "";
+    sReadyMadeConfig $= "aWeapon["$i$"]=(sWeaponClassName="$DefaultStats[i].sWeaponClassName$",iInventoryGroup="$DefaultStats[i].iInventoryGroup$",iWeight="$DefaultStats[i].iWeight$",iCost="$DefaultStats[i].iCost$",iDamageMax="$DefaultStats[i].iDamageMax$",iMagCapacity="$DefaultStats[i].iMagCapacity$",iAmmoCost="$DefaultStats[i].iAmmoCost$",iImpactDamage="$DefaultStats[i].iImpactDamage$",iProjPerFire="$DefaultStats[i].iProjPerFire$",fHeadShotDamageMult="$DefaultStats[i].fHeadShotDamageMult$",fSpread="$DefaultStats[i].fSpread$",fFireRate="$DefaultStats[i].fFireRate$",fFireAnimRate="$DefaultStats[i].fFireAnimRate$",fReloadRate="$DefaultStats[i].fReloadRate$",fReloadAnimRate="$DefaultStats[i].fReloadAnimRate$")";
+    MutLog(sReadyMadeConfig);
   }
 }
 

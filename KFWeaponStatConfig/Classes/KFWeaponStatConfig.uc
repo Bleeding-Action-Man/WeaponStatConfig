@@ -205,7 +205,7 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
 
         // DmgType Class Related Changes
-        CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        CurrentWeaponShotgunBullet.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
 
         }
         else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none){
@@ -309,6 +309,6 @@ defaultproperties
 
   // Mut Vars
   GroupName="KF-WeaponStatConfig"
-  FriendlyName="Weapon Stats Configurator - v2.4"
+  FriendlyName="Weapon Stats Configurator - v2.4.1"
   Description="Change Standard & Custom Weapon Stats - By Vel-San, dkanus & NikC"
 }
