@@ -1,0 +1,69 @@
+This mutator allows you to configure:
+
+- Max Dmg
+- InventoryGroup
+- Max Ammo
+- Magazine Size
+- Ammo Cost
+- Cost
+- Weight
+- Impact Dmg ( For Rocket Launchers / Demo Weapons )
+- ProjPerFire
+- HeadShot multiplier
+- Spread
+- Reload Speed
+- Reload Animation Speed
+- Fire Rate
+- Fire Rate Animation speed
+
+Of all weapons. Custom or Official!
+
+- [url=https://github.com/Vel-San/KF-WeaponStatConfig/commits/master]Track My Progress Here[/url]
+
+
+[H1][b][u]Number Of Files[/u][/b][/H1]
+
+- 3
+
+[H1][b][u]File Names[/u][/b][/H1]
+
+- \System\WeaponStatConfig.u
+- \System\WeaponStatConfig.ucl
+- \System\WeaponStat_Config.ini
+
+[H1][b][u]Usage[/u][/b][/H1]
+
+1- Subscribe or download manually (recommended)
+2- Launch the game and wait to see 'Completed'
+3- Restart the game and you can see the mutators in your list
+4- Before you start your server, navigate to your directory and edit the configuration file. Add/Remove whatever weapon you want. Follow instructions in the config file to understand what each value does.
+
+Sample config can be as the following:
+
+- [url=https://github.com/Bleeding-Action-Man/WeaponStatConfig/blob/master/Config/WeaponStat_Config.ini]Config File[/url]
+
+[code]
+All KF Weapon Classes (Some might be not found or removed by TWI)
+
+https://pastebin.com/StRzZntT
+[/code]
+
+[H1][b][u]Class Names[/u][/b][/H1]
+
+- WeaponStatConfig.WeaponStatConfig
+
+[H1][b][u]Manual Download Links (Recommended)[/u][/b][/H1]
+
+- Github: https://github.com/Vel-San/KF-WeaponStatConfig/releases/tag/v2.5
+
+[H1][b][u]Credits[/u][/b][/H1]
+
+- [url=https://steamcommunity.com/app/1250/discussions/0/4153959504619222451/]Players who motivated me here[/url]
+
+- Credits to [b]dkanus[/b] for helping me immensly with understanding various concepts about replications
+
+- Credits to [b]NikC[/b] for helping me with code cleanup, Config file optimization & variable replications
+
+- Credits to [b]VitalVomits[/b] for thoroughly testing and suggesting features
+
+- Credits to everyone who requested features :)

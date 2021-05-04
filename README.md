@@ -23,6 +23,5 @@ Of all weapons, Custom & Official!
 ## Weapons Default Stats
 
 - If you set `Debug` to true, a full list of every single KillingFloor weapon will be generated for you in the log.
-  - This WILL have erros and bugs, because I'm kinda too lazy to edit this for try/catch handling
 
 Find it here [Steam WorkShop](https://steamcommunity.com/id/Vel-San/myworkshopfiles/)

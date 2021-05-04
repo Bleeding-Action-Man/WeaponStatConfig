@@ -62,7 +62,8 @@ simulated function Timer()
 // Dynamically Load and modify weapons that are found in the Config File
 simulated function ModifyWeapon(int TmpCount)
 {
-  local int i;
+  local int i, MaxAmmo, MagCapacity, AmmoCost, DamageMax, ImpactDamage, Weight, Cost, InventoryGroup, ProjPerFire;
+  local float HeadShotDamageMult, Spread, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
 
   local class<KFWeapon> CurrentWeapon;
   local class<KFWeaponPickup> CurrentWeaponPickup;
@@ -102,17 +103,23 @@ simulated function ModifyWeapon(int TmpCount)
         if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Standard Weapon");
 
         // WeaponFire Class Related Changes
-        CurrentWeaponFire.default.DamageMax = Weapon[i].iDamageMax;
-        if(Weapon[i].fSpread != 999) CurrentWeaponFire.default.Spread = Weapon[i].fSpread;
-        CurrentWeaponFire.default.FireRate = Weapon[i].fFireRate;
-        CurrentWeaponFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        if(Weapon[i].iDamageMax >= 0) CurrentWeaponFire.default.DamageMax = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread >= 0) CurrentWeaponFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].fFireRate >= 0) CurrentWeaponFire.default.FireRate = Weapon[i].fFireRate;
+        if(Weapon[i].fFireAnimRate >= 0) CurrentWeaponFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        DamageMax = CurrentWeaponFire.default.DamageMax;
+        Spread = CurrentWeaponFire.default.Spread;
+        FireRate = CurrentWeaponFire.default.FireRate;
+        FireAnimRate = CurrentWeaponFire.default.FireAnimRate;
 
         // Max Ammo Change
-        CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        if(Weapon[i].iMaxAmmo >= 0) CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        // Just logging
+        MaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
         // DmgType Class Related Changes
-        CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
-
+        if(Weapon[i].fHeadShotDamageMult >= 0) CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
         }
         else if (class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
         CurrentWeaponKFHighROFFire = class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
@@ -122,16 +129,23 @@ simulated function ModifyWeapon(int TmpCount)
         if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
 
         // WeaponFire Class Related Changes
-        CurrentWeaponKFHighROFFire.default.DamageMax = Weapon[i].iDamageMax;
-        if(Weapon[i].fSpread != 999) CurrentWeaponKFHighROFFire.default.Spread = Weapon[i].fSpread;
-        CurrentWeaponKFHighROFFire.default.FireRate = Weapon[i].fFireRate;
-        CurrentWeaponKFHighROFFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        if(Weapon[i].iDamageMax >= 0) CurrentWeaponKFHighROFFire.default.DamageMax = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread >= 0) CurrentWeaponKFHighROFFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].fFireRate >= 0) CurrentWeaponKFHighROFFire.default.FireRate = Weapon[i].fFireRate;
+        if(Weapon[i].fFireAnimRate >= 0) CurrentWeaponKFHighROFFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        DamageMax = CurrentWeaponKFHighROFFire.default.DamageMax;
+        Spread = CurrentWeaponKFHighROFFire.default.Spread;
+        FireRate = CurrentWeaponKFHighROFFire.default.FireRate;
+        FireAnimRate = CurrentWeaponKFHighROFFire.default.FireAnimRate;
 
         // Max Ammo Change
-        CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        if(Weapon[i].iMaxAmmo >= 0) CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        // Just logging
+        MaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
         // DmgType Class Related Changes
-        CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        if(Weapon[i].fHeadShotDamageMult >= 0) CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
         }
 
         else if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
@@ -141,13 +155,18 @@ simulated function ModifyWeapon(int TmpCount)
         if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Melee Weapon");
 
         // WeaponFire Class Related Changes
-        CurrentWeaponKFMeleeFire.default.MeleeDamage = Weapon[i].iDamageMax;
-        if(Weapon[i].fSpread != 999) CurrentWeaponKFMeleeFire.default.Spread = Weapon[i].fSpread;
-        CurrentWeaponKFMeleeFire.default.FireRate = Weapon[i].fFireRate;
-        CurrentWeaponKFMeleeFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        if(Weapon[i].iDamageMax >= 0) CurrentWeaponKFMeleeFire.default.MeleeDamage = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread >= 0) CurrentWeaponKFMeleeFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].fFireRate >= 0) CurrentWeaponKFMeleeFire.default.FireRate = Weapon[i].fFireRate;
+        if(Weapon[i].fFireAnimRate >= 0) CurrentWeaponKFMeleeFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        DamageMax = CurrentWeaponKFMeleeFire.default.MeleeDamage;
+        Spread = CurrentWeaponKFMeleeFire.default.Spread;
+        FireRate = CurrentWeaponKFMeleeFire.default.FireRate;
+        FireAnimRate = CurrentWeaponKFMeleeFire.default.FireAnimRate;
 
         // DmgType Class Related Changes
-        CurrentWeaponDamTypeMelee.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        if(Weapon[i].fHeadShotDamageMult >= 0) CurrentWeaponDamTypeMelee.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        HeadShotDamageMult = CurrentWeaponDamTypeMelee.default.HeadShotDamageMult;
         }
 
         else if (class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none){
@@ -163,44 +182,56 @@ simulated function ModifyWeapon(int TmpCount)
           {
             CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
             // DmgType Class Related Changes
-            CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            if(Weapon[i].fHeadShotDamageMult >= 0) CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
           }
           else if (class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class')) != none)
           {
             CurrentWeaponM79DmgType = class<DamTypeM79Grenade>(DynamicLoadObject(string(CurrentWeaponProjectile.default.MyDamageType), class'Class'));
             // DmgType Class Related Changes
-            CurrentWeaponM79DmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            if(Weapon[i].fHeadShotDamageMult >= 0) CurrentWeaponM79DmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            HeadShotDamageMult = CurrentWeaponM79DmgType.default.HeadShotDamageMult;
           }
 
           if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
           if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
 
           // WeaponFire Class Related Changes
-          CurrentWeaponProjectile.default.Damage = Weapon[i].iDamageMax;
-          if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
-          if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
-          CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
-          CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+          if(Weapon[i].iDamageMax >= 0) CurrentWeaponProjectile.default.Damage = Weapon[i].iDamageMax;
+          if(Weapon[i].fSpread >= 0) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
+          if(Weapon[i].iProjPerFire >= 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
+          if(Weapon[i].fFireRate >= 0) CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
+          if(Weapon[i].fFireAnimRate >= 0) CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+          DamageMax = CurrentWeaponProjectile.default.Damage;
+          Spread = CurrentWeaponShotgunFire.default.Spread;
+          ProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
+          FireRate = CurrentWeaponShotgunFire.default.FireRate;
+          FireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
           // Max Ammo Change
-          CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+          if(Weapon[i].iMaxAmmo >= 0) CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+          // Just logging
+          MaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
           // For classes that are either: CrossbowArrow, M99Bullet CrossbuzzsawBlade
           // Or children of said classes, we have a different HeadShotMultiplier
           if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbuzzsawBlade'))
           {
             if(Debug) MutLog("       >Has Special HeadShot Implementation (CrossBuzzsawBlade)");
-            class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            if(Weapon[i].fHeadShotDamageMult >= 0) class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            HeadShotDamageMult = class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult;
           }
           else if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbowArrow'))
           {
             if(Debug) MutLog("       >Has Special HeadShot Implementation (CrossbowArrow)");
-            class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            if(Weapon[i].fHeadShotDamageMult >= 0) class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            HeadShotDamageMult = class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult;
           }
           else if (ClassIsChildOf(CurrentWeaponProjectile, class'M99Bullet'))
           {
             if(Debug) MutLog("       >Has Special HeadShot Implementation (M99Bullet)");
-            class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            if(Weapon[i].fHeadShotDamageMult >= 0) class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+            HeadShotDamageMult = class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult;
           }
         }
 
@@ -212,17 +243,25 @@ simulated function ModifyWeapon(int TmpCount)
         if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponShotgunBullet));
 
         // WeaponFire Class Related Changes
-        CurrentWeaponShotgunBullet.default.Damage = Weapon[i].iDamageMax;
-        if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
-        if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
-        CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
-        CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        if(Weapon[i].iDamageMax >= 0) CurrentWeaponShotgunBullet.default.Damage = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread >= 0) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].iProjPerFire >= 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
+        if(Weapon[i].fFireRate >= 0) CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
+        if(Weapon[i].fFireAnimRate >= 0) CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        DamageMax = CurrentWeaponShotgunBullet.default.Damage;
+        Spread = CurrentWeaponShotgunFire.default.Spread;
+        ProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
+        FireRate = CurrentWeaponShotgunFire.default.FireRate;
+        FireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
         // Max Ammo Change
-        CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        if(Weapon[i].iMaxAmmo >= 0) CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        // Just logging
+        MaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
         // DmgType Class Related Changes
-        CurrentWeaponShotgunBullet.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        if(Weapon[i].fHeadShotDamageMult >= 0) CurrentWeaponShotgunBullet.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        HeadShotDamageMult = CurrentWeaponShotgunBullet.default.HeadShotDamageMult;
 
         }
         else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none){
@@ -233,57 +272,69 @@ simulated function ModifyWeapon(int TmpCount)
         if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponLAWProj));
 
         // WeaponFire Class Related Changes
-        CurrentWeaponLAWProj.default.Damage = Weapon[i].iDamageMax;
-        if(Weapon[i].fSpread != 999) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
-        if(Weapon[i].iProjPerFire != 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
-        CurrentWeaponLAWProj.default.ImpactDamage = Weapon[i].iImpactDamage;
-        CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
-        CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        if(Weapon[i].iDamageMax >= 0) CurrentWeaponLAWProj.default.Damage = Weapon[i].iDamageMax;
+        if(Weapon[i].fSpread >= 0) CurrentWeaponShotgunFire.default.Spread = Weapon[i].fSpread;
+        if(Weapon[i].iProjPerFire >= 0) CurrentWeaponShotgunFire.default.ProjPerFire = Weapon[i].iProjPerFire;
+        if(Weapon[i].iImpactDamage >= 0) CurrentWeaponLAWProj.default.ImpactDamage = Weapon[i].iImpactDamage;
+        if(Weapon[i].fFireRate >= 0) CurrentWeaponShotgunFire.default.FireRate = Weapon[i].fFireRate;
+        if(Weapon[i].fFireAnimRate >= 0) CurrentWeaponShotgunFire.default.FireAnimRate = Weapon[i].fFireAnimRate;
+        DamageMax = CurrentWeaponLAWProj.default.Damage;
+        Spread = CurrentWeaponShotgunFire.default.Spread;
+        ProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
+        ImpactDamage = CurrentWeaponLAWProj.default.ImpactDamage;
+        FireRate = CurrentWeaponShotgunFire.default.FireRate;
+        FireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
         // Max Ammo Change
-        CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        if(Weapon[i].iMaxAmmo >= 0) CurrentWeaponMaxAmmo.default.MaxAmmo = Weapon[i].iMaxAmmo;
+        // Just logging
+        MaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
         // DmgType Class Related Changes
-        CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
-
+        if(Weapon[i].fHeadShotDamageMult >= 0) CurrentWeaponDmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
+        HeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
             }
         }
 
         // Vars Shared among all weapons the same, no need to condition-check
         // Base Class Related Changes
-        CurrentWeapon.default.Weight = Weapon[i].iWeight;
-        CurrentWeapon.default.InventoryGroup = Weapon[i].iInventoryGroup;
+        if(Weapon[i].iWeight >= 0) CurrentWeapon.default.Weight = Weapon[i].iWeight;
+        if(Weapon[i].iInventoryGroup >= 0) CurrentWeapon.default.InventoryGroup = Weapon[i].iInventoryGroup;
         // Ignore if current weapon is a Melee
         if (class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none){
-            CurrentWeapon.default.MagCapacity = Weapon[i].iMagCapacity;
-            CurrentWeapon.default.ReloadRate = Weapon[i].fReloadRate;
-            CurrentWeapon.default.ReloadAnimRate = Weapon[i].fReloadAnimRate;
+            if(Weapon[i].iMagCapacity >= 0) CurrentWeapon.default.MagCapacity = Weapon[i].iMagCapacity;
+            MagCapacity = CurrentWeapon.default.MagCapacity;
+            if(Weapon[i].fReloadRate >= 0) CurrentWeapon.default.ReloadRate = Weapon[i].fReloadRate;
+            ReloadRate = CurrentWeapon.default.ReloadRate;
+            if(Weapon[i].fReloadAnimRate >= 0) CurrentWeapon.default.ReloadAnimRate = Weapon[i].fReloadAnimRate;
+            ReloadAnimRate = CurrentWeapon.default.ReloadAnimRate;
         }
 
         // PickUp Class Related Changes
-        CurrentWeaponPickup.default.Weight = Weapon[i].iWeight;
-        CurrentWeaponPickup.default.cost = Weapon[i].iCost;
-        CurrentWeaponPickup.default.AmmoCost = Weapon[i].iAmmoCost;
-
-        // Max Ammo from PickUp Class
+        if(Weapon[i].iWeight >= 0) CurrentWeaponPickup.default.Weight = Weapon[i].iWeight;
+        Weight = CurrentWeaponPickup.default.Weight;
+        if(Weapon[i].iCost >= 0) CurrentWeaponPickup.default.cost = Weapon[i].iCost;
+        Cost = CurrentWeaponPickup.default.cost;
+        if(Weapon[i].iAmmoCost >= 0) CurrentWeaponPickup.default.AmmoCost = Weapon[i].iAmmoCost;
+        AmmoCost = CurrentWeaponPickup.default.AmmoCost;
 
         if(Debug){
           MutLog("-----|| ClassName: "$Weapon[i].sWeaponClassName$" ||-----");
-          MutLog("-----|| InventoryGroup: "$Weapon[i].iInventoryGroup$" ||-----");
-          MutLog("-----|| MagCapacity: "$Weapon[i].iMaxAmmo$" ||-----");
-          MutLog("-----|| MagCapacity: "$Weapon[i].iMagCapacity$" ||-----");
-          MutLog("-----|| AmmoCost: "$Weapon[i].iAmmoCost$" ||-----");
-          MutLog("-----|| DamageMax: "$Weapon[i].iDamageMax$" ||-----");
-          MutLog("-----|| ImpactDamage: "$Weapon[i].iImpactDamage$" ||-----");
-          MutLog("-----|| Weight: "$Weapon[i].iWeight$" ||-----");
-          MutLog("-----|| Cost: "$Weapon[i].iCost$" ||-----");
-          MutLog("-----|| HeadShotDamageMult: "$Weapon[i].fHeadShotDamageMult$" ||-----");
-          MutLog("-----|| Spread: "$Weapon[i].fSpread$" ||-----");
-          MutLog("-----|| ProjPerFire: "$Weapon[i].iProjPerFire$" ||-----");
-          MutLog("-----|| FireRate: "$Weapon[i].fFireRate$" ||-----");
-          MutLog("-----|| FireAnimRate: "$Weapon[i].fFireAnimRate$" ||-----");
-          MutLog("-----|| ReloadRate: "$Weapon[i].fReloadRate$" ||-----");
-          MutLog("-----|| ReloadAnimRate: "$Weapon[i].fReloadAnimRate$" ||-----");
+          MutLog("-----|| InventoryGroup: "$InventoryGroup$" ||-----");
+          MutLog("-----|| MaxAmmo: "$MaxAmmo$" ||-----");
+          MutLog("-----|| MagCapacity: "$MagCapacity$" ||-----");
+          MutLog("-----|| AmmoCost: "$AmmoCost$" ||-----");
+          MutLog("-----|| DamageMax: "$DamageMax$" ||-----");
+          MutLog("-----|| ImpactDamage: "$ImpactDamage$" ||-----");
+          MutLog("-----|| Weight: "$Weight$" ||-----");
+          MutLog("-----|| Cost: "$Cost$" ||-----");
+          MutLog("-----|| HeadShotDamageMult: "$HeadShotDamageMult$" ||-----");
+          MutLog("-----|| Spread: "$Spread$" ||-----");
+          MutLog("-----|| ProjPerFire: "$ProjPerFire$" ||-----");
+          MutLog("-----|| FireRate: "$FireRate$" ||-----");
+          MutLog("-----|| FireAnimRate: "$FireAnimRate$" ||-----");
+          MutLog("-----|| ReloadRate: "$ReloadRate$" ||-----");
+          MutLog("-----|| ReloadAnimRate: "$ReloadAnimRate$" ||-----");
         }
       }
     }
