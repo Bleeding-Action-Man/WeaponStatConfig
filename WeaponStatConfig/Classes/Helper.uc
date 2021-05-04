@@ -12,6 +12,7 @@ static function PrintDefaultStats(optional bool bDebug)
 
   local class<KFWeapon> CurrentWeapon;
   local class<KFWeaponPickup> CurrentWeaponPickup;
+  local class<KFAmmunition> CurrentWeaponMaxAmmo;
 
   local class<KFFire> CurrentWeaponFire;
   local class<KFShotgunFire> CurrentWeaponShotgunFire;
@@ -48,12 +49,16 @@ static function PrintDefaultStats(optional bool bDebug)
       {
         CurrentWeaponFire = class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
+        CurrentWeaponMaxAmmo = class<KFAmmunition>(DynamicLoadObject(string(CurrentWeaponFire.default.AmmoClass), class'Class'));
 
         // WeaponFire Class Related Changes
         DefaultStats[i].iDamageMax = CurrentWeaponFire.default.DamageMax;
         DefaultStats[i].fSpread = CurrentWeaponFire.default.Spread;
         DefaultStats[i].fFireRate = CurrentWeaponFire.default.FireRate;
         DefaultStats[i].fFireAnimRate = CurrentWeaponFire.default.FireAnimRate;
+
+        // Max Ammo
+        DefaultStats[i].iMaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
         // DmgType Class Related Changes
         DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
@@ -64,6 +69,7 @@ static function PrintDefaultStats(optional bool bDebug)
       {
         CurrentWeaponKFHighROFFire = class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponKFHighROFFire.default.DamageType), class'Class'));
+        CurrentWeaponMaxAmmo = class<KFAmmunition>(DynamicLoadObject(string(CurrentWeaponKFHighROFFire.default.AmmoClass), class'Class'));
 
         MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
 
@@ -72,6 +78,9 @@ static function PrintDefaultStats(optional bool bDebug)
         DefaultStats[i].fSpread = CurrentWeaponKFHighROFFire.default.Spread;
         DefaultStats[i].fFireRate = CurrentWeaponKFHighROFFire.default.FireRate;
         DefaultStats[i].fFireAnimRate = CurrentWeaponKFHighROFFire.default.FireAnimRate;
+
+        // Max Ammo
+        DefaultStats[i].iMaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
         // DmgType Class Related Changes
         DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
@@ -97,6 +106,8 @@ static function PrintDefaultStats(optional bool bDebug)
       else if (class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none)
       {
         CurrentWeaponShotgunFire = class<KFShotgunFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
+        CurrentWeaponMaxAmmo = class<KFAmmunition>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.AmmoClass), class'Class'));
+
         if (class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) != none && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none && class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class')) == none)
         {
           CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
@@ -122,6 +133,9 @@ static function PrintDefaultStats(optional bool bDebug)
           DefaultStats[i].iProjPerFire = CurrentWeaponShotgunFire.default.ProjPerFire;
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
+
+          // Max Ammo
+          DefaultStats[i].iMaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
           // For classes that are either: CrossbowArrow, M99Bullet CrossbuzzsawBlade
           // Or children of said classes, we have a different HeadShotMultiplier
@@ -157,6 +171,9 @@ static function PrintDefaultStats(optional bool bDebug)
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
 
+          // Max Ammo
+          DefaultStats[i].iMaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
+
           // DmgType Class Related Changes
           DefaultStats[i].fHeadShotDamageMult = CurrentWeaponShotgunBullet.default.HeadShotDamageMult;
 
@@ -177,6 +194,9 @@ static function PrintDefaultStats(optional bool bDebug)
           DefaultStats[i].iImpactDamage = CurrentWeaponLAWProj.default.ImpactDamage;
           DefaultStats[i].fFireRate = CurrentWeaponShotgunFire.default.FireRate;
           DefaultStats[i].fFireAnimRate = CurrentWeaponShotgunFire.default.FireAnimRate;
+
+          // Max Ammo
+          DefaultStats[i].iMaxAmmo = CurrentWeaponMaxAmmo.default.MaxAmmo;
 
           // DmgType Class Related Changes
           DefaultStats[i].fHeadShotDamageMult = CurrentWeaponDmgType.default.HeadShotDamageMult;
@@ -209,7 +229,7 @@ static function PrintDefaultStats(optional bool bDebug)
   {
     // Generate a copy-paste ready config for this weapon, with default variables
     sReadyMadeConfig = "";
-    sReadyMadeConfig $= "aWeapon["$i$"]=(sWeaponClassName="$DefaultStats[i].sWeaponClassName$",iInventoryGroup="$DefaultStats[i].iInventoryGroup$",iWeight="$DefaultStats[i].iWeight$",iCost="$DefaultStats[i].iCost$",iDamageMax="$DefaultStats[i].iDamageMax$",iMagCapacity="$DefaultStats[i].iMagCapacity$",iAmmoCost="$DefaultStats[i].iAmmoCost$",iImpactDamage="$DefaultStats[i].iImpactDamage$",iProjPerFire="$DefaultStats[i].iProjPerFire$",fHeadShotDamageMult="$DefaultStats[i].fHeadShotDamageMult$",fSpread="$DefaultStats[i].fSpread$",fFireRate="$DefaultStats[i].fFireRate$",fFireAnimRate="$DefaultStats[i].fFireAnimRate$",fReloadRate="$DefaultStats[i].fReloadRate$",fReloadAnimRate="$DefaultStats[i].fReloadAnimRate$")";
+    sReadyMadeConfig $= "aWeapon["$i$"]=(sWeaponClassName="$DefaultStats[i].sWeaponClassName$",iInventoryGroup="$DefaultStats[i].iInventoryGroup$",iWeight="$DefaultStats[i].iWeight$",iCost="$DefaultStats[i].iCost$",iDamageMax="$DefaultStats[i].iDamageMax$",iMaxAmmo="$DefaultStats[i].iMaxAmmo$",iMagCapacity="$DefaultStats[i].iMagCapacity$",iAmmoCost="$DefaultStats[i].iAmmoCost$",iImpactDamage="$DefaultStats[i].iImpactDamage$",iProjPerFire="$DefaultStats[i].iProjPerFire$",fHeadShotDamageMult="$DefaultStats[i].fHeadShotDamageMult$",fSpread="$DefaultStats[i].fSpread$",fFireRate="$DefaultStats[i].fFireRate$",fFireAnimRate="$DefaultStats[i].fFireAnimRate$",fReloadRate="$DefaultStats[i].fReloadRate$",fReloadAnimRate="$DefaultStats[i].fReloadAnimRate$")";
     MutLog(sReadyMadeConfig);
   }
 }
