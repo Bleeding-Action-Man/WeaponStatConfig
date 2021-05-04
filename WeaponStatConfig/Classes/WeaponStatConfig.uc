@@ -40,7 +40,7 @@ simulated function PostBeginPlay()
 {
   Debug = bDebug;
 
-  if(Debug) MutLog("-----|| DEBUG - class'Helper'.static.PrintDefaultStats(Debug) ||-----");
+  if(Debug) MutLog("-----|| class'Helper'.static.PrintDefaultStats(Debug) ||-----");
   class'Helper'.static.PrintDefaultStats(Debug);
 
   // Timer set to 3 to give some time for client var replication
@@ -246,21 +246,21 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponPickup.default.AmmoCost = Weapon[i].iAmmoCost;
 
         if (Debug){
-          MutLog("-----|| DEBUG - ClassName: "$Weapon[i].sWeaponClassName$" ||-----");
-          MutLog("-----|| DEBUG - InventoryGroup: "$Weapon[i].iInventoryGroup$" ||-----");
-          MutLog("-----|| DEBUG - MagCapacity: "$Weapon[i].iMagCapacity$" ||-----");
-          MutLog("-----|| DEBUG - AmmoCost: "$Weapon[i].iAmmoCost$" ||-----");
-          MutLog("-----|| DEBUG - DamageMax: "$Weapon[i].iDamageMax$" ||-----");
-          MutLog("-----|| DEBUG - ImpactDamage: "$Weapon[i].iImpactDamage$" ||-----");
-          MutLog("-----|| DEBUG - Weight: "$Weapon[i].iWeight$" ||-----");
-          MutLog("-----|| DEBUG - Cost: "$Weapon[i].iCost$" ||-----");
-          MutLog("-----|| DEBUG - HeadShotDamageMult: "$Weapon[i].fHeadShotDamageMult$" ||-----");
-          MutLog("-----|| DEBUG - Spread: "$Weapon[i].fSpread$" ||-----");
-          MutLog("-----|| DEBUG - ProjPerFire: "$Weapon[i].iProjPerFire$" ||-----");
-          MutLog("-----|| DEBUG - FireRate: "$Weapon[i].fFireRate$" ||-----");
-          MutLog("-----|| DEBUG - FireAnimRate: "$Weapon[i].fFireAnimRate$" ||-----");
-          MutLog("-----|| DEBUG - ReloadRate: "$Weapon[i].fReloadRate$" ||-----");
-          MutLog("-----|| DEBUG - ReloadAnimRate: "$Weapon[i].fReloadAnimRate$" ||-----");
+          MutLog("-----|| ClassName: "$Weapon[i].sWeaponClassName$" ||-----");
+          MutLog("-----|| InventoryGroup: "$Weapon[i].iInventoryGroup$" ||-----");
+          MutLog("-----|| MagCapacity: "$Weapon[i].iMagCapacity$" ||-----");
+          MutLog("-----|| AmmoCost: "$Weapon[i].iAmmoCost$" ||-----");
+          MutLog("-----|| DamageMax: "$Weapon[i].iDamageMax$" ||-----");
+          MutLog("-----|| ImpactDamage: "$Weapon[i].iImpactDamage$" ||-----");
+          MutLog("-----|| Weight: "$Weapon[i].iWeight$" ||-----");
+          MutLog("-----|| Cost: "$Weapon[i].iCost$" ||-----");
+          MutLog("-----|| HeadShotDamageMult: "$Weapon[i].fHeadShotDamageMult$" ||-----");
+          MutLog("-----|| Spread: "$Weapon[i].fSpread$" ||-----");
+          MutLog("-----|| ProjPerFire: "$Weapon[i].iProjPerFire$" ||-----");
+          MutLog("-----|| FireRate: "$Weapon[i].fFireRate$" ||-----");
+          MutLog("-----|| FireAnimRate: "$Weapon[i].fFireAnimRate$" ||-----");
+          MutLog("-----|| ReloadRate: "$Weapon[i].fReloadRate$" ||-----");
+          MutLog("-----|| ReloadAnimRate: "$Weapon[i].fReloadAnimRate$" ||-----");
         }
       }
     }
@@ -271,7 +271,7 @@ simulated function int GetServerVars()
   local int i;
   local int count; // To avoid running loops over WEAPONS_COUNT, just get the count of actual array entry
 
-  if(Debug) MutLog("-----|| DEBUG - GetServerVars(); ||-----");
+  if(Debug) MutLog("-----|| GetServerVars(); ||-----");
 
   count = 0;
   for(i=0; i<WEAPONS_COUNT; i++)
