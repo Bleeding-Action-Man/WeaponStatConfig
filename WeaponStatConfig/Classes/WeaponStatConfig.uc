@@ -90,14 +90,14 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
 
         // Log for Currently Detected Weapon
-        MutLog("-----|| Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
+        if(Debug) MutLog("-----|| Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
 
         // Grab Needed Classes & Check WeaponFire types, then proceed to change values accordingly
         if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none && class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none){
         CurrentWeaponFire = class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
 
-        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Standard Weapon");
+        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Standard Weapon");
 
         // WeaponFire Class Related Changes
         CurrentWeaponFire.default.DamageMax = Weapon[i].iDamageMax;
@@ -113,7 +113,7 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponKFHighROFFire = class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponKFHighROFFire.default.DamageType), class'Class'));
 
-        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
+        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
 
         // WeaponFire Class Related Changes
         CurrentWeaponKFHighROFFire.default.DamageMax = Weapon[i].iDamageMax;
@@ -129,7 +129,7 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponKFMeleeFire = class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDamTypeMelee = class<DamTypeMelee>(DynamicLoadObject(string(CurrentWeaponKFMeleeFire.default.hitDamageClass), class'Class'));
 
-        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Melee Weapon");
+        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Melee Weapon");
 
         // WeaponFire Class Related Changes
         CurrentWeaponKFMeleeFire.default.MeleeDamage = Weapon[i].iDamageMax;
@@ -161,8 +161,8 @@ simulated function ModifyWeapon(int TmpCount)
             CurrentWeaponM79DmgType.default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
           }
 
-          MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
-          MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
+          if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
+          if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
 
           // WeaponFire Class Related Changes
           CurrentWeaponProjectile.default.Damage = Weapon[i].iDamageMax;
@@ -175,17 +175,17 @@ simulated function ModifyWeapon(int TmpCount)
           // Or children of said classes, we have a different HeadShotMultiplier
           if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbuzzsawBlade'))
           {
-            MutLog("       >Has Special HeadShot Implementation (CrossBuzzsawBlade)");
+            if(Debug) MutLog("       >Has Special HeadShot Implementation (CrossBuzzsawBlade)");
             class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
           }
           else if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbowArrow'))
           {
-            MutLog("       >Has Special HeadShot Implementation (CrossbowArrow)");
+            if(Debug) MutLog("       >Has Special HeadShot Implementation (CrossbowArrow)");
             class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
           }
           else if (ClassIsChildOf(CurrentWeaponProjectile, class'M99Bullet'))
           {
-            MutLog("       >Has Special HeadShot Implementation (M99Bullet)");
+            if(Debug) MutLog("       >Has Special HeadShot Implementation (M99Bullet)");
             class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
           }
         }
@@ -194,8 +194,8 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponShotgunBullet = class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponShotgunBullet.default.MyDamageType), class'Class'));
 
-        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Shotgun-Bullet Class");
-        MutLog("       >Special Class: " $string(CurrentWeaponShotgunBullet));
+        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Shotgun-Bullet Class");
+        if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponShotgunBullet));
 
         // WeaponFire Class Related Changes
         CurrentWeaponShotgunBullet.default.Damage = Weapon[i].iDamageMax;
@@ -212,8 +212,8 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponLAWProj = class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponLAWProj.default.ImpactDamageType), class'Class'));
 
-        MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A LAW-Proj Class");
-        MutLog("       >Special Class: " $string(CurrentWeaponLAWProj));
+        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A LAW-Proj Class");
+        if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponLAWProj));
 
         // WeaponFire Class Related Changes
         CurrentWeaponLAWProj.default.Damage = Weapon[i].iDamageMax;
@@ -245,7 +245,7 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponPickup.default.cost = Weapon[i].iCost;
         CurrentWeaponPickup.default.AmmoCost = Weapon[i].iAmmoCost;
 
-        if (Debug){
+        if(Debug){
           MutLog("-----|| ClassName: "$Weapon[i].sWeaponClassName$" ||-----");
           MutLog("-----|| InventoryGroup: "$Weapon[i].iInventoryGroup$" ||-----");
           MutLog("-----|| MagCapacity: "$Weapon[i].iMagCapacity$" ||-----");
