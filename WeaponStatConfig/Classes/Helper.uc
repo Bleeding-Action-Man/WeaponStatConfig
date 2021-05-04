@@ -1,5 +1,5 @@
 class Helper extends Object
-  config(KFWeaponStatConfig);
+  config(WeaponStatConfig);
 
 
 var config array<string> PrintStatsFor;
@@ -10,7 +10,7 @@ static function PrintDefaultStats(optional bool bDebug)
 {
   local int i;
   local string sReadyMadeConfig;
-  local array<KFWeaponStatConfig.LoadedWeapon> DefaultStats;
+  local array<WeaponStatConfig.LoadedWeapon> DefaultStats;
 
   local class<KFWeapon> CurrentWeapon;
   local class<KFWeaponPickup> CurrentWeaponPickup;

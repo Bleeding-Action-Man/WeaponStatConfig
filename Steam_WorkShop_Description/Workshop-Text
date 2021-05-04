@@ -26,9 +26,9 @@ Of all weapons. Custom or Official!
 
 [H1][b][u]File Names[/u][/b][/H1]
 
-- \System\KFWeaponStatConfig.u
-- \System\KFWeaponStatConfig.ucl
-- \System\KFWeaponStatConfig.ini
+- \System\WeaponStatConfig.u
+- \System\WeaponStatConfig.ucl
+- \System\WeaponStatConfig.ini
 
 [H1][b][u]Usage[/u][/b][/H1]
 
@@ -40,7 +40,7 @@ Of all weapons. Custom or Official!
 Sample config can be as the following:
 
 [code]
-[KFWeaponStatConfig.KFWeaponStatConfig]
+[WeaponStatConfig.WeaponStatConfig]
 bDebug=True
 # FireAnime & ReloadAnime: + To Increase | Low or High Values might break the Animations or make it slow-mo, increase/decrease gradually
 # FireRate & ReloadRate: - To Increase | Low or High Values might break fFireRate or make it slow-mo, increase/decrease gradually
@@ -60,7 +60,7 @@ aWeapon[7]=(sWeaponClassName="KFMod.NeonKrissMMedicGun",iInventoryGroup=3,iWeigh
 aWeapon[8]=(sWeaponClassName="KFMod.M7A3MMedicGun",iInventoryGroup=3,iWeight=5,iCost=2050,iDamageMax=70,iMagCapacity=20,iAmmoCost=10,iImpactDamage=0,iProjPerFire=0,fHeadShotDamageMult=1.5,fSpread=0.01,fFireRate=0.12,fFireAnimRate=1.2,fReloadRate=1.3,fReloadAnimRate=2.5)
 aWeapon[9]=(sWeaponClassName="KFEnhancedMusket.EnhancedMusket",iInventoryGroup=4,iWeight=5,iCost=1500,iDamageMax=180,iMagCapacity=10,iAmmoCost=20,iImpactDamage=0,iProjPerFire=0,fHeadShotDamageMult=2,fSpread=0,fFireRate=0.94,fFireAnimRate=1.0,fReloadRate=2.87,fReloadAnimRate=1)
 
-[KFWeaponStatConfig.Helper]
+[WeaponStatConfig.Helper]
 # This list is to 'Print' default stats for a weapon
 # If bDebug=True --> Stats will be printed in your server.log (or Killingfloor.log)
 # This will also generate a copy-paste ready template that you can use in the above config
@@ -93,7 +93,7 @@ https://pastebin.com/StRzZntT
 
 [H1][b][u]Class Names[/u][/b][/H1]
 
-- Spawn Mut: KFWeaponStatConfig.KFWeaponStatConfig
+- Spawn Mut: WeaponStatConfig.WeaponStatConfig
 
 [H1][b][u]Manual Download Links (Recommended)[/u][/b][/H1]
 

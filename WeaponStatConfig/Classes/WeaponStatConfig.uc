@@ -1,11 +1,11 @@
 //====================================================
-// Base Mutator for KFWeaponStatConfig by Vel-San
+// Base Mutator for WeaponStatConfig by Vel-San
 // Contact on Steam using the following Profile Link:
 // https://steamcommunity.com/id/Vel-San/
 //====================================================
 
-class KFWeaponStatConfig extends Mutator
-  config(KFWeaponStatConfig);
+class WeaponStatConfig extends Mutator
+  config(WeaponStatConfig);
 
 
 // Struct of Weapons Array declared in Config File
