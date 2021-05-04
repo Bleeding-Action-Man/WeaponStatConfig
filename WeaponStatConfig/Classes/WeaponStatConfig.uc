@@ -5,7 +5,7 @@
 //====================================================
 
 class WeaponStatConfig extends Mutator
-  config(WeaponStatConfig);
+  config(WeaponStat_Config);
 
 
 // Struct of Weapons Array declared in Config File
@@ -309,6 +309,6 @@ defaultproperties
 
   // Mut Vars
   GroupName="KF-WeaponStatConfig"
-  FriendlyName="Weapon Stats Configurator - v2.4.1"
-  Description="Change Standard & Custom Weapon Stats - By Vel-San, dkanus & NikC"
+  FriendlyName="Weapon Stats Configurator - v2.5"
+  Description="Change Standard & Custom Weapon Stats; By Vel-San, dkanus & NikC"
 }

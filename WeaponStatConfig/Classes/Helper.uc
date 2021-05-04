@@ -1,9 +1,7 @@
 class Helper extends Object
-  config(WeaponStatConfig);
-
+  config(WeaponStat_Config);
 
 var config array<string> PrintStatsFor;
-
 
 // Print all default values for weapons in default.PrintStatsFor array from the config
 static function PrintDefaultStats(optional bool bDebug)
