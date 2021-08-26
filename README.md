@@ -3,6 +3,7 @@
 This mutator allows you to configure:
 
 - Max Dmg
+- Max Alt Fire Damage (Works for Medic Guns too)
 - InventoryGroup
 - Max Ammo
 - Magazine Size

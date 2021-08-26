@@ -13,7 +13,7 @@ class WeaponStatConfig extends Mutator
 struct LoadedWeapon
 {
   var config string sWeaponClassName;
-  var config int iMaxAmmo, iMagCapacity, iAmmoCost, iDamageMax, iImpactDamage, iWeight, iCost, iInventoryGroup, iProjPerFire;
+  var config int iMaxAmmo, iMagCapacity, iAmmoCost, iDamageMax, iAltFireDamageMax, iImpactDamage, iWeight, iCost, iInventoryGroup, iProjPerFire;
   var config float fHeadShotDamageMult, fSpread, fFireRate, fFireAnimRate, fReloadRate, fReloadAnimRate;
 };
 
@@ -26,22 +26,19 @@ var config bool bDebug;
 // Weapons List to be loaded from Config File
 var config LoadedWeapon aWeapon[WEAPONS_COUNT];
 
-var bool Debug;
 var LoadedWeapon Weapon[WEAPONS_COUNT];
 
 replication
 {
   reliable if (Role == ROLE_Authority)
-                Debug,
+                bDebug,
                 aWeapon, Weapon;
 }
 
 simulated function PostBeginPlay()
 {
-  Debug = bDebug;
-
-  if(Debug) MutLog("-----|| class'Helper'.static.PrintDefaultStats(Debug) ||-----");
-  class'Helper'.static.PrintDefaultStats(Debug);
+  if(bDebug) MutLog("-----|| class'Helper'.static.PrintDefaultStats(bDebug) ||-----");
+  class'Helper'.static.PrintDefaultStats(bDebug);
 
   // Timer set to 3 to give some time for client var replication
   setTimer(3, false);
@@ -62,13 +59,14 @@ simulated function Timer()
 // Dynamically Load and modify weapons that are found in the Config File
 simulated function ModifyWeapon(int TmpCount)
 {
-  local int i, MaxAmmo, MagCapacity, AmmoCost, DamageMax, ImpactDamage, Weight, Cost, InventoryGroup, ProjPerFire;
+  local int i, MaxAmmo, MagCapacity, AmmoCost, DamageMax, AltFireDamageMax, ImpactDamage, Weight, Cost, InventoryGroup, ProjPerFire;
   local float HeadShotDamageMult, Spread, FireRate, FireAnimRate, ReloadRate, ReloadAnimRate;
 
   local class<KFWeapon> CurrentWeapon;
   local class<KFWeaponPickup> CurrentWeaponPickup;
   local class<KFAmmunition> CurrentWeaponMaxAmmo;
 
+  // Primary Fire
   local class<KFFire> CurrentWeaponFire;
   local class<KFShotgunFire> CurrentWeaponShotgunFire;
   local class<KFMeleeFire> CurrentWeaponKFMeleeFire;
@@ -92,7 +90,15 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponPickup = class<KFWeaponPickup>(DynamicLoadObject(string(CurrentWeapon.default.PickupClass), class'Class'));
 
         // Log for Currently Detected Weapon
-        if(Debug) MutLog("-----|| Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
+        if(bDebug) MutLog("-----|| Applying Config For: "$GetItemName(string(CurrentWeapon))$" ||-----");
+
+        // Modify Weapon AltFireDamage
+        if(CurrentWeapon.default.FireModeClass[1] != none
+          && string(CurrentWeapon.default.FireModeClass[1]) != "KFMod.NoFire"
+          && Weapon[i].iAltFireDamageMax >= 0)
+        {
+          AltFireDamageMax = ModifyAltFireDmg(string(CurrentWeapon.default.FireModeClass[1]), Weapon[i].iAltFireDamageMax);
+        }
 
         // Grab Needed Classes & Check WeaponFire types, then proceed to change values accordingly
         if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none && class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none){
@@ -100,7 +106,7 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponFire.default.DamageType), class'Class'));
         CurrentWeaponMaxAmmo = class<KFAmmunition>(DynamicLoadObject(string(CurrentWeaponFire.default.AmmoClass), class'Class'));
 
-        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Standard Weapon");
+        if(bDebug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Standard Weapon");
 
         // WeaponFire Class Related Changes
         if(Weapon[i].iDamageMax >= 0) CurrentWeaponFire.default.DamageMax = Weapon[i].iDamageMax;
@@ -126,7 +132,7 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponKFHighROFFire.default.DamageType), class'Class'));
         CurrentWeaponMaxAmmo = class<KFAmmunition>(DynamicLoadObject(string(CurrentWeaponKFHighROFFire.default.AmmoClass), class'Class'));
 
-        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
+        if(bDebug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a High-Fire-Rate Weapon");
 
         // WeaponFire Class Related Changes
         if(Weapon[i].iDamageMax >= 0) CurrentWeaponKFHighROFFire.default.DamageMax = Weapon[i].iDamageMax;
@@ -152,7 +158,7 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponKFMeleeFire = class<KFMeleeFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class'));
         CurrentWeaponDamTypeMelee = class<DamTypeMelee>(DynamicLoadObject(string(CurrentWeaponKFMeleeFire.default.hitDamageClass), class'Class'));
 
-        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Melee Weapon");
+        if(bDebug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " is a Melee Weapon");
 
         // WeaponFire Class Related Changes
         if(Weapon[i].iDamageMax >= 0) CurrentWeaponKFMeleeFire.default.MeleeDamage = Weapon[i].iDamageMax;
@@ -193,8 +199,8 @@ simulated function ModifyWeapon(int TmpCount)
             HeadShotDamageMult = CurrentWeaponM79DmgType.default.HeadShotDamageMult;
           }
 
-          if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
-          if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
+          if(bDebug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Projectile Class");
+          if(bDebug) MutLog("       >Special Class: " $string(CurrentWeaponProjectile));
 
           // WeaponFire Class Related Changes
           if(Weapon[i].iDamageMax >= 0) CurrentWeaponProjectile.default.Damage = Weapon[i].iDamageMax;
@@ -217,19 +223,19 @@ simulated function ModifyWeapon(int TmpCount)
           // Or children of said classes, we have a different HeadShotMultiplier
           if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbuzzsawBlade'))
           {
-            if(Debug) MutLog("       >Has Special HeadShot Implementation (CrossBuzzsawBlade)");
+            if(bDebug) MutLog("       >Has Special HeadShot Implementation (CrossBuzzsawBlade)");
             if(Weapon[i].fHeadShotDamageMult >= 0) class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
             HeadShotDamageMult = class<CrossbuzzsawBlade>(CurrentWeaponProjectile).default.HeadShotDamageMult;
           }
           else if (ClassIsChildOf(CurrentWeaponProjectile, class'CrossbowArrow'))
           {
-            if(Debug) MutLog("       >Has Special HeadShot Implementation (CrossbowArrow)");
+            if(bDebug) MutLog("       >Has Special HeadShot Implementation (CrossbowArrow)");
             if(Weapon[i].fHeadShotDamageMult >= 0) class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
             HeadShotDamageMult = class<CrossbowArrow>(CurrentWeaponProjectile).default.HeadShotDamageMult;
           }
           else if (ClassIsChildOf(CurrentWeaponProjectile, class'M99Bullet'))
           {
-            if(Debug) MutLog("       >Has Special HeadShot Implementation (M99Bullet)");
+            if(bDebug) MutLog("       >Has Special HeadShot Implementation (M99Bullet)");
             if(Weapon[i].fHeadShotDamageMult >= 0) class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult = Weapon[i].fHeadShotDamageMult;
             HeadShotDamageMult = class<M99Bullet>(CurrentWeaponProjectile).default.HeadShotDamageMult;
           }
@@ -239,8 +245,8 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponShotgunBullet = class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponShotgunBullet.default.MyDamageType), class'Class'));
 
-        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Shotgun-Bullet Class");
-        if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponShotgunBullet));
+        if(bDebug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A Shotgun-Bullet Class");
+        if(bDebug) MutLog("       >Special Class: " $string(CurrentWeaponShotgunBullet));
 
         // WeaponFire Class Related Changes
         if(Weapon[i].iDamageMax >= 0) CurrentWeaponShotgunBullet.default.Damage = Weapon[i].iDamageMax;
@@ -268,8 +274,8 @@ simulated function ModifyWeapon(int TmpCount)
         CurrentWeaponLAWProj = class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunFire.default.ProjectileClass), class'Class'));
         CurrentWeaponDmgType = class<KFProjectileWeaponDamageType>(DynamicLoadObject(string(CurrentWeaponLAWProj.default.ImpactDamageType), class'Class'));
 
-        if(Debug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A LAW-Proj Class");
-        if(Debug) MutLog("       >Special Class: " $string(CurrentWeaponLAWProj));
+        if(bDebug) MutLog("       >" $GetItemName(string(CurrentWeapon))$ " Has A LAW-Proj Class");
+        if(bDebug) MutLog("       >Special Class: " $string(CurrentWeaponLAWProj));
 
         // WeaponFire Class Related Changes
         if(Weapon[i].iDamageMax >= 0) CurrentWeaponLAWProj.default.Damage = Weapon[i].iDamageMax;
@@ -318,13 +324,14 @@ simulated function ModifyWeapon(int TmpCount)
         if(Weapon[i].iAmmoCost >= 0) CurrentWeaponPickup.default.AmmoCost = Weapon[i].iAmmoCost;
         AmmoCost = CurrentWeaponPickup.default.AmmoCost;
 
-        if(Debug){
+        if(bDebug){
           MutLog("-----|| ClassName: "$Weapon[i].sWeaponClassName$" ||-----");
           MutLog("-----|| InventoryGroup: "$InventoryGroup$" ||-----");
           MutLog("-----|| MaxAmmo: "$MaxAmmo$" ||-----");
           MutLog("-----|| MagCapacity: "$MagCapacity$" ||-----");
           MutLog("-----|| AmmoCost: "$AmmoCost$" ||-----");
           MutLog("-----|| DamageMax: "$DamageMax$" ||-----");
+          MutLog("-----|| AltFireDamageMax: "$AltFireDamageMax$" ||-----");
           MutLog("-----|| ImpactDamage: "$ImpactDamage$" ||-----");
           MutLog("-----|| Weight: "$Weight$" ||-----");
           MutLog("-----|| Cost: "$Cost$" ||-----");
@@ -340,12 +347,70 @@ simulated function ModifyWeapon(int TmpCount)
     }
 }
 
+simulated function int ModifyAltFireDmg(string AltFireClass, int AltFireDamage)
+{
+  // AltFire, if it exists
+  local class<KFFire> CurrentWeaponAltFire;
+  local class<KFShotgunFire> CurrentWeaponShotgunAltFire;
+  local class<KFMeleeFire> CurrentWeaponKFMeleeAltFire;
+  local class<KFHighROFFire> CurrentWeaponKFHighROFAltFire;
+
+  // IfDamage isn't in the base AltFireClass
+  local class<Projectile> CurrentWeaponProjectile;
+  local class<ShotgunBullet> CurrentWeaponShotgunBullet;
+  local class<LAWProj> CurrentWeaponLAWProj;
+
+  if (class<KFFire>(DynamicLoadObject(AltFireClass, class'Class')) != none && class<KFHighROFFire>(DynamicLoadObject(AltFireClass, class'Class')) == none)
+  {
+    CurrentWeaponAltFire = class<KFFire>(DynamicLoadObject(AltFireClass, class'Class'));
+    CurrentWeaponAltFire.default.DamageMax = AltFireDamage;
+    return CurrentWeaponAltFire.default.DamageMax;
+  }
+  else if (class<KFHighROFFire>(DynamicLoadObject(AltFireClass, class'Class')) != none)
+  {
+    CurrentWeaponKFHighROFAltFire = class<KFHighROFFire>(DynamicLoadObject(AltFireClass, class'Class'));
+    CurrentWeaponKFHighROFAltFire.default.DamageMax = AltFireDamage;
+    return CurrentWeaponKFHighROFAltFire.default.DamageMax;
+  }
+  else if (class<KFMeleeFire>(DynamicLoadObject(AltFireClass, class'Class')) != none)
+  {
+    CurrentWeaponKFMeleeAltFire = class<KFMeleeFire>(DynamicLoadObject(AltFireClass, class'Class'));
+    CurrentWeaponKFMeleeAltFire.default.MeleeDamage = AltFireDamage;
+    return CurrentWeaponKFMeleeAltFire.default.MeleeDamage;
+  }
+  else if (class<KFShotgunFire>(DynamicLoadObject(AltFireClass, class'Class')) != none)
+  {
+    CurrentWeaponShotgunAltFire = class<KFShotgunFire>(DynamicLoadObject(AltFireClass, class'Class'));
+
+    if (class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) != none
+      && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) == none
+      && class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) == none)
+      {
+        CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class'));
+        CurrentWeaponProjectile.default.Damage = AltFireDamage;
+        return CurrentWeaponProjectile.default.Damage;
+      }
+    else if (class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) != none)
+    {
+      CurrentWeaponShotgunBullet = class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class'));
+      CurrentWeaponShotgunBullet.default.Damage = AltFireDamage;
+      return CurrentWeaponShotgunBullet.default.Damage;
+    }
+    else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) != none)
+    {
+      CurrentWeaponLAWProj = class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class'));
+      CurrentWeaponLAWProj.default.Damage = AltFireDamage;
+      return CurrentWeaponLAWProj.default.Damage;
+    }
+  }
+}
+
 simulated function int GetServerVars()
 {
   local int i;
   local int count; // To avoid running loops over WEAPONS_COUNT, just get the count of actual array entry
 
-  if(Debug) MutLog("-----|| GetServerVars(); ||-----");
+  if(bDebug) MutLog("-----|| GetServerVars(); ||-----");
 
   count = 0;
   for(i=0; i<WEAPONS_COUNT; i++)
@@ -383,6 +448,6 @@ defaultproperties
 
   // Mut Vars
   GroupName="KF-WeaponStatConfig"
-  FriendlyName="Weapon Stats Configurator - v2.5"
+  FriendlyName="Weapon Stats Configurator - v2.6"
   Description="Change Standard & Custom Weapon Stats; By Vel-San, dkanus & NikC"
 }

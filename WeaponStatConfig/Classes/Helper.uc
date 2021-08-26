@@ -44,6 +44,17 @@ static function PrintDefaultStats(optional bool bDebug)
       MutLog("############## " $string(CurrentWeapon)$ " | " $CurrentWeaponPickup.default.ItemName$ " ##############");
       DefaultStats[i].sWeaponClassName = string(CurrentWeapon);
 
+      // Modify Weapon AltFireDamage
+      if(CurrentWeapon.default.FireModeClass[1] != none
+        && string(CurrentWeapon.default.FireModeClass[1]) != "KFMod.NoFire")
+      {
+        DefaultStats[i].iAltFireDamageMax = ModifyAltFireDmg(string(CurrentWeapon.default.FireModeClass[1]));
+      }
+      else
+      {
+        DefaultStats[i].iAltFireDamageMax = 0;
+      }
+
       // Grab Needed Classes & Check WeaponFire types, then proceed to change values accordingly
       if (class<KFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) != none && class<KFHighROFFire>(DynamicLoadObject(string(CurrentWeapon.default.FireModeClass[0]), class'Class')) == none)
       {
@@ -229,9 +240,64 @@ static function PrintDefaultStats(optional bool bDebug)
   {
     // Generate a copy-paste ready config for this weapon, with default variables
     sReadyMadeConfig = "";
-    sReadyMadeConfig $= "aWeapon["$i$"]=(sWeaponClassName="$DefaultStats[i].sWeaponClassName$",iInventoryGroup="$DefaultStats[i].iInventoryGroup$",iWeight="$DefaultStats[i].iWeight$",iCost="$DefaultStats[i].iCost$",iDamageMax="$DefaultStats[i].iDamageMax$",iMaxAmmo="$DefaultStats[i].iMaxAmmo$",iMagCapacity="$DefaultStats[i].iMagCapacity$",iAmmoCost="$DefaultStats[i].iAmmoCost$",iImpactDamage="$DefaultStats[i].iImpactDamage$",iProjPerFire="$DefaultStats[i].iProjPerFire$",fHeadShotDamageMult="$DefaultStats[i].fHeadShotDamageMult$",fSpread="$DefaultStats[i].fSpread$",fFireRate="$DefaultStats[i].fFireRate$",fFireAnimRate="$DefaultStats[i].fFireAnimRate$",fReloadRate="$DefaultStats[i].fReloadRate$",fReloadAnimRate="$DefaultStats[i].fReloadAnimRate$")";
+    sReadyMadeConfig $= "aWeapon["$i$"]=(sWeaponClassName="$DefaultStats[i].sWeaponClassName$",iInventoryGroup="$DefaultStats[i].iInventoryGroup$",iWeight="$DefaultStats[i].iWeight$",iCost="$DefaultStats[i].iCost$",iDamageMax="$DefaultStats[i].iDamageMax$",iAltFireDamageMax="$DefaultStats[i].iAltFireDamageMax$",iMaxAmmo="$DefaultStats[i].iMaxAmmo$",iMagCapacity="$DefaultStats[i].iMagCapacity$",iAmmoCost="$DefaultStats[i].iAmmoCost$",iImpactDamage="$DefaultStats[i].iImpactDamage$",iProjPerFire="$DefaultStats[i].iProjPerFire$",fHeadShotDamageMult="$DefaultStats[i].fHeadShotDamageMult$",fSpread="$DefaultStats[i].fSpread$",fFireRate="$DefaultStats[i].fFireRate$",fFireAnimRate="$DefaultStats[i].fFireAnimRate$",fReloadRate="$DefaultStats[i].fReloadRate$",fReloadAnimRate="$DefaultStats[i].fReloadAnimRate$")";
     MutLog(sReadyMadeConfig);
   }
+}
+
+static function int ModifyAltFireDmg(string AltFireClass)
+{
+  local int AltFireDamage;
+
+  // AltFire, if it exists
+  local class<KFFire> CurrentWeaponAltFire;
+  local class<KFShotgunFire> CurrentWeaponShotgunAltFire;
+  local class<KFMeleeFire> CurrentWeaponKFMeleeAltFire;
+  local class<KFHighROFFire> CurrentWeaponKFHighROFAltFire;
+
+  // IfDamage isn't in the base AltFireClass
+  local class<Projectile> CurrentWeaponProjectile;
+  local class<ShotgunBullet> CurrentWeaponShotgunBullet;
+  local class<LAWProj> CurrentWeaponLAWProj;
+
+  if (class<KFFire>(DynamicLoadObject(AltFireClass, class'Class')) != none && class<KFHighROFFire>(DynamicLoadObject(AltFireClass, class'Class')) == none)
+  {
+    CurrentWeaponAltFire = class<KFFire>(DynamicLoadObject(AltFireClass, class'Class'));
+    AltFireDamage = CurrentWeaponAltFire.default.DamageMax;
+  }
+  else if (class<KFHighROFFire>(DynamicLoadObject(AltFireClass, class'Class')) != none)
+  {
+    CurrentWeaponKFHighROFAltFire = class<KFHighROFFire>(DynamicLoadObject(AltFireClass, class'Class'));
+    AltFireDamage = CurrentWeaponKFHighROFAltFire.default.DamageMax;
+  }
+  else if (class<KFMeleeFire>(DynamicLoadObject(AltFireClass, class'Class')) != none)
+  {
+    CurrentWeaponKFMeleeAltFire = class<KFMeleeFire>(DynamicLoadObject(AltFireClass, class'Class'));
+    AltFireDamage = CurrentWeaponKFMeleeAltFire.default.MeleeDamage;
+  }
+  else if (class<KFShotgunFire>(DynamicLoadObject(AltFireClass, class'Class')) != none)
+  {
+    CurrentWeaponShotgunAltFire = class<KFShotgunFire>(DynamicLoadObject(AltFireClass, class'Class'));
+
+    if (class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) != none
+      && class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) == none
+      && class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) == none)
+      {
+        CurrentWeaponProjectile = class<Projectile>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class'));
+        AltFireDamage = CurrentWeaponProjectile.default.Damage;
+      }
+    else if (class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) != none)
+    {
+      CurrentWeaponShotgunBullet = class<ShotgunBullet>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class'));
+      AltFireDamage = CurrentWeaponShotgunBullet.default.Damage;
+    }
+    else if (class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class')) != none)
+    {
+      CurrentWeaponLAWProj = class<LAWProj>(DynamicLoadObject(string(CurrentWeaponShotgunAltFire.default.ProjectileClass), class'Class'));
+      AltFireDamage = CurrentWeaponLAWProj.default.Damage;
+    }
+  }
+  return AltFireDamage;
 }
 
 
